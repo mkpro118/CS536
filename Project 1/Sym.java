@@ -13,6 +13,10 @@ public class Sym {
      * @param  type A String representation of the type of the symbol
      */
     public Sym(final String type) {
+        if (type == null) {
+            throw new IllegalArgumentException();
+        }
+
         this.type = type;
     }
 
