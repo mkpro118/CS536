@@ -24,33 +24,21 @@ public class SymTable {
     }
 
     /**
-    * Add a declaration to the first scope
-    *
-    * @param  name Name of the symbol
-    * @param  sym  Associated metadata of the given symbol
-    *
-    * @throws DuplicateSymNameException If the given name already exists in the first scope
-    * @throws EmptySymTableException    If the symbol table has no available scopes
-    */
-    public void addDecl(String name, Sym sym)
-            throws DuplicateSymNameException, EmptySymTableException {
-        checkNonEmpty();
-        checkNonNull(name, sym);
-
-        HashMap<String, Sym> currScope = this.table.get(0);
-
-        if (currScope.containsKey(name)) {
-        throw new DuplicateSymNameException();
-        }
-
-        currScope.put(name, sym);
-    }
-
-    /**
     * Adds a new scope to the top of the symbol table
     */
     public void addScope() {
-        this.table.set(0, new HashMap<>());
+        this.table.add(0, new HashMap<>());
+    }
+
+    /**
+    * Removes the first local scope from the symbol table
+    *
+    * @throws EmptySymTableException If there are no entries in the symbol table
+    */
+    public void removeScope() throws EmptySymTableException {
+        checkNonEmpty();
+
+        table.remove(0);
     }
 
     /**
@@ -98,14 +86,26 @@ public class SymTable {
     }
 
     /**
-    * Removes the first local scope from the symbol table
+    * Add a declaration to the first scope
     *
-    * @throws EmptySymTableException If there are no entries in the symbol table
+    * @param  name Name of the symbol
+    * @param  sym  Associated metadata of the given symbol
+    *
+    * @throws DuplicateSymNameException If the given name already exists in the first scope
+    * @throws EmptySymTableException    If the symbol table has no available scopes
     */
-    public void removeScope() throws EmptySymTableException {
+    public void addDecl(String name, Sym sym)
+            throws DuplicateSymNameException, EmptySymTableException {
         checkNonEmpty();
+        checkNonNull(name, sym);
 
-        table.remove(0);
+        HashMap<String, Sym> currScope = this.table.get(0);
+
+        if (currScope.containsKey(name)) {
+        throw new DuplicateSymNameException();
+        }
+
+        currScope.put(name, sym);
     }
 
     /**
@@ -115,7 +115,7 @@ public class SymTable {
         System.out.print("\n++++ SYMBOL TABLE\n");
 
         for (HashMap<String, Sym> scope: table) {
-            System.out.println(scope.toString());
+            System.out.print(scope.toString() + "\n");
         }
 
         System.out.print("\n++++ END TABLE\n");
