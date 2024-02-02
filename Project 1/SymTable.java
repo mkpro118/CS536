@@ -102,7 +102,7 @@ public class SymTable {
         HashMap<String, Sym> currScope = this.table.get(0);
 
         if (currScope.containsKey(name)) {
-        throw new DuplicateSymNameException();
+            throw new DuplicateSymNameException();
         }
 
         currScope.put(name, sym);
