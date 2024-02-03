@@ -16,29 +16,57 @@ import static java.lang.Math.random;
  * Tests the functionality of the {@code Sym} and {@code SymTable} classes
  */
 public final class P1 {
+    // Default Symbol type
     private final static String TYPE = "int";
+    // Default Symbol instance
     private final static Sym SYM = new Sym(TYPE);
+    // Total number of tests
     private final static int N_TESTS = 100;
+    // Default Print Stream
     private final static PrintStream defaultPrintStream = System.out;
-    private final static int MAX_STRING_LENGTH = 1 << 4;
-    private final static int MIN_FUZZ_ITERS = 1 << 7;
-    private final static int FUZZ_ITERS_RANGE = (1 << 10) - MIN_FUZZ_ITERS;
+    // Maximum length of a randomly generated string (16)
+    private final static int MAX_STRING_LENGTH = 16;
+    // Minimum number of iterations for the fuzz tests
+    private final static int MIN_FUZZ_ITERS = 128;
+    // Extra range of fuzz test iterations (1024 - 128 = 896)
+    private final static int FUZZ_ITERS_RANGE = 1024 - MIN_FUZZ_ITERS;
 
+    // Score over the tests
     private int score;
+    // Numbers of tests executed
     private int testsRun;
+    // Last run test
     private String currentTest;
 
+    /**
+     * Constructor to initialize a tester instance
+     */
     public P1() {
         currentTest = null;
         score = 0;
         testsRun = 0;
     }
 
+    /**
+     * Print a formatted error message to the default {@code System.out}
+     * PrintStream
+     *
+     * @param msg The error message to print
+     */
     private final void printError(final String msg) {
+        resetPrintStream();
         System.out.println(currentTest + " Failed! " + msg);
         System.out.println();
     }
 
+    /**
+     * Changes the {@code System.out} PrintStream to a new PrintStream using a
+     * {@code ByteArrayOutputStream} that captures the printed bytes,
+     * which can be converted to {@code String}.
+     *
+     * @return A {@code ByteArrayOutputStream} that captures output written to
+     *         the {@code System.out} PrintStream
+     */
     private final static ByteArrayOutputStream switchPrintStream() {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PrintStream stream = new PrintStream(outputStream);
@@ -48,12 +76,24 @@ public final class P1 {
         return outputStream;
     }
 
+    /**
+     * Resets the {@code System.out} PrintStream to stdout
+     */
     private final static void resetPrintStream() {
         System.setOut(defaultPrintStream);
     }
 
+    /**
+     * Parses a String of the format
+     * "name1=type1, name2=type, ..., nameN=typeN"
+     * To compare against the given hashmap for key-value pairs
+     *
+     * @param  symbols   List of all symbols
+     * @param  testMap   HashMap containing key-value pairs for the symbols
+     * @param  content   The string to parse
+     */
     private final void checkSymbolString(String[][] symbols,
-        HashMap<String, String> testMap, String content) throws Exception {
+        HashMap<String, String> testMap, String content) {
         String[] pairs = content.split(",");
 
         testsRun++;
@@ -103,6 +143,11 @@ public final class P1 {
         }
     }
 
+    /**
+     * Generates a random string of alphabets for fuzz testing
+     *
+     * @return Randomly generated string of length lesser than or equal to 16
+     */
     private final static String generateRandomString() {
         final int length = (int) (random() * MAX_STRING_LENGTH) + 1;
 
@@ -116,6 +161,11 @@ public final class P1 {
         return random;
     }
 
+    /**
+     * Tests the {@code Sym} class constructor
+     *
+     * @throws Exception Propagates from the {@code Sym} class
+     */
     public final void testSymConstructor() throws Exception {
         currentTest = "Sym Constructor";
 
@@ -142,6 +192,11 @@ public final class P1 {
         }
     }
 
+    /**
+     * Tests the {@code Sym.getSym()} method
+     *
+     * @throws Exception Propagates from the {@code Sym} class
+     */
     public final void testSymAccessor() throws Exception {
         currentTest = "Sym Accessor";
         Sym sym;
@@ -174,6 +229,11 @@ public final class P1 {
         }
     }
 
+    /**
+     * Tests the {@code Sym.toString()} method
+     *
+     * @throws Exception Propagates from the {@code Sym} class
+     */
     public final void testSymToString() throws Exception {
         currentTest = "Sym ToString";
         Sym sym;
@@ -206,6 +266,11 @@ public final class P1 {
         }
     }
 
+    /**
+     * Tests the {@code SymTable} class constructor
+     *
+     * @throws Exception Propagates from the {@code SymTable} class
+     */
     public final void testSymTableConstructor() throws Exception {
         currentTest = "SymTable Constructor";
         SymTable table;
@@ -220,6 +285,12 @@ public final class P1 {
         }
     }
 
+    /**
+     * Tests the {@code SymTable.addScope()} and {@code SymTable.removeScope()}
+     * methods
+     *
+     * @throws Exception Propagates from the {@code SymTable} class
+     */
     public final void testSymTableAddRemoveScope() throws Exception {
         currentTest = "SymTable Add/Remove Scope";
         SymTable table = new SymTable();
@@ -271,6 +342,11 @@ public final class P1 {
         }
     }
 
+    /**
+     * Tests the {@code SymTable.addDecl()} method
+     *
+     * @throws Exception Propagates from the {@code SymTable} class
+     */
     public final void testSymTableAddDecl() throws Exception {
         currentTest = "SymTable Add Declaration";
 
@@ -379,6 +455,11 @@ public final class P1 {
         }
     }
 
+    /**
+     * Tests the {@code SymTable.lookupLocal()} method
+     *
+     * @throws Exception Propagates from the {@code SymTable} class
+     */
     public final void testSymTableLookupLocal() throws Exception {
         currentTest = "SymTable Lookup Local";
         SymTable table = new SymTable();
@@ -461,6 +542,11 @@ public final class P1 {
         }
     }
 
+    /**
+     * Tests the {@code SymTable.lookupGlobal()} method
+     *
+     * @throws Exception Propagates from the {@code SymTable} class
+     */
     public final void testSymTableLookupGlobal() throws Exception {
         currentTest = "SymTable Lookup Global";
         SymTable table = new SymTable();
@@ -516,6 +602,11 @@ public final class P1 {
         }
     }
 
+    /**
+     * Tests the {@code SymTable.print()} method
+     *
+     * @throws Exception Propagates from the {@code SymTable} class
+     */
     public final void testSymTablePrint() throws Exception {
         currentTest = "SymTable Print";
 
@@ -707,6 +798,11 @@ public final class P1 {
         }
     }
 
+    /**
+     * Fuzz tests the {@code Sym} class constructor
+     *
+     * @throws Exception Propagates from the {@code Sym} class
+     */
     public final void testSymConstructorFuzz() throws Exception {
         currentTest = "Sym Constructor Fuzz";
 
@@ -719,6 +815,11 @@ public final class P1 {
         score++;
     }
 
+    /**
+     * Fuzz tests the {@code Sym.getSym()} method
+     *
+     * @throws Exception Propagates from the {@code Sym} class
+     */
     public final void testSymAccessorFuzz() throws Exception {
         currentTest = "Sym Accessor Fuzz";
 
@@ -738,6 +839,11 @@ public final class P1 {
         score++;
     }
 
+    /**
+     * Fuzz tests the {@code Sym.toString()} method
+     *
+     * @throws Exception Propagates from the {@code Sym} class
+     */
     public final void testSymToStringFuzz() throws Exception {
         currentTest = "Sym Accessor Fuzz";
 
@@ -757,6 +863,11 @@ public final class P1 {
         score++;
     }
 
+    /**
+     * Fuzz tests the {@code SymTable.addDecl()} method
+     *
+     * @throws Exception Propagates from the {@code SymTable} class
+     */
     public final void testSymTableAddDeclFuzz() throws Exception {
         currentTest = "SymTable Add Declaration Fuzz";
 
@@ -794,6 +905,12 @@ public final class P1 {
         score++;
     }
 
+    /**
+     * Fuzz tests the {@code SymTable.addScope()} and
+     * {@code SymTable.removeScope()} methods
+     *
+     * @throws Exception Propagates from the {@code SymTable} class
+     */
     public final void testSymTableAddRemoveScopeFuzz() throws Exception {
         currentTest = "SymTable Add/Remove Fuzz";
 
@@ -826,6 +943,11 @@ public final class P1 {
         score++;
     }
 
+    /**
+     * Fuzz tests the {@code SymTable.lookupLocal()} method
+     *
+     * @throws Exception Propagates from the {@code SymTable} class
+     */
     public final void testSymTableLookupLocalFuzz() throws Exception {
         currentTest = "SymTable Lookup Local Fuzz";
 
@@ -885,6 +1007,11 @@ public final class P1 {
         score++;
     }
 
+    /**
+     * Fuzz tests the {@code SymTable.lookupGlobal()} method
+     *
+     * @throws Exception Propagates from the {@code SymTable} class
+     */
     public final void testSymTableLookupGlobalFuzz() throws Exception {
         currentTest = "SymTable Lookup Local Fuzz";
 
@@ -949,6 +1076,9 @@ public final class P1 {
         score++;
     }
 
+    /**
+     * Formats and prints the score from the tester
+     */
     public final void printScore() {
         if (score > testsRun) {
             System.out.println("INVALID TESTER!!! Score is greater than the "
@@ -973,27 +1103,55 @@ public final class P1 {
         System.out.println(msg);
     }
 
+    /**
+     * Tester driver, runs the tests as follows
+     *
+     * +-------------------------------+------------+-------+
+     * |              Test             |  # Points  | Total |
+     * +-------------------------------+------------+-------+
+     * | Sym Constructor               |  2 points  |    2  |
+     * | Sym Accessor                  |  2 points  |    4  |
+     * | Sym ToString                  |  2 points  |    6  |
+     * |-------------------------------+------------+-------|
+     * | SymTable Constructor          |  1 point   |    7  |
+     * | SymTable Add/Remove Scope     |  6 points  |   13  |
+     * | SymTable Add Declaration      |  9 points  |   22  |
+     * | SymTable Lookup Local         |  4 points  |   26  |
+     * | SymTable Lookup Global        |  9 points  |   35  |
+     * | SymTable Print                | 57 points  |   92  |
+     * |-------------------------------+------------+-------|
+     * | Sym Constructor Fuzz          |  1 point   |   93  |
+     * | Sym Accessor Fuzz             |  1 point   |   94  |
+     * | Sym Accessor Fuzz             |  1 point   |   95  |
+     * |-------------------------------+------------+-------|
+     * | SymTable Add/Remove Fuzz      |  1 point   |   96  |
+     * | SymTable Lookup Local Fuzz    |  1 point   |   97  |
+     * | SymTable Lookup Local Fuzz    |  1 point   |   98  |
+     * | SymTable Add Declaration Fuzz |  2 points  |  100  |
+     * +-------------------------------+------------+-------+
+     *
+     * @param args unused
+     */
     public final static void main(final String[] args) {
         P1 tester = new P1();
 
         try {
-                                                      // |  # Points  | Total |
-            tester.testSymConstructor();              // |  2 points  |    2  |
-            tester.testSymAccessor();                 // |  2 points  |    4  |
-            tester.testSymToString();                 // |  2 points  |    6  |
-            tester.testSymTableConstructor();         // |  1 point   |    7  |
-            tester.testSymTableAddRemoveScope();      // |  6 points  |   13  |
-            tester.testSymTableAddDecl();             // |  9 points  |   22  |
-            tester.testSymTableLookupLocal();         // |  4 points  |   26  |
-            tester.testSymTableLookupGlobal();        // |  9 points  |   35  |
-            tester.testSymTablePrint();               // | 57 points  |   92  |
-            tester.testSymConstructorFuzz();          // |  1 point   |   93  |
-            tester.testSymToStringFuzz();             // |  1 point   |   94  |
-            tester.testSymAccessorFuzz();             // |  1 point   |   95  |
-            tester.testSymTableAddRemoveScopeFuzz();  // |  1 point   |   96  |
-            tester.testSymTableLookupLocalFuzz();     // |  1 point   |   97  |
-            tester.testSymTableLookupGlobalFuzz();    // |  1 point   |   98  |
-            tester.testSymTableAddDeclFuzz();         // |  2 points  |  100  |
+            tester.testSymConstructor();
+            tester.testSymAccessor();
+            tester.testSymToString();
+            tester.testSymTableConstructor();
+            tester.testSymTableAddRemoveScope();
+            tester.testSymTableAddDecl();
+            tester.testSymTableLookupLocal();
+            tester.testSymTableLookupGlobal();
+            tester.testSymTablePrint();
+            tester.testSymConstructorFuzz();
+            tester.testSymToStringFuzz();
+            tester.testSymAccessorFuzz();
+            tester.testSymTableAddRemoveScopeFuzz();
+            tester.testSymTableLookupLocalFuzz();
+            tester.testSymTableLookupGlobalFuzz();
+            tester.testSymTableAddDeclFuzz();
         } catch (Exception e) {
             tester.printError("(Unexpected Exception)");
             e.printStackTrace();
