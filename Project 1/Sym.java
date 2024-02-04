@@ -25,7 +25,7 @@ public class Sym {
      *
      * @return The type of the symbol
      */
-    public String getSym() {
+    public String getType() {
         return this.type;
     }
 

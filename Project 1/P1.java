@@ -193,7 +193,7 @@ public final class P1 {
     }
 
     /**
-     * Tests the {@code Sym.getSym()} method
+     * Tests the {@code Sym.getType()} method
      *
      * @throws Exception Propagates from the {@code Sym} class
      */
@@ -206,10 +206,10 @@ public final class P1 {
         {
             testsRun++;
             sym = SYM;
-            symType = sym.getSym();
+            symType = sym.getType();
 
             if (symType == null) {
-                printError("Sym.getSym() returned null! Expected: " + TYPE);
+                printError("Sym.getType() returned null! Expected: " + TYPE);
                 return;
             }
 
@@ -220,7 +220,7 @@ public final class P1 {
         {
             testsRun++;
             if (!TYPE.equals(symType)) {
-                printError("Sym.getSym() returned " + symType
+                printError("Sym.getType() returned " + symType
                     + "! Expected: " + TYPE);
                 return;
             }
@@ -243,10 +243,10 @@ public final class P1 {
         {
             testsRun++;
             sym = SYM;
-            symType = sym.getSym();
+            symType = sym.getType();
 
             if (symType == null) {
-                printError("Sym.getSym() returned null! Expected: " + TYPE);
+                printError("Sym.getType() returned null! Expected: " + TYPE);
                 return;
             }
 
@@ -257,7 +257,7 @@ public final class P1 {
         {
             testsRun++;
             if (!TYPE.equals(symType)) {
-                printError("Sym.getSym() returned " + symType
+                printError("Sym.getType() returned " + symType
                     + "! Expected: " + TYPE);
                 return;
             }
@@ -476,7 +476,7 @@ public final class P1 {
             testsRun++;
 
             Sym sym = table.lookupLocal("x");
-            String type = sym.getSym();
+            String type = sym.getType();
 
 
             if (!expected.equals(type)) {
@@ -497,7 +497,7 @@ public final class P1 {
             testsRun++;
 
             Sym sym = table.lookupLocal("x");
-            String type = sym.getSym();
+            String type = sym.getType();
 
 
             if (!expected.equals(type)) {
@@ -573,7 +573,7 @@ public final class P1 {
                 testsRun++;
                 Sym sym = table.lookupGlobal(symbols[0]);
 
-                if (!symbols[1].equals(sym.getSym())) {
+                if (!symbols[1].equals(sym.getType())) {
                     printError("Expected sym: " + symbols[1]
                                + ". Actual sym: " + sym);
                     return;
@@ -816,7 +816,7 @@ public final class P1 {
     }
 
     /**
-     * Fuzz tests the {@code Sym.getSym()} method
+     * Fuzz tests the {@code Sym.getType()} method
      *
      * @throws Exception Propagates from the {@code Sym} class
      */
@@ -828,9 +828,9 @@ public final class P1 {
         testsRun++;
         for (int i = 0; i < iters; i++) {
             String randomType = generateRandomString();
-            String actual = (new Sym(randomType)).getSym();
+            String actual = (new Sym(randomType)).getType();
             if (!randomType.equals(actual)) {
-                printError("getSym() returned the wrong sym\n"
+                printError("getType() returned the wrong sym\n"
                     + "Expected: " + randomType + "\n"
                     + "Actual:   " + actual);
                 return;
@@ -854,7 +854,7 @@ public final class P1 {
             String randomType = generateRandomString();
             String actual = (new Sym(randomType)).toString();
             if (!randomType.equals(actual)) {
-                printError("getSym() returned the wrong sym\n"
+                printError("getType() returned the wrong sym\n"
                     + "Expected: " + randomType + "\n"
                     + "Actual:   " + actual);
                 return;
