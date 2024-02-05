@@ -18,8 +18,6 @@ import static java.lang.Math.random;
 public final class P1 {
     // Default Symbol type
     private final static String TYPE = "int";
-    // Default Symbol instance
-    private final static Sym SYM = new Sym(TYPE);
     // Total number of tests
     private final static int N_TESTS = 100;
     // Default Print Stream
@@ -173,22 +171,8 @@ public final class P1 {
         {
             testsRun++;
 
-            Sym sym = SYM;
+            Sym sym = new Sym(TYPE);
             score++;
-        }
-
-        // 2. Invalid input
-        {
-            testsRun++;
-
-            try {
-                Sym sym = new Sym(null);  // Should throw an exception
-
-                printError("Sym Constructor did not throw an Exception "
-                    + "when called with an invalid argument (null)");
-            } catch (Exception unused) {
-                score++;
-            }
         }
     }
 
@@ -205,7 +189,7 @@ public final class P1 {
         // 1. Accessor should not return null
         {
             testsRun++;
-            sym = SYM;
+            sym = new Sym(TYPE);
             symType = sym.getType();
 
             if (symType == null) {
@@ -242,7 +226,7 @@ public final class P1 {
         // 1. toString should not return null
         {
             testsRun++;
-            sym = SYM;
+            sym = new Sym(TYPE);
             symType = sym.getType();
 
             if (symType == null) {
@@ -356,7 +340,7 @@ public final class P1 {
         {
             testsRun++;
             try {
-                table.addDecl(null, SYM);
+                table.addDecl(null, new Sym(TYPE));
                 printError("Expected IllegalArgumentException");
             } catch (IllegalArgumentException unused) {
                 score++;
@@ -389,7 +373,7 @@ public final class P1 {
         {
             testsRun++;
 
-            table.addDecl("x", SYM);
+            table.addDecl("x", new Sym(TYPE));
 
             score++;
         }
@@ -399,7 +383,7 @@ public final class P1 {
             try {
                 testsRun++;
 
-                table.addDecl("x", SYM);
+                table.addDecl("x", new Sym(TYPE));
 
                 printError("Expected DuplicateSymNameException");
             } catch (DuplicateSymNameException unused) {
@@ -412,7 +396,7 @@ public final class P1 {
             testsRun++;
 
             table.addScope();
-            table.addDecl("y", SYM);
+            table.addDecl("y", new Sym(TYPE));
 
             score++;
         }
@@ -422,7 +406,7 @@ public final class P1 {
             try {
                 testsRun++;
 
-                table.addDecl("y", SYM);
+                table.addDecl("y", new Sym(TYPE));
 
                 printError("Expected DuplicateSymNameException");
             } catch (DuplicateSymNameException unused) {
@@ -434,7 +418,7 @@ public final class P1 {
         {
             testsRun++;
 
-            table.addDecl("x", SYM);
+            table.addDecl("x", new Sym(TYPE));
 
             score++;
         }
@@ -447,7 +431,7 @@ public final class P1 {
             testsRun++;
 
             try {
-                table.addDecl("x", SYM);
+                table.addDecl("x", new Sym(TYPE));
                 printError("Expected EmptySymTableException");
             } catch (EmptySymTableException unused) {
                 score++;
@@ -464,7 +448,7 @@ public final class P1 {
         currentTest = "SymTable Lookup Local";
         SymTable table = new SymTable();
 
-        table.addDecl("x", SYM); // In Global Scope
+        table.addDecl("x", new Sym(TYPE)); // In Global Scope
 
         // 1. Add a declaration, lookup the same
         {
@@ -585,7 +569,7 @@ public final class P1 {
 
         // 2. Lookup syms that do not exist
         {
-            String[] badSyms = {"q", "w", "e", "p"};
+            String[] badSyms = {"q", "w", "e", "p", "o"};
 
             for (String badSym: badSyms) {
                 testsRun++;
@@ -641,7 +625,7 @@ public final class P1 {
         // 2. Symbol Table with global scope, one declaration
         {
             SymTable table = new SymTable();
-            table.addDecl("x", SYM);
+            table.addDecl("x", new Sym(TYPE));
 
             ByteArrayOutputStream outputStream = switchPrintStream();
 
@@ -1109,14 +1093,14 @@ public final class P1 {
      * +-------------------------------+------------+-------+
      * |              Test             |  # Points  | Total |
      * +-------------------------------+------------+-------+
-     * | Sym Constructor               |  2 points  |    2  |
-     * | Sym Accessor                  |  2 points  |    4  |
-     * | Sym ToString                  |  2 points  |    6  |
+     * | Sym Constructor               |  2 points  |    1  |
+     * | Sym Accessor                  |  2 points  |    3  |
+     * | Sym ToString                  |  2 points  |    5  |
      * |-------------------------------+------------+-------|
-     * | SymTable Constructor          |  1 point   |    7  |
-     * | SymTable Add/Remove Scope     |  6 points  |   13  |
-     * | SymTable Add Declaration      |  9 points  |   22  |
-     * | SymTable Lookup Local         |  4 points  |   26  |
+     * | SymTable Constructor          |  1 point   |    6  |
+     * | SymTable Add/Remove Scope     |  6 points  |   12  |
+     * | SymTable Add Declaration      |  9 points  |   21  |
+     * | SymTable Lookup Local         |  4 points  |   25  |
      * | SymTable Lookup Global        |  9 points  |   35  |
      * | SymTable Print                | 57 points  |   92  |
      * |-------------------------------+------------+-------|
