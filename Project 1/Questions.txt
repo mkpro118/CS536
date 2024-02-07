@@ -1,0 +1,9 @@
+Q1. Each scope in your SymTable is a HashMap. Java also has a TreeMap implementation of the Map interface. The HashMap is implemented using a hashtable, while the TreeMap is implemented using a red-black tree. Why is the HashMap preferable in this situation? When would a TreeMap be preferable to a HashMap?
+
+A1. A HashMap is preferable over a TreeMap because the number of elements in the hashmap are not too large (for a reasonable program, contrary to what a TreeMap is ideal for). A TreeMap would require O(log n) operation for a store/retrieve operation, however a HashMap can perform those operations in O(1) time. Additionally we do not need a to store keys in a sorted order, which is a feature a TreeMap would provide.
+
+
+
+Q2. When implementing the List in your SymTable, you had a choice between an ArrayList and a LinkedList. Which implementation did you choose? Why is the implementation you chose preferable to the alternative?
+
+A2. A LinkedList if preferable because it can add elements to the front in O(1) time. An ArrayList would need to shift all elements, resulting in a O(n) time complexity.
