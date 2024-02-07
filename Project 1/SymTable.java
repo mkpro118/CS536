@@ -130,11 +130,11 @@ public class SymTable {
     * @throws IllegalArgumentException If any of the {@code args} are {@code null}
     */
     private void checkNonNull(Object... args) {
-    for (Object obj: args) {
-    if (obj == null) {
-    throw new IllegalArgumentException();
-    }
-    }
+        for (Object obj: args) {
+            if (obj == null) {
+                throw new IllegalArgumentException();
+            }
+        }
     }
 
     /**
@@ -144,8 +144,8 @@ public class SymTable {
     * @throws EmptySymTableException If there are no entries in the symbol table
     */
     private void checkNonEmpty() throws EmptySymTableException {
-    if (table.isEmpty()) {
-    throw new EmptySymTableException();
-    }
+        if (table.isEmpty()) {
+            throw new EmptySymTableException();
+        }
     }
 }
