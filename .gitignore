@@ -4,3 +4,6 @@
 # Compiled Files
 *.class
 bin/
+
+# Ignore file download script
+download_files.py
