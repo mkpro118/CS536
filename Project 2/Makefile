@@ -12,13 +12,17 @@
 
 # define the java compiler to be used and the flags
 JC = javac
+
 TARGET_DIR := bin
 DEPENDENCY_DIR := deps
+
 FLAGS = -Werror -Xlint:all -g -cp $(CP) -d $(TARGET_DIR)
+
 ifeq ($(OS),Windows_NT)
 	CP = $(DEPENDENCY_DIR);$(TARGET_DIR)
 else
 	CP = ./$(DEPENDENCY_DIR):./$(TARGET_DIR)
+endif
 
 P2.class: P2.java Yylex.class sym.class
 	$(JC) $(FLAGS) P2.java
