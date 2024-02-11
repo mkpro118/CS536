@@ -16,7 +16,7 @@ JC = javac
 TARGET_DIR := bin
 DEPENDENCY_DIR := deps
 
-FLAGS = -Xlint:all -g -cp $(CP) -d $(TARGET_DIR)
+FLAGS = -g -cp $(CP) -d $(TARGET_DIR)
 
 ifeq ($(OS),Windows_NT)
 	CP = $(DEPENDENCY_DIR);$(TARGET_DIR)
