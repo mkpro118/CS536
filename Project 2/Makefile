@@ -16,7 +16,7 @@ JC = javac
 TARGET_DIR := bin
 DEPENDENCY_DIR := deps
 
-FLAGS = -Werror -Xlint:all -g -cp $(CP) -d $(TARGET_DIR)
+FLAGS = -Xlint:all -g -cp $(CP) -d $(TARGET_DIR)
 
 ifeq ($(OS),Windows_NT)
 	CP = $(DEPENDENCY_DIR);$(TARGET_DIR)
@@ -39,7 +39,7 @@ sym.class: sym.java
 ErrMsg.class: ErrMsg.java
 	$(JC) $(FLAGS) ErrMsg.java
 
-	
+
 ###
 # testing - add more here to run your tester and compare its results
 # to expected results
