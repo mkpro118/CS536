@@ -8,5 +8,11 @@ bin/
 # Ignore file download script
 download_files.py
 
-# ignore generated files
+# Ignore automation scripts
+automate.py
+
+# ignore generated source files
 base.jlex.java
+
+#ignore generated output files
+*.out
