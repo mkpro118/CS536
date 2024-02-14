@@ -88,6 +88,66 @@ return new Symbol(sym.EOF);
 
 {WHITESPACE}+  { CharNum.num += yytext().length(); }
 
+"void"    { Symbol S = new Symbol(sym.VOID, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 4;
+            return S;
+          }
+
+"logical" { Symbol S = new Symbol(sym.LOGICAL, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 7;
+            return S;
+          }
+
+"integer" { Symbol S = new Symbol(sym.INTEGER, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 7;
+            return S;
+          }
+
+"True"    { Symbol S = new Symbol(sym.TRUE, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 4;
+            return S;
+          }
+
+"False"   { Symbol S = new Symbol(sym.FALSE, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 5;
+            return S;
+          }
+
+"tuple"   { Symbol S = new Symbol(sym.TUPLE, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 5;
+            return S;
+          }
+
+"read "   { Symbol S = new Symbol(sym.READ , new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 5;
+            return S;
+          }
+
+"write"   { Symbol S = new Symbol(sym.WRITE, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 5;
+            return S;
+          }
+
+"if"      { Symbol S = new Symbol(sym.IF, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 2;
+            return S;
+          }
+
+"else"    { Symbol S = new Symbol(sym.ELSE, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 4;
+            return S;
+          }
+
+"while"   { Symbol S = new Symbol(sym.WHILE, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 5;
+            return S;
+          }
+
+"return"  { Symbol S = new Symbol(sym.RETURN, new TokenVal(yyline+1, CharNum.num));
+            CharNum.num += 6;
+            return S;
+          }
+
 "="       { Symbol S = new Symbol(sym.ASSIGN, new TokenVal(yyline+1, CharNum.num));
             CharNum.num++;
             return S;
