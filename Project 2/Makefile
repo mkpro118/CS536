@@ -44,7 +44,7 @@ ErrMsg.class: ErrMsg.java
 # testing - add more here to run your tester and compare its results
 # to expected results
 ###
-test: base.jlex.java
+test: base.jlex.java P2.class base.jlex
 	java -cp $(CP) P2 
 	diff allTokens.in allTokens.out
 
@@ -53,7 +53,7 @@ test: base.jlex.java
 ###
 
 clean:
-	rm -f *~ *.class base.jlex.java
+	rm -f *~ *.class base.jlex.java bin/*.class
 
 cleantest:
 	rm -f allTokens.out
