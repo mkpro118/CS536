@@ -22,3 +22,29 @@ a
 >=
 ==
 ~=
+void
+logical
+integer
+True
+False
+tuple
+read
+write
+if
+else
+while
+return
+12349009
+facts
+69four
+_four
+_4
+4_
+"Hello World!"
+"Hello\nWorld!"
+"Hello"
+"Hello
+"Hello\"
+"Hello\
+"Hi!1"
+"backslash followed by space: \ is not allowed"
