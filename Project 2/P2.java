@@ -256,87 +256,303 @@ public class P2 {
 
 record Token(int sym, String token) {}
 
+enum TokenType {
+    KEYWORDS,
+    OPERATORS,
+    VALID_INTLIT,
+    INVALID_INTLIT,
+    VALID_STRLIT,
+    INVALID_STRLIT,
+    VALID_IDENTIFIERS,
+    INVALID_IDENTIFIERS,
+    RANDOM;
+}
+
+
 class TokenStream implements Iterable<Token> {
-    private int maxTokenLength;
-    public TokenStream(int maxTokenLength) {
-        this.maxTokenLength = maxTokenLength;
+    private final TokenType type;
+
+    public TokenStream() {
+        this.type = TokenType.RANDOM;
+    }
+
+    public TokenStream(TokenType type) {
+        this.type = type;
     }
 
     public Iterator<Token> iterator() {
-        return new TokenStreamIterator(maxTokenLength);
+        return new TokenStreamIterator(this.type);
     }
 }
 
 class TokenStreamIterator implements Iterator<Token> {
-    private int maxTokenLength;
-    private static final Token[] knownTokens;
+    private static final int MAX_TOKEN_LENGTH;
+    private static final int MIN_TOKEN_LENGTH;
+    private static final int MIN_CHAR;
+    private static final int MAX_CHAR;
+    private static final int N_CASES;
+    private static final int CHARSET_SIZE;
+    private static final char[] CHARSET;
+    private static final String ESCAPES;
+    private static final Token[][] KNOWN_TOKENS;
+
 
     static {
-        knownTokens = new Token[] {
-            new Token(sym.VOID, "void"),
-            new Token(sym.LOGICAL, "logical"),
-            new Token(sym.INTEGER, "integer"),
-            new Token(sym.TRUE, "True"),
-            new Token(sym.FALSE, "False"),
-            new Token(sym.TUPLE, "tuple"),
-            new Token(sym.READ, "read"),
-            new Token(sym.WRITE, "write"),
-            new Token(sym.IF, "if"),
-            new Token(sym.ELSE, "else"),
-            new Token(sym.WHILE, "while"),
-            new Token(sym.RETURN, "return"),
-            // "=",
-            // "{",
-            // "}",
-            // "(",
-            // ")",
-            // "[",
-            // "]",
-            // ":",
-            // ",",
-            // ".",
-            // "<<",
-            // ">>",
-            // "=",
-            // "~",
-            // "&",
-            // "|",
-            // "++",
-            // "--",
-            // "+",
-            // "-",
-            // "*",
-            // "/",
-            // "<",
-            // ">",
-            // "<=",
-            // ">=",
-            // "==",
-            // "~=",
+        MIN_TOKEN_LENGTH = 1;
+        MAX_TOKEN_LENGTH = 32;
+        MIN_CHAR = 32;
+        MAX_CHAR = 127;
+        N_CASES = 8;
+        ESCAPES = "nst'\\\"";
+
+        // +1 for underscore (_)
+        CHARSET_SIZE = ('Z' - 'A' + 1) + ('z' - 'a' + 1) + ('9' - '0' + 1) + 1;
+        CHARSET = new char[CHARSET_SIZE];
+
+        // We initialize in ASCII order
+        int i = 0;
+        for (char c = '0'; c <= '9';) CHARSET[i++] = c++;
+        for (char c = 'A'; c <= 'Z';) CHARSET[i++] = c++;
+        CHARSET[i] = '_';
+        for (char c = 'a'; c <= 'z';) CHARSET[i++] = c++;
+
+        KNOWN_TOKENS = new Token[][] {
+        /* Keywords */
+        {
+
+            new Token(sym.VOID, "void"),       new Token(sym.LOGICAL, "logical"),
+            new Token(sym.INTEGER, "integer"), new Token(sym.TRUE, "True"),
+            new Token(sym.FALSE, "False"),     new Token(sym.TUPLE, "tuple"),
+            new Token(sym.READ, "read"),       new Token(sym.WRITE, "write"),
+            new Token(sym.IF, "if"),           new Token(sym.ELSE, "else"),
+            new Token(sym.WHILE, "while"),     new Token(sym.RETURN, "return"),
+        },
+
+        /* Operators */
+        {
+            new Token(sym.ASSIGN, "="),     new Token(sym.LCURLY, "{"),
+            new Token(sym.RCURLY, "}"),     new Token(sym.LPAREN, "("),
+            new Token(sym.RPAREN, ")"),     new Token(sym.LSQBRACKET, "["),
+            new Token(sym.RSQBRACKET, "]"), new Token(sym.COLON, ":"),
+            new Token(sym.COMMA, ","),      new Token(sym.DOT, "."),
+            new Token(sym.OUTPUTOP, "<<"),  new Token(sym.INPUTOP, ">>"),
+            new Token(sym.ASSIGN, "="),     new Token(sym.NOT, "~"),
+            new Token(sym.AND, "&"),        new Token(sym.OR, "|"),
+            new Token(sym.PLUSPLUS, "++"),  new Token(sym.MINUSMINUS, "--"),
+            new Token(sym.PLUS, "+"),       new Token(sym.MINUS, "-"),
+            new Token(sym.TIMES, "*"),      new Token(sym.DIVIDE, "/"),
+            new Token(sym.LESS, "<"),       new Token(sym.GREATER, ">"),
+            new Token(sym.LESSEQ, "<="),    new Token(sym.GREATEREQ, ">="),
+            new Token(sym.EQUALS, "=="),    new Token(sym.NOTEQUALS, "~="),
+        },
+
+
         };
     }
 
-    public TokenStreamIterator(int maxTokenLength) {
-        this.maxTokenLength = maxTokenLength;
+    private final TokenType type;
+    private int cur;
+
+    public TokenStreamIterator(TokenType type) {
+        this.type = type;
+        cur = 0;
+    }
+
+    private static int rng(int min, int max) {
+        return (int) (random() * (max - min)) + min;
+    }
+
+    private static int rng(int max) {
+        return (int) (random() * max);
     }
 
     public boolean hasNext() { return true; }
 
-    public Token next() {
-        Token str = null;
-        return str;
-    }
+    public Token next() throws NoSuchElementException{
+        switch (type) {
+        case KEYWORDS:
+        case OPERATORS:
+            int idx = type == TokenType.KEYWORDS ? 0 : 1;
 
-    private final String generateRandomString() {
-        final int length = (int) (random() * maxTokenLength) + 1;
+            if (cur >= KNOWN_TOKENS[idx].length) {
+                throw new NoSuchElementException();
+            }
 
-        String random = "";
+            return KNOWN_TOKENS[idx][cur++];
 
-        for (int i = 0; i < length; i++) {
-            char start = (random() > 0.5 ? 'a' : 'A');
-            random += (char) (start + (char)(random() * 26));
+        case VALID_INTLIT:
+            return new Token(sym.INTLITERAL, generateValidInteger());
+
+        case INVALID_INTLIT:
+            return new Token(-1, generateInvalidInteger());
+
+        case VALID_STRLIT:
+            return new Token(sym.STRLITERAL, generateValidString());
+
+        case INVALID_STRLIT:
+            return new Token(-1, generateInvalidString());
+
+        case VALID_IDENTIFIERS:
+            return new Token(sym.ID, generateValidIdentifier());
+
+        case INVALID_IDENTIFIERS:
+            return new Token(sym.ID, generateInvalidIdentifier());
+
+        case RANDOM:
+            switch (rng(N_CASES)) {
+            case 0: /* Keywords */
+                return KNOWN_TOKENS[0][rng(KNOWN_TOKENS[0].length)];
+
+            case 1: /* Operators */
+                return KNOWN_TOKENS[1][rng(KNOWN_TOKENS[1].length)];
+
+            case 2: /* Integer literals */
+                return new Token(sym.INTLITERAL, generateValidInteger());
+
+            case 3: /* Invalid integer literals */
+                return new Token(-1, generateInvalidInteger());
+
+            case 4: /* String literals */
+                return new Token(sym.STRLITERAL, generateValidString());
+
+            case 5: /* Invalid String literals */
+                return new Token(-1, generateInvalidString());
+
+            case 6: /* Identifiers */
+                return new Token(sym.ID, generateValidIdentifier());
+
+            case 7: /* Invalid identifiers */
+                return new Token(sym.ID, generateInvalidIdentifier());
+            }
         }
 
-        return random;
+        return null;
+    }
+
+    private final static String generateValidInteger() {
+        return String.valueOf(rng(Integer.MAX_VALUE));
+    }
+
+    private final static String generateInvalidInteger() {
+        String badNum = String.valueOf(Integer.MAX_VALUE);
+
+        int extra = rng(MIN_TOKEN_LENGTH, MAX_TOKEN_LENGTH);
+        for (; extra > 0 ; extra--) {
+            badNum += rng(10);
+        }
+
+        return badNum;
+    }
+
+    private final static String generateValidString() {
+        int len = rng(MIN_TOKEN_LENGTH, MAX_TOKEN_LENGTH);
+        char[] buf = new char[len];
+
+        for (int i = 0; i < len; i++) {
+            if (random() > 0.8 && i < len - 2) {
+                buf[i++] = '\\';
+                buf[i] = ESCAPES.charAt(rng(ESCAPES.length()));
+            } else {
+                char c;
+                do {
+                    c = (char) rng(32, 127);
+                } while (c == '"' || c == '\n' || c == '\\');
+
+                buf[i] = c;
+            }
+        }
+
+        return "\"" + new String(buf) + "\"";
+    }
+
+    private final static String generateInvalidString() {
+        switch (rng(3)) {
+        case 0:
+            return generateUnterminatedString();
+        case 1:
+            return generateBadEscapeString();
+        case 2:
+            return generateUnterminatedBadEscapeString();
+        default:
+            throw new RuntimeException("Unreachable statement reached!");
+        }
+    }
+
+    private final static String generateUnterminatedString() {
+        String valid = generateValidString();
+        return valid.substring(0, valid.length() - 1);
+    }
+
+    private final static String generateBadEscapeString() {
+        int len = rng(MIN_TOKEN_LENGTH + 2, MAX_TOKEN_LENGTH);
+        char[] buf = new char[len];
+        int idx = rng(len - 2);
+
+        buf[idx] = '\\';
+
+        char c;
+        do {
+            c = (char) rng(32, 127);
+        } while (ESCAPES.indexOf(c) >= 0);
+        buf[idx + 1] = c;
+
+        for (int i = 0; i < len; i++) {
+            if (idx == i) {
+                i++;
+                continue;
+            }
+
+            do {
+                c = (char) rng(32, 127);
+            } while (c == '"' || c == '\n' || c == '\\');
+
+            buf[i] = c;
+        }
+
+        return "\"" + new String(buf) + "\"";
+    }
+
+    private final static String generateUnterminatedBadEscapeString() {
+        String badEscape = generateBadEscapeString();
+        return badEscape.substring(0, badEscape.length() - 1);
+    }
+
+    private final static String generateValidIdentifier() {
+        int len = rng(MIN_TOKEN_LENGTH, MAX_TOKEN_LENGTH);
+
+        char[] buf = new char[len];
+
+        char c;
+        do {
+            c = CHARSET[rng(CHARSET_SIZE)];
+        } while (c <= '9');
+
+        buf[0] = c;
+
+        for (int i = 1; i < len; i++) {
+            buf[i] = CHARSET[rng(CHARSET_SIZE)];
+        }
+
+        return new String(buf);
+    }
+
+    private final static String generateInvalidIdentifier() {
+        char[] buf = generateValidIdentifier().toCharArray();
+
+        switch(rng(2)) {
+        case 0:
+            buf[0] = (char) rng('0', '9' + 1);
+            break;
+        case 1:
+            char c;
+            do {
+                c = (char) rng(MIN_CHAR + 1, MAX_CHAR);
+            } while (Arrays.binarySearch(CHARSET, c) >= 0);
+
+            buf[rng(buf.length)] = c;
+            break;
+        }
+
+        return new String(buf);
     }
 }
