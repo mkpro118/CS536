@@ -79,19 +79,19 @@ return new Symbol(sym.EOF);
 
 [\"]{STRING} {
     ErrMsg.fatal(yyline+1, CharNum.num,
-        "unterminated string: " + yytext());
+        "unterminated string literal ignored");
     CharNum.num += yytext().length();
 }
 
 [\"]{STRING}(\\([^nst'\"\\]|\n))+({STRING})* {
     ErrMsg.fatal(yyline+1, CharNum.num,
-        "bad escape character: " + yytext());
+        "unterminated string literal with bad escaped character ignored");
     CharNum.num += yytext().length();
 }
 
-[\"]{STRING}(\\([^nst'\"\\]|\n))+({STRING})*\n.*[\"] {
+[\"]{STRING}(\\([^nst'\"\\]|\n))+({STRING})*\n*.*[\"] {
     ErrMsg.fatal(yyline+1, CharNum.num,
-        "multi-line string : " + yytext());
+        "string literal with bad escaped character ignored");
     CharNum.num += yytext().length();
 }
 
@@ -99,6 +99,10 @@ return new Symbol(sym.EOF);
     Symbol S = new Symbol(sym.STRLITERAL, new StrLitTokenVal(yyline+1, CharNum.num, yytext()));
     CharNum.num += yytext().length();
     return S;
+}
+
+("!!"|"$")[^\n]* {
+    System.out.println("Ignore comment: " + yytext());
 }
 
 {DIGIT}+  {
@@ -369,6 +373,6 @@ return new Symbol(sym.EOF);
 
 .         {
     ErrMsg.fatal(yyline+1, CharNum.num,
-    "ignoring illegal character: " + yytext());
+    "illegal character ignored: " + yytext());
     CharNum.num++;
 }
