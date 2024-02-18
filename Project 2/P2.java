@@ -5,8 +5,8 @@ import static java.lang.Math.random;
 
 /**
  * This program is to be used to test the base scanner.
- * This version is set up to test all tokens, but more code is needed to test 
- * other aspects of the scanner (e.g., input that causes errors, character 
+ * This version is set up to test all tokens, but more code is needed to test
+ * other aspects of the scanner (e.g., input that causes errors, character
  * numbers, values associated with tokens)
  */
 public class P2 {
@@ -15,7 +15,7 @@ public class P2 {
         // test all tokens
         testAllTokens();
         CharNum.num = 1;
-    
+
         // ADD CALLS TO OTHER TEST METHODS HERE
     }
 
@@ -49,7 +49,7 @@ public class P2 {
         while (token.sym != sym.EOF) {
             switch (token.sym) {
             case sym.LOGICAL:
-                outFile.println("logical"); 
+                outFile.println("logical");
                 break;
             case sym.INTEGER:
                 outFile.println("integer");
@@ -58,7 +58,7 @@ public class P2 {
                 outFile.println("void");
                 break;
             case sym.TUPLE:
-                outFile.println("tuple"); 
+                outFile.println("tuple");
                 break;
             case sym.IF:
                 outFile.println("if");
@@ -68,31 +68,31 @@ public class P2 {
                 break;
             case sym.WHILE:
                 outFile.println("while");
-                break;								
+                break;
             case sym.READ:
-                outFile.println("read"); 
+                outFile.println("read");
                 break;
             case sym.WRITE:
                 outFile.println("write");
-                break;				
+                break;
             case sym.RETURN:
                 outFile.println("return");
                 break;
             case sym.TRUE:
-                outFile.println("True"); 
+                outFile.println("True");
                 break;
             case sym.FALSE:
-                outFile.println("False"); 
+                outFile.println("False");
                 break;
             case sym.ID:
                 outFile.println(((IdTokenVal)token.value).idVal);
                 break;
-            case sym.INTLITERAL:  
+            case sym.INTLITERAL:
                 outFile.println(((IntLitTokenVal)token.value).intVal);
                 break;
-            case sym.STRLITERAL: 
+            case sym.STRLITERAL:
                 outFile.println(((StrLitTokenVal)token.value).strVal);
-                break;    
+                break;
             case sym.LCURLY:
                 outFile.println("{");
                 break;
@@ -122,16 +122,16 @@ public class P2 {
                 break;
             case sym.INPUTOP:
                 outFile.println(">>");
-                break;	
+                break;
             case sym.OUTPUTOP:
                 outFile.println("<<");
-                break;			
+                break;
             case sym.PLUSPLUS:
                 outFile.println("++");
                 break;
             case sym.MINUSMINUS:
                 outFile.println("--");
-                break;	
+                break;
             case sym.PLUS:
                 outFile.println("+");
                 break;
@@ -184,35 +184,35 @@ public class P2 {
     }
 
     // /**
-    //  *  
+    //  *
     //  */
     // private static void operatorTest(){
 
     // }
 
     // /**
-    //  *  
+    //  *
     //  */
     // private static void identifierTest(){
 
     // }
 
     // /**
-    //  *  
+    //  *
     //  */
     // private static void intlitTest(){
 
     // }
 
     // /**
-    //  *  
+    //  *
     //  */
     // private static void strlitTest(){
 
     // }
 
     // /**
-    //  *  
+    //  *
     //  */
     // private static void randStreamOfTokensTest(){
     //     //check if we get error messages
@@ -220,21 +220,21 @@ public class P2 {
     // }
 
     // /**
-    //  *  
+    //  *
     //  */
     // private static void commentTest(){
 
     // }
-    
+
     // /**
-    //  *  
+    //  *
     //  */
     // private static void whiteSpaceTest(){
 
     // }
 
     // /**
-    //  *  
+    //  *
     //  */
     // private static void lengthLimitTest(){
 
