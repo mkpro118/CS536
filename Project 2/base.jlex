@@ -12,7 +12,7 @@ class TokenVal {
     // fields
     int lineNum;
     int charNum;
-	
+
     // constructor
     TokenVal(int lineNum, int charNum) {
         this.lineNum = lineNum;
@@ -23,7 +23,7 @@ class TokenVal {
 class IntLitTokenVal extends TokenVal {
     // new field: the value of the integer literal
     int intVal;
-	
+
     // constructor
     IntLitTokenVal(int lineNum, int charNum, int intVal) {
         super(lineNum, charNum);
@@ -34,7 +34,7 @@ class IntLitTokenVal extends TokenVal {
 class IdTokenVal extends TokenVal {
     // new field: the value of the identifier
     String idVal;
-	
+
     // constructor
     IdTokenVal(int lineNum, int charNum, String idVal) {
         super(lineNum, charNum);
@@ -45,7 +45,7 @@ class IdTokenVal extends TokenVal {
 class StrLitTokenVal extends TokenVal {
     // new field: the value of the string literal
     String strVal;
-	
+
     // constructor
     StrLitTokenVal(int lineNum, int charNum, String strVal) {
         super(lineNum, charNum);
@@ -53,7 +53,7 @@ class StrLitTokenVal extends TokenVal {
     }
 }
 
-// The following class is used to keep track of the character number at 
+// The following class is used to keep track of the character number at
 // which the current token starts on its line.
 class CharNum {
     static int num = 1;

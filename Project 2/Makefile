@@ -45,7 +45,7 @@ ErrMsg.class: ErrMsg.java
 # to expected results
 ###
 test: base.jlex.java P2.class base.jlex
-	java -cp $(CP) P2 
+	java -cp $(CP) P2
 	diff allTokens.in allTokens.out
 
 ###

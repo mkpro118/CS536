@@ -48,3 +48,7 @@ _4
 "Hello\
 "Hi!1"
 "backslash followed by space: \ is not allowed"
+!! This is a comment
+$ This is also a comment
+"Not a comment !! in a String?"
+"Also not a comment $ in a String?"
