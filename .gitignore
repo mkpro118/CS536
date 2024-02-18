@@ -2,7 +2,7 @@
 *.jar
 
 # Compiled Files
-bin/*.class
+*.class
 
 # Ignore file download script
 download_files.py
