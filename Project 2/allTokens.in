@@ -52,3 +52,5 @@ _4
 $ This is also a comment
 "Not a comment !! in a String?"
 "Also not a comment $ in a String?"
+!! Bad Escape in \a comment
+$ "String in a comment"
