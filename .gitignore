@@ -2,6 +2,7 @@
 *.jar
 
 # Compiled Files
+bin/
 *.class
 
 # Ignore file download script
