@@ -111,7 +111,7 @@ return new Symbol(sym.EOF);
         return S;
     } catch (NumberFormatException e) {
         ErrMsg.fatal(yyline+1, CharNum.num,
-        yytext() + " is too big to fit in an int");
+        "integer literal too large - using max value");
     } finally {
         CharNum.num += yytext().length();
     }
