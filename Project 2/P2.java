@@ -1,6 +1,7 @@
 import java.util.*;
 import java.io.*;
 import java_cup.runtime.*;  // defines Symbol
+import static java.lang.Math.random;
 
 /**
  * This program is to be used to test the base scanner.
@@ -182,8 +183,6 @@ public class P2 {
         outFile.close();
     }
 
-<<<<<<< HEAD
-
     // /**
     //  *  
     //  */
@@ -242,7 +241,6 @@ public class P2 {
     // }
 
 
-=======
     private final static void assertEquals(int a, int b) {
         if (a != b) {
             throw new AssertionError(a + " != " + b);
@@ -254,5 +252,91 @@ public class P2 {
             throw new AssertionError(a + " != " + b);
         }
     }
->>>>>>> d2055d33e52cff64cc2575d14f3d417df88e266b
+}
+
+record Token(int sym, String token) {}
+
+class TokenStream implements Iterable<Token> {
+    private int maxTokenLength;
+    public TokenStream(int maxTokenLength) {
+        this.maxTokenLength = maxTokenLength;
+    }
+
+    public Iterator<Token> iterator() {
+        return new TokenStreamIterator(maxTokenLength);
+    }
+}
+
+class TokenStreamIterator implements Iterator<Token> {
+    private int maxTokenLength;
+    private static final Token[] knownTokens;
+
+    static {
+        knownTokens = new Token[] {
+            new Token(sym.VOID, "void"),
+            new Token(sym.LOGICAL, "logical"),
+            new Token(sym.INTEGER, "integer"),
+            new Token(sym.TRUE, "True"),
+            new Token(sym.FALSE, "False"),
+            new Token(sym.TUPLE, "tuple"),
+            new Token(sym.READ, "read"),
+            new Token(sym.WRITE, "write"),
+            new Token(sym.IF, "if"),
+            new Token(sym.ELSE, "else"),
+            new Token(sym.WHILE, "while"),
+            new Token(sym.RETURN, "return"),
+            // "=",
+            // "{",
+            // "}",
+            // "(",
+            // ")",
+            // "[",
+            // "]",
+            // ":",
+            // ",",
+            // ".",
+            // "<<",
+            // ">>",
+            // "=",
+            // "~",
+            // "&",
+            // "|",
+            // "++",
+            // "--",
+            // "+",
+            // "-",
+            // "*",
+            // "/",
+            // "<",
+            // ">",
+            // "<=",
+            // ">=",
+            // "==",
+            // "~=",
+        };
+    }
+
+    public TokenStreamIterator(int maxTokenLength) {
+        this.maxTokenLength = maxTokenLength;
+    }
+
+    public boolean hasNext() { return true; }
+
+    public Token next() {
+        Token str = null;
+        return str;
+    }
+
+    private final String generateRandomString() {
+        final int length = (int) (random() * maxTokenLength) + 1;
+
+        String random = "";
+
+        for (int i = 0; i < length; i++) {
+            char start = (random() > 0.5 ? 'a' : 'A');
+            random += (char) (start + (char)(random() * 26));
+        }
+
+        return random;
+    }
 }

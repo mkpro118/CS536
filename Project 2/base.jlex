@@ -91,7 +91,7 @@ return new Symbol(sym.EOF);
 
 [\"]{STRING}(\\([^nst'\"\\]|\n))+({STRING})*\n.*[\"] {
     ErrMsg.fatal(yyline+1, CharNum.num,
-        "Wrong stuff: " + yytext());
+        "multi-line string : " + yytext());
     CharNum.num += yytext().length();
 }
 
