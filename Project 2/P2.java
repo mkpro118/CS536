@@ -181,4 +181,16 @@ public class P2 {
         } // end while
         outFile.close();
     }
+
+    private final static void assertEquals(int a, int b) {
+        if (a != b) {
+            throw new AssertionError(a + " != " + b);
+        }
+    }
+
+    private final static void assertEquals(String a, String b) {
+        if (!a.equals(b)) {
+            throw new AssertionError(a + " != " + b);
+        }
+    }
 }
