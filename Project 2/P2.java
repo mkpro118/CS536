@@ -181,4 +181,64 @@ public class P2 {
         } // end while
         outFile.close();
     }
+
+
+    // /**
+    //  *  
+    //  */
+    // private static void operatorTest(){
+
+    // }
+
+    // /**
+    //  *  
+    //  */
+    // private static void identifierTest(){
+
+    // }
+
+    // /**
+    //  *  
+    //  */
+    // private static void intlitTest(){
+
+    // }
+
+    // /**
+    //  *  
+    //  */
+    // private static void strlitTest(){
+
+    // }
+
+    // /**
+    //  *  
+    //  */
+    // private static void randStreamOfTokensTest(){
+    //     //check if we get error messages
+
+    // }
+
+    // /**
+    //  *  
+    //  */
+    // private static void commentTest(){
+
+    // }
+    
+    // /**
+    //  *  
+    //  */
+    // private static void whiteSpaceTest(){
+
+    // }
+
+    // /**
+    //  *  
+    //  */
+    // private static void lengthLimitTest(){
+
+    // }
+
+
 }
