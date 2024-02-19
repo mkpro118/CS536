@@ -85,24 +85,24 @@ return new Symbol(sym.EOF);
 
 [\"]{STRING} {
     ErrMsg.fatal(yyline+1, CharNum.num,
-        "unterminated string literal ignored");
+        "unterminated string literal ignored" + " '" + yytext() + "'");
     CharNum.num += yytext().length();
 }
 
 [\"]{STRING}(\\([^nst'\"\\]|\n))+({STRING})*[\n] {
     ErrMsg.fatal(yyline+1, CharNum.num,
-        "unterminated string literal with bad escaped character ignored");
+        "unterminated string literal with bad escaped character ignored" + " '" + yytext() + "'");
     CharNum.num += yytext().length();
 }
 
 [\"]{STRING}(\\([^nst'\"\\]|\n))+({STRING})* {
     ErrMsg.fatal(yyline+1, CharNum.num,
-        "string literal with bad escaped character ignored");
+        "string literal with bad escaped character ignored" + " '" + yytext() + "'");
     CharNum.num += yytext().length();
 }
 
 ("!!"|"$")[^\n]* {
-    System.out.println("Ignore comment: " + yytext());
+    ;
 }
 
 {DIGIT}+  {
