@@ -23,7 +23,7 @@ public class P2 {
     public static void main(String[] args) throws IOException {
         // exception may be thrown by yylex
         // test all tokens
-        // testAllTokens();
+        testAllTokens();
         CharNum.num = 1;
 
         // ADD CALLS TO OTHER TEST METHODS HERE
@@ -533,10 +533,12 @@ class TokenStreamIterator implements Iterator<Token> {
 
         // We initialize in ASCII order
         int i = 0;
-        for (char c = '0'; c <= '9';) CHARSET[i++] = c++;
-        for (char c = 'A'; c <= 'Z';) CHARSET[i++] = c++;
+        for (char c = '0'; c <= '9'; CHARSET[i++] = c++);
+        for (char c = 'A'; c <= 'Z'; CHARSET[i++] = c++);
         CHARSET[i++] = '_';
-        for (char c = 'a'; c <= 'z';) CHARSET[i++] = c++;
+        for (char c = 'a'; c <= 'z'; CHARSET[i++] = c++);
+
+        System.out.println(CHARSET);
 
         KNOWN_TOKENS = new Token[][] {
         /* Keywords */
@@ -625,7 +627,7 @@ class TokenStreamIterator implements Iterator<Token> {
             return new Token(sym.ID, generateValidIdentifier());
 
         case INVALID_IDENTIFIERS:
-            return new Token(sym.ID, generateInvalidIdentifier());
+            return new Token(INVALID_SYM, generateInvalidIdentifier());
 
         case COMMENTS:
             return new Token(INVALID_SYM, generateComments());
