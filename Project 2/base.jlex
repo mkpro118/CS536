@@ -77,28 +77,28 @@ return new Symbol(sym.EOF);
 
 %%
 
+[\"]{STRING}[\"] {
+    Symbol S = new Symbol(sym.STRLITERAL, new StrLitTokenVal(yyline+1, CharNum.num, yytext()));
+    CharNum.num += yytext().length();
+    return S;
+}
+
 [\"]{STRING} {
     ErrMsg.fatal(yyline+1, CharNum.num,
         "unterminated string literal ignored");
     CharNum.num += yytext().length();
 }
 
-[\"]{STRING}(\\([^nst'\"\\]|\n))+({STRING})* {
+[\"]{STRING}(\\([^nst'\"\\]|\n))+({STRING})*[\n] {
     ErrMsg.fatal(yyline+1, CharNum.num,
         "unterminated string literal with bad escaped character ignored");
     CharNum.num += yytext().length();
 }
 
-[\"]{STRING}(\\([^nst'\"\\]|\n))+({STRING})*\n*.*[\"] {
+[\"]{STRING}(\\([^nst'\"\\]|\n))+({STRING})* {
     ErrMsg.fatal(yyline+1, CharNum.num,
         "string literal with bad escaped character ignored");
     CharNum.num += yytext().length();
-}
-
-[\"]{STRING}[\"] {
-    Symbol S = new Symbol(sym.STRLITERAL, new StrLitTokenVal(yyline+1, CharNum.num, yytext()));
-    CharNum.num += yytext().length();
-    return S;
 }
 
 ("!!"|"$")[^\n]* {
