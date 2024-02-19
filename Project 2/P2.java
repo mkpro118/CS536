@@ -502,6 +502,8 @@ enum TokenType {
     INVALID_STRLIT,
     VALID_IDENTIFIERS,
     INVALID_IDENTIFIERS,
+    COMMENTS,
+    WHITESPACE,
     RANDOM;
 }
 
@@ -532,6 +534,7 @@ class TokenStreamIterator implements Iterator<Token> {
     private static final int INVALID_SYM;
     private static final char[] CHARSET;
     private static final String ESCAPES;
+    private static final String WHITESPACE;
     private static final Token[][] KNOWN_TOKENS;
 
 
@@ -543,6 +546,7 @@ class TokenStreamIterator implements Iterator<Token> {
         N_CASES = 7;
         INVALID_SYM = 0;
         ESCAPES = "nst'\\\"";
+        WHITESPACE = " \n";
 
         // +1 for underscore (_)
         CHARSET_SIZE = ('Z' - 'A' + 1) + ('z' - 'a' + 1) + ('9' - '0' + 1) + 1;
@@ -643,6 +647,12 @@ class TokenStreamIterator implements Iterator<Token> {
 
         case INVALID_IDENTIFIERS:
             return new Token(sym.ID, generateInvalidIdentifier());
+
+        case COMMENTS:
+            return new Token(INVALID_SYM, generateComments());
+
+        case WHITESPACE:
+            return new Token(INVALID_SYM, generateWhitespace());
 
         case RANDOM:
             switch (rng(N_CASES)) {
@@ -804,6 +814,34 @@ class TokenStreamIterator implements Iterator<Token> {
 
             buf[rng(buf.length)] = c;
             break;
+        }
+
+        return new String(buf);
+    }
+
+    private final static String generateComments() {
+        String str = null;
+        do {
+            str = rng(10) < 5 ? generateValidString() : generateInvalidString();
+        } while (str.length() < 3);
+
+        int splice_left = rng(0, str.length() / 2);
+        int splice_right = rng(str.length() / 2, + 1);
+
+        String comment = rng(10) < 5 ? "!!" : "$";
+        if (random() < 0.5) {
+            comment += " ";
+        }
+
+        return comment + str;
+    }
+
+    private final static String generateWhitespace() {
+        int len = rng(MIN_TOKEN_LENGTH, MAX_TOKEN_LENGTH);
+        char[] buf = new char[len];
+
+        for (int i = 0; i < len; i++) {
+            buf[i] = WHITESPACE.charAt(rng(WHITESPACE.length()));
         }
 
         return new String(buf);
