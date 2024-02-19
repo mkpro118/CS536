@@ -114,7 +114,7 @@ return new Symbol(sym.EOF);
         new IntLitTokenVal(yyline+1, CharNum.num, val));
         return S;
     } catch (NumberFormatException e) {
-        ErrMsg.fatal(yyline+1, CharNum.num,
+        ErrMsg.warn(yyline+1, CharNum.num,
         "integer literal too large - using max value");
     } finally {
         CharNum.num += yytext().length();
