@@ -10,7 +10,14 @@ import static java.lang.Math.random;
  * numbers, values associated with tokens)
  */
 public class P2 {
-    static int score=0;
+    static int score;
+    static int testsRun;
+
+    static {
+        score = 0;
+        testsRun = 0;
+    }
+
     public static void main(String[] args) throws IOException {
         // exception may be thrown by yylex
         // test all tokens
@@ -18,16 +25,15 @@ public class P2 {
         CharNum.num = 1;
 
         // ADD CALLS TO OTHER TEST METHODS HERE
-        score=0;
-        keywordTest();
-        operatorTest();
-        validIntLitTest();
-        invalidIntLitTest();
+        testKeywords();
+        testOperators();
+        testValidIntLits();
+        testInvalidIntLits();
         
-        validStrLitTest();
-        invalidStrLitTest();
-        validIdentifierTest();
-        invalidIdentifierTest();
+        testValidStrLits();
+        testInvalidStrLits();
+        testValidIdentifiers();
+        testInvalidIdentifiers();
         // randomTests();
         System.out.println("PASSED " + score + "/40" + " TESTS.");
     }
@@ -199,11 +205,12 @@ public class P2 {
     /**
      *
      */
-    private static void keywordTest() throws IOException {
-        System.out.println("Starting keyword test");
+    private static void testKeywords() throws IOException {
+        System.out.println("\nStarting keyword test");
         Reader reader;
         Yylex scanner;
         for (Token token : new TokenStream(TokenType.KEYWORDS)) {
+            CharNum.num = 1;
             reader = new StringReader(token.token());
             scanner = new Yylex(reader);
 
@@ -220,11 +227,12 @@ public class P2 {
     /**
      *  
      */
-    private static void operatorTest() throws IOException {
-        System.out.println("Starting operator test");
+    private static void testOperators() throws IOException {
+        System.out.println("\nStarting operator test");
         Reader reader;
         Yylex scanner;
         for (Token token : new TokenStream(TokenType.OPERATORS)) {
+            CharNum.num = 1;
             reader = new StringReader(token.token());
             scanner = new Yylex(reader);
 
@@ -240,8 +248,8 @@ public class P2 {
     /**
      *
      */
-    private static void validIntLitTest() throws IOException {
-        System.out.println("Starting valid INTLIT test");
+    private static void testValidIntLits() throws IOException {
+        System.out.println("\nStarting valid INTLIT test");
         TokenStream tokenStream = new TokenStream(TokenType.VALID_INTLIT);
         Iterator<Token> iterator = tokenStream.iterator();
         
@@ -249,15 +257,16 @@ public class P2 {
         Yylex scanner;
 
         //generate 10 random valid intlits.
-        for(int i=0; i<10; i++){
+        for(int i = 0; i < 10; i++){
+            CharNum.num = 1;
             Token token = iterator.next();
             reader = new StringReader(token.token());
             scanner = new Yylex(reader);
 
-            try{
+            try {
                 assertEquals(scanner.next_token().sym, token.sym());
                 score++;
-            }catch(AssertionError a){
+            } catch(AssertionError a){
                 System.out.println(a.getMessage());
             }
         }
@@ -267,8 +276,8 @@ public class P2 {
     /**
      *
      */
-    private static void invalidIntLitTest() throws IOException {
-        System.out.println("Starting invalid INTLIT test");
+    private static void testInvalidIntLits() throws IOException {
+        System.out.println("\nStarting invalid INTLIT test");
         TokenStream tokenStream = new TokenStream(TokenType.INVALID_INTLIT);
         Iterator<Token> iterator = tokenStream.iterator();
         
@@ -276,14 +285,18 @@ public class P2 {
         Yylex scanner;
 
         //generate 10 random invalid intlits.
-        for(int i=0; i<10; i++){
+        for(int i = 0; i < 10; i++){
+            CharNum.num = 1;
             Token token = iterator.next();
             reader = new StringReader(token.token());
             scanner = new Yylex(reader);
 
             
-            if((scanner.next_token().sym)==0 && token.sym()==-1){
+            try {
+                assertEquals(scanner.next_token().sym, token.sym());
                 score++;
+            } catch(AssertionError a){
+                System.out.println(a.getMessage());
             }
         }
     }
@@ -291,8 +304,8 @@ public class P2 {
     /**
      *
      */
-    private static void validStrLitTest() throws IOException {
-        System.out.println("Starting valid STRLIT test");
+    private static void testValidStrLits() throws IOException {
+        System.out.println("\nStarting valid STRLIT test");
         TokenStream tokenStream = new TokenStream(TokenType.VALID_STRLIT);
         Iterator<Token> iterator = tokenStream.iterator();
         
@@ -300,7 +313,8 @@ public class P2 {
         Yylex scanner;
 
         //generate 10 random valid strlits.
-        for(int i=0; i<10; i++){
+        for(int i = 0; i < 10; i++){
+            CharNum.num = 1;
             Token token = iterator.next();
             reader = new StringReader(token.token());
             scanner = new Yylex(reader);
@@ -318,8 +332,8 @@ public class P2 {
     /**
      *
      */
-    private static void invalidStrLitTest() throws IOException {
-        System.out.println("Starting invalid STRLIT test");
+    private static void testInvalidStrLits() throws IOException {
+        System.out.println("\nStarting invalid STRLIT test");
         TokenStream tokenStream = new TokenStream(TokenType.INVALID_STRLIT);
         Iterator<Token> iterator = tokenStream.iterator();
         
@@ -327,13 +341,17 @@ public class P2 {
         Yylex scanner;
 
         //generate 10 random invalid strlits.
-        for(int i=0; i<10; i++){
+        for(int i = 0; i < 10; i++){
+            CharNum.num = 1;
             Token token = iterator.next();
             reader = new StringReader(token.token());
             scanner = new Yylex(reader);
 
-            if((scanner.next_token().sym)==0 && token.sym()==-1){
+            try {
+                assertEquals(scanner.next_token().sym, token.sym());
                 score++;
+            } catch(AssertionError a){
+                System.out.println(a.getMessage());
             }
         }
         
@@ -343,8 +361,8 @@ public class P2 {
     /**
      * 
      */
-    private static void validIdentifierTest() throws IOException {
-        System.out.println("Starting valid Identifier test");
+    private static void testValidIdentifiers() throws IOException {
+        System.out.println("\nStarting valid Identifier test");
         TokenStream tokenStream = new TokenStream(TokenType.VALID_IDENTIFIERS);
         Iterator<Token> iterator = tokenStream.iterator();
         
@@ -353,14 +371,18 @@ public class P2 {
 
         //generate 10 random valid valid Identifiers.
         for(int i=0; i<10; i++){
+            CharNum.num = 1;
             Token token = iterator.next();
             reader = new StringReader(token.token());
             scanner = new Yylex(reader);
 
-            try{
-                assertEquals(scanner.next_token().sym, token.sym());
+            try {
+                Symbol symbol = scanner.next_token();
+                assertEquals(symbol.sym, token.sym());
                 score++;
-            }catch(AssertionError a){
+                assertEquals(((IdTokenVal)symbol.value).idVal, token.token());
+                score++;
+            } catch(AssertionError a){
                 System.out.println(a.getMessage());
             }
         }
@@ -370,8 +392,8 @@ public class P2 {
     /**
      *
      */
-    private static void invalidIdentifierTest() throws IOException{
-        System.out.println("Starting invalid Identifier test");
+    private static void testInvalidIdentifiers() throws IOException{
+        System.out.println("\nStarting invalid Identifier test");
         TokenStream tokenStream = new TokenStream(TokenType.INVALID_IDENTIFIERS);
         Iterator<Token> iterator = tokenStream.iterator();
         
@@ -379,20 +401,27 @@ public class P2 {
         Yylex scanner;
 
         //generate 10 random invalid Identifiers.
-        for(int i=0; i<10; i++){
+        for(int i = 0; i < 10; i++) {
+            CharNum.num = 1;
             Token token = iterator.next();
             reader = new StringReader(token.token());
             scanner = new Yylex(reader);
-            Symbol scannerTokenIDTest = scanner.next_token();
-            if((scannerTokenIDTest.sym)!=(token.sym())){
+            Symbol symbol = null;
+            try {
+                symbol = scanner.next_token();
+                assertEquals(symbol.sym, token.sym());
                 score++;
+            } catch(AssertionError a){
+                System.out.println(a.getMessage());
             }
 
-            System.out.println("scannerToken: " + scannerTokenIDTest.sym + " token.sym: "+ token.sym() + " token: " + token.token());
+            System.out.println("scannerToken: " + symbol.sym
+                    + " token.sym: " + token.sym()
+                    + " token: " + token.token());
         }
     }
 
-
+    // TODO: Cleanup
     private static void randomTests() throws IOException{
         TokenStream tokenStream = new TokenStream(TokenType.RANDOM);
         Iterator<Token> iterator = tokenStream.iterator();
@@ -402,6 +431,7 @@ public class P2 {
 
         //generate 10 random valid intlits.
         for(int i=0; i<10; i++){
+            CharNum.num = 1;
             Token token = iterator.next();
             reader = new StringReader(token.token());
             scanner = new Yylex(reader);
@@ -450,14 +480,12 @@ public class P2 {
 
     private final static void assertEquals(int a, int b) {
         if (a != b) {
-            System.out.println("false");
             throw new AssertionError(a + " != " + b);
         }
     }
 
     private final static void assertEquals(String a, String b) {
         if (!a.equals(b)) {
-            System.out.println("false");
             throw new AssertionError(a + " != " + b);
         }
     }
