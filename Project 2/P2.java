@@ -10,13 +10,26 @@ import static java.lang.Math.random;
  * numbers, values associated with tokens)
  */
 public class P2 {
+    static int score=0;
     public static void main(String[] args) throws IOException {
-                                           // exception may be thrown by yylex
+        // exception may be thrown by yylex
         // test all tokens
         testAllTokens();
         CharNum.num = 1;
 
         // ADD CALLS TO OTHER TEST METHODS HERE
+        score=0;
+        keywordTest();
+        operatorTest();
+        validIntLitTest();
+        invalidIntLitTest();
+        
+        validStrLitTest();
+        invalidStrLitTest();
+        validIdentifierTest();
+        invalidIdentifierTest();
+        // randomTests();
+        System.out.println("PASSED " + score + "/40" + " TESTS.");
     }
 
     /**
@@ -183,41 +196,240 @@ public class P2 {
         outFile.close();
     }
 
-    // /**
-    //  *
-    //  */
-    // private static void operatorTest(){
+    /**
+     *
+     */
+    private static void keywordTest() throws IOException{
+        TokenStream tokenStream = new TokenStream(TokenType.KEYWORDS);
+        Iterator<Token> iterator = tokenStream.iterator();
+        
+        Reader reader;
+        Yylex scanner;
+        try{
+            while (iterator.hasNext()) {
+                Token token = iterator.next();
+                reader = new StringReader(token.token());
+                scanner = new Yylex(reader);
 
-    // }
+                try{
+                    assertEquals(scanner.next_token().sym, token.sym());
+                    score++;
+                }catch(AssertionError a){
+                    System.out.println(a.getMessage());
+                }
+            }
+        }catch(NoSuchElementException nse){}
+    }
 
-    // /**
-    //  *
-    //  */
-    // private static void identifierTest(){
 
-    // }
+    /**
+     *  
+     */
+    private static void operatorTest() throws IOException{
+        TokenStream tokenStream = new TokenStream(TokenType.OPERATORS);
+        Iterator<Token> iterator = tokenStream.iterator();
+        
+        Reader reader;
+        Yylex scanner;
+        try{
+            while (iterator.hasNext()) {
+                Token token = iterator.next();
+                reader = new StringReader(token.token());
+                scanner = new Yylex(reader);
 
-    // /**
-    //  *
-    //  */
-    // private static void intlitTest(){
+                try{
+                    assertEquals(scanner.next_token().sym, token.sym());
+                    score++;
+                }catch(AssertionError a){
+                    System.out.println(a.getMessage());
+                }
+            }
+        }catch(NoSuchElementException nse){}
+    }
 
-    // }
+    /**
+     *
+     */
+    private static void validIntLitTest() throws IOException{
+        TokenStream tokenStream = new TokenStream(TokenType.VALID_INTLIT);
+        Iterator<Token> iterator = tokenStream.iterator();
+        
+        Reader reader;
+        Yylex scanner;
 
-    // /**
-    //  *
-    //  */
-    // private static void strlitTest(){
+        //generate 10 random valid intlits.
+        for(int i=0; i<10; i++){
+            Token token = iterator.next();
+            reader = new StringReader(token.token());
+            scanner = new Yylex(reader);
 
-    // }
+            try{
+                assertEquals(scanner.next_token().sym, token.sym());
+                score++;
+            }catch(AssertionError a){
+                System.out.println(a.getMessage());
+            }
+        }
+    }
 
-    // /**
-    //  *
-    //  */
-    // private static void randStreamOfTokensTest(){
-    //     //check if we get error messages
 
-    // }
+    /**
+     *
+     */
+    private static void invalidIntLitTest() throws IOException{
+        TokenStream tokenStream = new TokenStream(TokenType.INVALID_INTLIT);
+        Iterator<Token> iterator = tokenStream.iterator();
+        
+        Reader reader;
+        Yylex scanner;
+
+        //generate 10 random invalid intlits.
+        for(int i=0; i<10; i++){
+            Token token = iterator.next();
+            reader = new StringReader(token.token());
+            scanner = new Yylex(reader);
+
+            
+            if((scanner.next_token().sym)==0 && token.sym()==-1){
+                score++;
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    private static void validStrLitTest() throws IOException{
+        TokenStream tokenStream = new TokenStream(TokenType.VALID_STRLIT);
+        Iterator<Token> iterator = tokenStream.iterator();
+        
+        Reader reader;
+        Yylex scanner;
+
+        //generate 10 random valid strlits.
+        for(int i=0; i<10; i++){
+            Token token = iterator.next();
+            reader = new StringReader(token.token());
+            scanner = new Yylex(reader);
+
+            try{
+                assertEquals(scanner.next_token().sym, token.sym());
+                score++;
+            }catch(AssertionError a){
+                System.out.println(a.getMessage());
+            }
+        }
+    }
+
+
+    /**
+     *
+     */
+    private static void invalidStrLitTest() throws IOException{
+        TokenStream tokenStream = new TokenStream(TokenType.INVALID_STRLIT);
+        Iterator<Token> iterator = tokenStream.iterator();
+        
+        Reader reader;
+        Yylex scanner;
+
+        //generate 10 random invalid strlits.
+        for(int i=0; i<10; i++){
+            Token token = iterator.next();
+            reader = new StringReader(token.token());
+            scanner = new Yylex(reader);
+
+            if((scanner.next_token().sym)==0 && token.sym()==-1){
+                score++;
+            }
+        }
+        
+    }
+
+
+    /**
+     * 
+     */
+    private static void validIdentifierTest() throws IOException{
+        TokenStream tokenStream = new TokenStream(TokenType.VALID_IDENTIFIERS);
+        Iterator<Token> iterator = tokenStream.iterator();
+        
+        Reader reader;
+        Yylex scanner;
+
+        //generate 10 random valid valid Identifiers.
+        for(int i=0; i<10; i++){
+            Token token = iterator.next();
+            reader = new StringReader(token.token());
+            scanner = new Yylex(reader);
+
+            try{
+                assertEquals(scanner.next_token().sym, token.sym());
+                score++;
+            }catch(AssertionError a){
+                System.out.println(a.getMessage());
+            }
+        }
+    }
+
+
+    /**
+     *
+     */
+    private static void invalidIdentifierTest() throws IOException{
+        System.out.println("Starting invalidIdentifierTest()");
+        TokenStream tokenStream = new TokenStream(TokenType.INVALID_IDENTIFIERS);
+        Iterator<Token> iterator = tokenStream.iterator();
+        
+        Reader reader;
+        Yylex scanner;
+
+        //generate 10 random valid invalidIdentifiers.
+        for(int i=0; i<10; i++){
+            Token token = iterator.next();
+            reader = new StringReader(token.token());
+            scanner = new Yylex(reader);
+            Symbol scannerTokenIDTest = scanner.next_token();
+            if((scannerTokenIDTest.sym)!=(token.sym())){
+                score++;
+            }
+
+            System.out.println("scannerToken: " + scannerTokenIDTest.sym + " token.sym: "+ token.sym() + " token: " + token.token());
+        }
+    }
+
+
+    private static void randomTests() throws IOException{
+        TokenStream tokenStream = new TokenStream(TokenType.RANDOM);
+        Iterator<Token> iterator = tokenStream.iterator();
+        
+        Reader reader;
+        Yylex scanner;
+
+        //generate 10 random valid intlits.
+        for(int i=0; i<10; i++){
+            Token token = iterator.next();
+            reader = new StringReader(token.token());
+            scanner = new Yylex(reader);
+
+            Symbol scannerToken=scanner.next_token();
+            if((scannerToken.sym)==0 && token.sym()==-1){
+                score++;
+            }
+            // else if(){ need to make case for invalid identifiers
+
+            // }
+            else{
+                try{
+                    assertEquals(scannerToken.sym, token.sym());
+                    score++;
+                    
+                }catch(AssertionError a){
+                    System.out.println(a.getMessage());
+                    System.out.println("symbol: " + token.sym() + " token: " + token.token());
+                }
+            }
+        }
+    }
 
     // /**
     //  *
@@ -243,12 +455,14 @@ public class P2 {
 
     private final static void assertEquals(int a, int b) {
         if (a != b) {
+            System.out.println("false");
             throw new AssertionError(a + " != " + b);
         }
     }
 
     private final static void assertEquals(String a, String b) {
         if (!a.equals(b)) {
+            System.out.println("false");
             throw new AssertionError(a + " != " + b);
         }
     }
@@ -407,21 +621,32 @@ class TokenStreamIterator implements Iterator<Token> {
                 return KNOWN_TOKENS[1][rng(KNOWN_TOKENS[1].length)];
 
             case 2: /* Integer literals */
+            
+            System.out.println("generate valid intlit");
                 return new Token(sym.INTLITERAL, generateValidInteger());
 
             case 3: /* Invalid integer literals */
+            System.out.println("generate invalid intlit");
+
                 return new Token(-1, generateInvalidInteger());
 
             case 4: /* String literals */
+            
+            System.out.println("generate valid string");
                 return new Token(sym.STRLITERAL, generateValidString());
 
             case 5: /* Invalid String literals */
+            
+            System.out.println("generate invalid string");
                 return new Token(-1, generateInvalidString());
 
             case 6: /* Identifiers */
+            
+            System.out.println("generate valid Identifiers");
                 return new Token(sym.ID, generateValidIdentifier());
 
             case 7: /* Invalid identifiers */
+            System.out.println("generate invalid identifiers");
                 return new Token(sym.ID, generateInvalidIdentifier());
             }
         }
