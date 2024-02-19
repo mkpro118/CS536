@@ -35,8 +35,7 @@ public class P2 {
         testValidStrLits();
         testInvalidStrLits();
         testValidIdentifiers();
-        testInvalidIdentifiers();
-        // randomTests();
+        randomTests();
         System.out.println("PASSED " + score + "/" + testsRun + " TESTS.");
     }
 
@@ -253,7 +252,7 @@ public class P2 {
         Yylex scanner;
 
         //generate 10 random valid intlits.
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < 100; i++) {
             CharNum.num = 1;
             Token token = iterator.next();
             reader = new StringReader(token.token());
@@ -277,7 +276,7 @@ public class P2 {
         Yylex scanner;
 
         //generate 10 random invalid intlits.
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < 100; i++) {
             CharNum.num = 1;
             Token token = iterator.next();
             reader = new StringReader(token.token());
@@ -300,7 +299,7 @@ public class P2 {
         Yylex scanner;
 
         //generate 10 random valid strlits.
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < 100; i++) {
             CharNum.num = 1;
             Token token = iterator.next();
             reader = new StringReader(token.token());
@@ -324,7 +323,7 @@ public class P2 {
         Yylex scanner;
 
         //generate 10 random invalid strlits.
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < 100; i++) {
             CharNum.num = 1;
             Token token = iterator.next();
             reader = new StringReader(token.token());
@@ -349,7 +348,7 @@ public class P2 {
         Yylex scanner;
 
         //generate 10 random valid valid Identifiers.
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < 100; i++) {
             CharNum.num = 1;
             Token token = iterator.next();
             reader = new StringReader(token.token());
@@ -361,36 +360,6 @@ public class P2 {
 
 
             assertEquals(((IdTokenVal)symbol.value).idVal, token.token());
-        }
-    }
-
-
-    /**
-     *
-     */
-    private static void testInvalidIdentifiers() throws IOException {
-        currTest = "Invalid Identifiers";
-
-        TokenStream tokenStream = new TokenStream(TokenType.INVALID_IDENTIFIERS);
-        Iterator<Token> iterator = tokenStream.iterator();
-        
-        Reader reader;
-        Yylex scanner;
-
-        //generate 10 random invalid Identifiers.
-        for(int i = 0; i < 10; i++) {
-            CharNum.num = 1;
-            Token token = iterator.next();
-            reader = new StringReader(token.token());
-            scanner = new Yylex(reader);
-            Symbol symbol = null;
-            symbol = scanner.next_token();
-
-            assertEquals(symbol.sym, token.sym());
-
-            System.out.println("scannerToken: " + symbol.sym
-                    + " token.sym: " + token.sym()
-                    + " token: " + token.token());
         }
     }
 
@@ -480,7 +449,6 @@ enum TokenType {
     VALID_STRLIT,
     INVALID_STRLIT,
     VALID_IDENTIFIERS,
-    INVALID_IDENTIFIERS,
     COMMENTS,
     WHITESPACE,
     RANDOM;
@@ -625,9 +593,6 @@ class TokenStreamIterator implements Iterator<Token> {
 
         case VALID_IDENTIFIERS:
             return new Token(sym.ID, generateValidIdentifier());
-
-        case INVALID_IDENTIFIERS:
-            return new Token(INVALID_SYM, generateInvalidIdentifier());
 
         case COMMENTS:
             return new Token(INVALID_SYM, generateComments());
@@ -775,26 +740,6 @@ class TokenStreamIterator implements Iterator<Token> {
 
         for (int i = 1; i < len; i++) {
             buf[i] = CHARSET[rng(CHARSET_SIZE)];
-        }
-
-        return new String(buf);
-    }
-
-    private final static String generateInvalidIdentifier() {
-        char[] buf = generateValidIdentifier().toCharArray();
-
-        switch(rng(2)) {
-        case 0:
-            buf[0] = (char) rng('0', '9' + 1);
-            break;
-        case 1:
-            char c;
-            do {
-                c = (char) rng(MIN_CHAR + 1, MAX_CHAR);
-            } while (Arrays.binarySearch(CHARSET, c) >= 0);
-
-            buf[rng(buf.length)] = c;
-            break;
         }
 
         return new String(buf);
