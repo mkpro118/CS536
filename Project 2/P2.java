@@ -34,7 +34,7 @@ public class P2 {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PrintStream stream = new PrintStream(outputStream);
 
-        System.setOut(stream);
+        System.setErr(stream);
 
         return outputStream;
     }
@@ -43,7 +43,7 @@ public class P2 {
      * Resets the {@code System.out} PrintStream to stdout
      */
     private final static void resetPrintStream() {
-        System.setOut(defaultPrintStream);
+        System.setErr(defaultPrintStream);
     }
 
     public static void main(String[] args) throws IOException {
