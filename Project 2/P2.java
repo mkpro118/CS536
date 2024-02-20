@@ -92,7 +92,7 @@ public class P2 {
         testComment();
 
         // 10. White spaces
-        testWhiteSpace();
+        testWhitespace();
 
         // Reset Print Stream
         resetPrintStream();
@@ -428,45 +428,8 @@ public class P2 {
         }
     }
 
-    // TODO: Cleanup
-    private static void testRandomTokens() throws IOException {
-        currTest = "Fuzz";
-
-        TokenStream tokenStream = new TokenStream(TokenType.RANDOM);
-        Iterator<Token> iterator = tokenStream.iterator();
-        
-        Reader reader;
-        Yylex scanner;
-
-        //generate 10 random valid intlits.
-        for(int i=0; i<10; i++){
-            CharNum.num = 1;
-            Token token = iterator.next();
-            reader = new StringReader(token.token());
-            scanner = new Yylex(reader);
-
-            Symbol scannerToken=scanner.next_token();
-            if((scannerToken.sym)==0 && token.sym()==-1){
-
-            }
-            // else if(){ need to make case for invalid identifiers
-
-            // }
-            else{
-                try{
-                    assertEquals(scannerToken.sym, token.sym());
-
-                    
-                }catch(AssertionError a){
-                    System.out.println(a.getMessage());
-                    System.out.println("symbol: " + token.sym() + " token: " + token.token());
-                }
-            }
-        }
-    }
-
     /**
-     *
+     * Tests the Scanner on Comments
      */
     private static void testComment() throws IOException {
         currTest = "comments";
@@ -493,9 +456,9 @@ public class P2 {
     }
 
     /**
-     *
+     * Tests the Scanner on Whitespace
      */
-    private static void testWhiteSpace()throws IOException {
+    private static void testWhitespace()throws IOException {
         currTest = "white spaces";
 
         TokenStream tokenStream = new TokenStream(TokenType.WHITESPACE);
@@ -519,7 +482,6 @@ public class P2 {
 
     }
 
-
     /**
      * Tests the error message
      */
@@ -535,6 +497,7 @@ public class P2 {
         String output;
 
         for (int i = 0; i < 10; i++) {
+            CharNum.num = 1;
             new Yylex(new StringReader(iterator.next().token())).next_token();
 
             output = outputStream.toString().trim();
@@ -592,6 +555,44 @@ public class P2 {
     //     resetPrintStream();
     // }
 
+
+    /**
+     * Fuzz Tests the Scanner by giving it random input across all tokens
+     */
+    private static void testRandomTokens() throws IOException {
+        currTest = "Fuzz";
+
+        TokenStream tokenStream = new TokenStream(TokenType.RANDOM);
+        Iterator<Token> iterator = tokenStream.iterator();
+
+        Reader reader;
+        Yylex scanner;
+
+        //generate 100 random tokens
+        for(int i = 0; i < 100; i++){
+            CharNum.num = 1;
+            Token token = iterator.next();
+            reader = new StringReader(token.token());
+            scanner = new Yylex(reader);
+
+            Symbol symbol = scanner.next_token();
+
+            assertEquals(symbol.sym, token.sym());
+
+            switch (symbol.sym) {
+            case sym.ID:
+                assertEquals(((IdTokenVal)symbol.value).idVal, token.token());
+                break;
+            case sym.INTLITERAL:
+                int val = Integer.parseInt(token.token());
+                assertEquals(((IntLitTokenVal)symbol.value).intVal, val);
+                break;
+            case sym.STRLITERAL:
+                assertEquals(((StrLitTokenVal)symbol.value).strVal, token.token());
+                break;
+            }
+        }
+    }
 
     private final static void assertEquals(int a, int b) {
         testsRun++;
