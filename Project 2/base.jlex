@@ -85,19 +85,19 @@ return new Symbol(sym.EOF);
 
 [\"]{STRING}* {
     ErrMsg.fatal(yyline+1, CharNum.num,
-        "unterminated string literal ignored" + " '" + yytext() + "'");
+        "unterminated string literal ignored");
     CharNum.num += yytext().length();
 }
 
 [\"]({STRING}*([^\n\"\\]|[\\][^nst\"'\\])+{STRING}*)*[\"] {
     ErrMsg.fatal(yyline+1, CharNum.num,
-        "string literal with bad escaped character ignored" + " '" + yytext() + "'");
+        "string literal with bad escaped character ignored");
     CharNum.num += yytext().length();
 }
 
 [\"]({STRING}*([^\n\"\\]|[\\][^nst\"'\\])+{STRING}*)* {
     ErrMsg.fatal(yyline+1, CharNum.num,
-        "unterminated string literal with bad escaped character ignored" + " '" + yytext() + "'");
+        "unterminated string literal with bad escaped character ignored");
     CharNum.num += yytext().length();
 }
 
