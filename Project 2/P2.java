@@ -79,10 +79,18 @@ public class P2 {
         // 8. Fuzz Testing
         testRandomTokens();
 
+        // 9. Comments
+        testComment();
+
+        // 10. White spaces
+        testWhiteSpace();
+
         // Reset Print Stream
         resetPrintStream();
 
         // Test Error Messages
+
+       
 
 
         System.out.println("PASSED " + score + "/" + testsRun + " TESTS.");
@@ -449,26 +457,59 @@ public class P2 {
         }
     }
 
-    // /**
-    //  *
-    //  */
-    // private static void commentTest(){
+    /**
+     *
+     */
+    private static void testComment() throws IOException {
+        currTest = "comments";
 
-    // }
+        TokenStream tokenStream = new TokenStream(TokenType.COMMENTS);
+        Iterator<Token> iterator = tokenStream.iterator();
+        
+        Reader reader;
+        Yylex scanner;
 
-    // /**
-    //  *
-    //  */
-    // private static void whiteSpaceTest(){
+        //generate 10 random comments
+        for(int i = 0; i < 100; i++) {
+            CharNum.num = 1;
+            Token token = iterator.next();
+            reader = new StringReader(token.token());
+            scanner = new Yylex(reader);
 
-    // }
+            Symbol symbol = scanner.next_token();
 
-    // /**
-    //  *
-    //  */
-    // private static void lengthLimitTest(){
+            assertEquals(symbol.sym, token.sym());
 
-    // }
+        }
+
+    }
+
+    /**
+     *
+     */
+    private static void testWhiteSpace()throws IOException {
+        currTest = "white spaces";
+
+        TokenStream tokenStream = new TokenStream(TokenType.WHITESPACE);
+        Iterator<Token> iterator = tokenStream.iterator();
+        
+        Reader reader;
+        Yylex scanner;
+
+        //generate 10 random comments
+        for(int i = 0; i < 100; i++) {
+            CharNum.num = 1;
+            Token token = iterator.next();
+            reader = new StringReader(token.token());
+            scanner = new Yylex(reader);
+
+            Symbol symbol = scanner.next_token();
+
+            assertEquals(symbol.sym, token.sym());
+
+        }
+
+    }
 
 
     private final static void assertEquals(int a, int b) {
@@ -590,8 +631,6 @@ class TokenStreamIterator implements Iterator<Token> {
         for (char c = 'A'; c <= 'Z'; CHARSET[i++] = c++);
         CHARSET[i++] = '_';
         for (char c = 'a'; c <= 'z'; CHARSET[i++] = c++);
-
-        System.out.println(CHARSET);
 
         KNOWN_TOKENS = new Token[][] {
         /* Keywords */
