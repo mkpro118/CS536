@@ -70,7 +70,7 @@ public class P2 {
     public static void main(String[] args) throws IOException {
         // exception may be thrown by yylex
         // test all tokens
-        testAllTokens();
+        // testAllTokens();
         CharNum.num = 1;
 
         // Switch Print Stream to reduce output
@@ -79,32 +79,32 @@ public class P2 {
         // 1. Keywords
         // testKeywords();
 
-        // // 2. Operators
-        // testOperators();
+        // 2. Operators
+        testOperators();
 
-        // // 3. Valid Integer Literals
-        // testValidIntLits();
+        // 3. Valid Integer Literals
+        testValidIntLits();
 
-        // // 4. Invalid Integer Literals
-        // testInvalidIntLits();
+        // 4. Invalid Integer Literals
+        testInvalidIntLits();
 
-        // // 5. Valid String Literals
-        // testValidStrLits();
+        // 5. Valid String Literals
+        testValidStrLits();
 
-        // // 6. Invalid String Literals
-        // testInvalidStrLits();
+        // 6. Invalid String Literals
+        testInvalidStrLits();
 
-        // // 7. Valid Identifiers
-        // testValidIdentifiers();
+        // 7. Valid Identifiers
+        testValidIdentifiers();
 
-        // // 8. Fuzz Testing
-        // testRandomTokens();
+        // 8. Fuzz Testing
+        testRandomTokens();
 
-        // // 9. Comments
-        // testComments();
+        // 9. Comments
+        testComments();
 
-        // // 10. Whitespaces
-        // testWhitespace();
+        // 10. Whitespaces
+        testWhitespace();
 
         // 11. Line Numbers
         testLineNumbers();
@@ -112,22 +112,22 @@ public class P2 {
         // Reset Print Stream
         resetPrintStream();
 
-        // // Test Error Messages
+        // Test Error Messages
 
-        // // 11. Error messages on badly escaped String Literals
-        // testBadEscapeStringErrMsg();
+        // 11. Error messages on badly escaped String Literals
+        testBadEscapeStringErrMsg();
 
-        // // 12. Error messages on unterminated String Literals
-        // testUnterminatedStringErrMsg();
+        // 12. Error messages on unterminated String Literals
+        testUnterminatedStringErrMsg();
 
-        // // 13. Error messages on unterminated badly escaped String Literals
-        // testUnterminatedBadEscapeStringErrMsg();
+        // 13. Error messages on unterminated badly escaped String Literals
+        testUnterminatedBadEscapeStringErrMsg();
 
-        // // 14. Error messages on bad Integer Literals
-        // testOverflowIntegerErrMsg();
+        // 14. Error messages on bad Integer Literals
+        testOverflowIntegerErrMsg();
 
-        // // 15. Error messages on Illegal Characters
-        // testIllegalCharacterErrMsg();
+        // 15. Error messages on Illegal Characters
+        testIllegalCharacterErrMsg();
 
         System.out.println("PASSED " + score + "/" + testsRun + " TESTS.");
     }
@@ -642,78 +642,54 @@ public class P2 {
      * @param  lineNum   
      * @param  charNum 
      */
-    record Tuple(int lineNum, int charNum) {}
+    record Tuple(int sym, int lineNum, int charNum) {}
 
     /**
-     *
+     * Tests Line Numbers and Character Numbers
      */
     private static void testLineNumbers() throws IOException{
         currTest = "Test Line Numbers";
         TokenStream tokenStream = new TokenStream(TokenType.VALID_TOKENS);
         Iterator<Token> iterator = tokenStream.iterator();
-        String largeString="";
-        Reader reader;
+        String largeString = "";
         Yylex scanner;
-        int lineNumber=1;
-        int charNumber=1;
+        int lineNumber = 1;
+        int charNumber = 1;
 
         LinkedList<Tuple> tupleList = new LinkedList<>();
 
 
         //create one large string to test line numbers with using valid tokens.
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < 1000; i++) {
             Token token = iterator.next();
             
             largeString = largeString + token.token();
-            if(token.sym()==0){ //is a comment
-                largeString = largeString + "\n";
+
+            if (token.sym() == 0) { // Sym is a comment
+                largeString += "\n";
                 lineNumber++;
-                charNumber=1;
-            }else{
-                Tuple addNew=new Tuple(lineNumber, charNumber);
-                
-                charNumber+=token.token().length();
-                tupleList.add(addNew);
-                System.out.println("adding linenum: "+addNew.lineNum + " charnum: "+ addNew.charNum);
-                largeString = largeString + " ";
+                charNumber = 1;
+            } else{
+                tupleList.add(new Tuple(token.sym(), lineNumber, charNumber));
+                charNumber += token.token().length();
+                largeString += " ";
                 charNumber++;
             }
-            
         }
 
-        System.out.println(largeString);
-        reader = new StringReader(largeString);
-        scanner = new Yylex(reader);
-        Symbol symbol;
+        scanner = new Yylex(new StringReader(largeString));
         
         CharNum.num = 1;
-        for(int i = 0; i < 10; i++) {
+        Symbol symbol = scanner.next_token();
+        while (symbol.sym != sym.EOF) {
+            Tuple node = tupleList.remove();
+            assertEquals(symbol.sym, node.sym());
+            assertEquals(((TokenVal)symbol.value).lineNum, node.lineNum());
+            assertEquals(((TokenVal)symbol.value).charNum, node.charNum());
+
             symbol = scanner.next_token();
-            // System.out.println(symbol.sym);
-            Tuple node=tupleList.remove();
-            // while(node!=null){
-            // System.out.print("linenumber: ");
-            System.out.println("symbol: "+symbol.sym+" actual line number: "+((TokenVal)symbol.value).lineNum + " counted line number: "+ node.lineNum);
-            //  System.out.println("charNum is: "+node.charNum);
-            // System.out.print("charnumber: ");
-            System.out.println("actual char number: "+((TokenVal)symbol.value).charNum + " counted char number: "+ node.charNum);
-            // node=tupleList.remove();
-            // }
-           
         }
-        
     }
-
-    /**
-     *
-     */
-    // private static void testCharNum() {
-    //     ByteArrayOutputStream outputStream = switchPrintStream();
-    //     Iterator<Token> iterator =
-    //         new TokenStream(TokenType.).iterator();
-    //     resetPrintStream();
-    // }
-
 
     /**
      * Fuzz Tests the Scanner by giving it random input across all tokens, both
