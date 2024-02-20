@@ -440,7 +440,7 @@ public class P2 {
         Reader reader;
         Yylex scanner;
 
-        //generate 10 random comments
+        //generate 100 random comments
         for(int i = 0; i < 100; i++) {
             CharNum.num = 1;
             Token token = iterator.next();
@@ -467,7 +467,7 @@ public class P2 {
         Reader reader;
         Yylex scanner;
 
-        //generate 10 random comments
+        // generate 100 random whitespaces
         for(int i = 0; i < 100; i++) {
             CharNum.num = 1;
             Token token = iterator.next();
@@ -705,6 +705,7 @@ class TokenStreamIterator implements Iterator<Token> {
     private static final char[] CHARSET;
     private static final String ESCAPES;
     private static final String WHITESPACE;
+    private static final String ILLEGAL_CHARACTERS;
     private static final Token[][] KNOWN_TOKENS;
 
 
@@ -759,6 +760,33 @@ class TokenStreamIterator implements Iterator<Token> {
             new Token(sym.EQUALS, "=="),    new Token(sym.NOTEQUALS, "~="),
         },
         };
+
+        char[] illegal = new char[127-32];
+        i = 0;
+        outer: for (char c = (char)33; c < 127; c++) {
+            if (Character.isLetterOrDigit(c))
+                continue;
+            else
+                switch (c) {
+                case '_':
+                case '!':
+                case '$':
+                case '"':
+                    continue;
+                }
+
+            for (Token t: KNOWN_TOKENS[1])
+                if (t.token().indexOf(c) >= 0)
+                    continue outer;
+
+            illegal[i++] = c;
+        }
+
+        char[] illegal_subset = new char[i];
+        for (int j = 0; j < i; j++)
+            illegal_subset[j] = illegal[j];
+        ILLEGAL_CHARACTERS = new String(illegal_subset);
+        System.out.println(ILLEGAL_CHARACTERS);
     }
 
     private final TokenType type;
@@ -1025,5 +1053,10 @@ class TokenStreamIterator implements Iterator<Token> {
         }
 
         return new String(buf);
+    }
+
+    private final static String generateIllegalCharacters() {
+        char c = ILLEGAL_CHARACTERS.charAt(rng(ILLEGAL_CHARACTERS.length()));
+        return String.valueOf(c);
     }
 }
