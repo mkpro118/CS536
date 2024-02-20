@@ -63,7 +63,7 @@ class CharNum {
 DIGIT=        [0-9]
 WHITESPACE=   [\040\t]
 
-STRING= ([^\"\\\n]|(\\[nst'\"\\]))*
+STRING= ([^\"\\\n]|(\\[nst'\"\\]))
 
 %implements java_cup.runtime.Scanner
 %function next_token
@@ -77,27 +77,27 @@ return new Symbol(sym.EOF);
 
 %%
 
-[\"]{STRING}[\"] {
+[\"]{STRING}*[\"] {
     Symbol S = new Symbol(sym.STRLITERAL, new StrLitTokenVal(yyline+1, CharNum.num, yytext()));
     CharNum.num += yytext().length();
     return S;
 }
 
-[\"]{STRING} {
+[\"]{STRING}* {
     ErrMsg.fatal(yyline+1, CharNum.num,
         "unterminated string literal ignored" + " '" + yytext() + "'");
     CharNum.num += yytext().length();
 }
 
-[\"]{STRING}(\\([^nst'\"\\]|\n))+({STRING})*[\n] {
+[\"]({STRING}*([^\n\"\\]|[\\][^nst\"'\\])+{STRING}*)*[\"] {
     ErrMsg.fatal(yyline+1, CharNum.num,
-        "unterminated string literal with bad escaped character ignored" + " '" + yytext() + "'");
+        "string literal with bad escaped character ignored" + " '" + yytext() + "'");
     CharNum.num += yytext().length();
 }
 
-[\"]{STRING}(\\([^nst'\"\\]|\n))+({STRING})* {
+[\"]({STRING}*([^\n\"\\]|[\\][^nst\"'\\])+{STRING}*)* {
     ErrMsg.fatal(yyline+1, CharNum.num,
-        "string literal with bad escaped character ignored" + " '" + yytext() + "'");
+        "unterminated string literal with bad escaped character ignored" + " '" + yytext() + "'");
     CharNum.num += yytext().length();
 }
 
