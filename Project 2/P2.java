@@ -709,6 +709,7 @@ record Token(int sym, String token) {}
  * by the {@code TokenStream}'s Iterator
  */
 enum TokenType {
+    VALID_TOKENS,
     KEYWORDS,
     OPERATORS,
     VALID_INTLIT,
@@ -922,6 +923,23 @@ class TokenStreamIterator implements Iterator<Token> {
      */
     public Token next() {
         switch (type) {
+        case VALID_TOKENS:
+            switch(rng(6)) {
+            case 0:
+                return KNOWN_TOKENS[0][rng(KNOWN_TOKENS[0].length)];
+            case 1:
+                return KNOWN_TOKENS[1][rng(KNOWN_TOKENS[1].length)];
+            case 2:
+                return new Token(sym.INTLITERAL, generateValidInteger());
+            case 3:
+                return new Token(sym.STRLITERAL, generateValidString());
+            case 4:
+                return new Token(sym.ID, generateValidIdentifier());
+            case 5:
+                return new Token(INVALID_SYM, generateComments());
+            default:
+                throw new RuntimeException("Unreachable statement reached!");
+            }
         case KEYWORDS:
         case OPERATORS:
             return KNOWN_TOKENS[idx][cur++];
