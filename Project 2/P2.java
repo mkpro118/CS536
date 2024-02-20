@@ -72,6 +72,20 @@ public class P2 {
     }
 
     /**
+     * Display the name of the test about to be run
+     */
+    private final static void startTest() {
+        System.out.printf("Starting %s Test...\n", currTest);
+    }
+
+    /**
+     * Display "Done!" after a test is finished
+     */
+    private final static void endTest() {
+        System.out.println("Done!");
+    }
+
+    /**
      * Driver to test the functionality of the Scanner
      *
      * @param args  unused
@@ -124,7 +138,7 @@ public class P2 {
         testWhitespace();
 
         // 11. Line Numbers
-        testLineNumbers();
+        testLineAndCharacterNumbers();
 
         // Reset Print Stream to test error messages
         resetPrintStream();
@@ -326,6 +340,7 @@ public class P2 {
      */
     private static void testKeywords() throws IOException {
         currTest = "Keywords";
+        startTest();
 
         // There are 12 keywords which are returned in alphabetical order
         for (Token token : new TokenStream(TokenType.KEYWORDS)) {
@@ -333,6 +348,7 @@ public class P2 {
 
             assertEquals(scanner.next_token().sym, token.sym());
         }
+        endTest();
     }
 
     /**
@@ -340,6 +356,7 @@ public class P2 {
      */
     private static void testOperators() throws IOException {
         currTest = "Operators";
+        startTest();
 
         // There are 27 operators, returned in lexicographical order
         for (Token token : new TokenStream(TokenType.OPERATORS)) {
@@ -347,6 +364,7 @@ public class P2 {
 
             assertEquals(scanner.next_token().sym, token.sym());
         }
+        endTest();
     }
 
     /**
@@ -354,6 +372,7 @@ public class P2 {
      */
     private static void testValidIntLits() throws IOException {
         currTest = "Valid Integer Literals";
+        startTest();
 
         Iterator<Token> iterator =
             new TokenStream(TokenType.VALID_INTLIT).iterator();
@@ -365,6 +384,7 @@ public class P2 {
 
             assertEquals(scanner.next_token().sym, token.sym());
         }
+        endTest();
     }
 
     /**
@@ -372,6 +392,7 @@ public class P2 {
      */
     private static void testInvalidIntLits() throws IOException {
         currTest = "Invalid Integer Literals";
+        startTest();
 
         Iterator<Token> iterator =
             new TokenStream(TokenType.INVALID_INTLIT).iterator();
@@ -383,6 +404,7 @@ public class P2 {
 
             assertEquals(scanner.next_token().sym, token.sym());
         }
+        endTest();
     }
 
     /**
@@ -390,6 +412,7 @@ public class P2 {
      */
     private static void testValidStrLits() throws IOException {
         currTest = "Valid String Literals";
+        startTest();
 
         Iterator<Token> iterator =
             new TokenStream(TokenType.VALID_STRLIT).iterator();
@@ -404,6 +427,7 @@ public class P2 {
             assertEquals(sym.sym, token.sym());
             assertEquals(((StrLitTokenVal)sym.value).strVal, token.token());
         }
+        endTest();
     }
 
     /**
@@ -411,6 +435,7 @@ public class P2 {
      */
     private static void testInvalidStrLits() throws IOException {
         currTest = "Invalid String Literals";
+        startTest();
 
         Iterator<Token> iterator =
             new TokenStream(TokenType.INVALID_STRLIT).iterator();
@@ -422,6 +447,7 @@ public class P2 {
 
             assertEquals(scanner.next_token().sym, token.sym());
         }
+        endTest();
     }
 
     /**
@@ -429,6 +455,7 @@ public class P2 {
      */
     private static void testValidIdentifiers() throws IOException {
         currTest = "Valid Identifiers";
+        startTest();
 
         Iterator<Token> iterator =
             new TokenStream(TokenType.VALID_IDENTIFIERS).iterator();
@@ -443,6 +470,7 @@ public class P2 {
             assertEquals(symbol.sym, token.sym());
             assertEquals(((IdTokenVal)symbol.value).idVal, token.token());
         }
+        endTest();
     }
 
     /**
@@ -450,6 +478,7 @@ public class P2 {
      */
     private static void testComments() throws IOException {
         currTest = "Comments";
+        startTest();
 
         Iterator<Token> iterator =
             new TokenStream(TokenType.COMMENTS).iterator();
@@ -461,6 +490,7 @@ public class P2 {
 
             assertEquals(scanner.next_token().sym, token.sym());
         }
+        endTest();
     }
 
     /**
@@ -468,6 +498,7 @@ public class P2 {
      */
     private static void testWhitespace() throws IOException {
         currTest = "Whitespaces";
+        startTest();
 
         Iterator<Token> iterator =
             new TokenStream(TokenType.WHITESPACE).iterator();
@@ -479,6 +510,7 @@ public class P2 {
 
             assertEquals(scanner.next_token().sym, token.sym());
         }
+        endTest();
     }
 
     /**
@@ -486,6 +518,7 @@ public class P2 {
      */
     private static void testBadEscapeStringErrMsg() throws IOException {
         currTest = "Bad Escape String Error Message";
+        startTest();
 
         // Switch stderr to capture output
         ByteArrayOutputStream outputStream = switchPrintStream();
@@ -509,6 +542,8 @@ public class P2 {
 
         // Restore stderr
         resetPrintStream();
+
+        endTest();
     }
 
     /**
@@ -516,6 +551,7 @@ public class P2 {
      */
     private static void testUnterminatedStringErrMsg()  throws IOException {
         currTest = "Unterminated String Error Message";
+        startTest();
 
         // Switch stderr to capture output
         ByteArrayOutputStream outputStream = switchPrintStream();
@@ -539,6 +575,8 @@ public class P2 {
 
         // Restore stderr
         resetPrintStream();
+
+        endTest();
     }
 
     /**
@@ -547,6 +585,7 @@ public class P2 {
      */
     private static void testUnterminatedBadEscapeStringErrMsg()  throws IOException {
         currTest = "Unterminated Bad Escape String Error Message";
+        startTest();
 
         // Switch stderr to capture output
         ByteArrayOutputStream outputStream = switchPrintStream();
@@ -570,6 +609,8 @@ public class P2 {
 
         // Restore stderr
         resetPrintStream();
+
+        endTest();
     }
 
     /**
@@ -577,6 +618,7 @@ public class P2 {
      */
     private static void testOverflowIntegerErrMsg()  throws IOException {
         currTest = "Overflow Integer Error Message";
+        startTest();
 
         // Switch stderr to capture output
         ByteArrayOutputStream outputStream = switchPrintStream();
@@ -601,13 +643,16 @@ public class P2 {
 
         // Restore stderr
         resetPrintStream();
+
+        endTest();
     }
 
     /**
      * Tests the error messages on illegal characters (10000 tests)
      */
     private static void testIllegalCharacterErrMsg() throws IOException {
-        currTest = "Test Overflow Integer Error Message";
+        currTest = "Illegal Character Error Message";
+        startTest();
 
         // Switch stderr to capture output
         ByteArrayOutputStream outputStream = switchPrintStream();
@@ -633,13 +678,16 @@ public class P2 {
 
         // Restore stderr
         resetPrintStream();
+
+        endTest();
     }
 
     /**
      * Tests Line Numbers and Character Numbers (<= 10000)
      */
-    private static void testLineNumbers() throws IOException{
-        currTest = "Test Line Numbers";
+    private static void testLineAndCharacterNumbers() throws IOException{
+        currTest = "Line and Character Numbers";
+        startTest();
 
         Iterator<Token> iterator =
             new TokenStream(TokenType.VALID_TOKENS).iterator();
@@ -705,6 +753,8 @@ public class P2 {
 
             symbol = scanner.next_token();
         }
+
+        endTest();
     }
 
     /**
@@ -713,6 +763,7 @@ public class P2 {
      */
     private static void testRandomTokens() throws IOException {
         currTest = "Fuzz";
+        startTest();
 
         Iterator<Token> iterator = new TokenStream(TokenType.RANDOM).iterator();
 
@@ -739,6 +790,8 @@ public class P2 {
                 break;
             }
         }
+
+        endTest();
     }
 
     /**
