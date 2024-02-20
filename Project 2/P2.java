@@ -13,11 +13,37 @@ public class P2 {
     static int score;
     static int testsRun;
     static String currTest;
+    private final static PrintStream defaultPrintStream;
 
     static {
         score = 0;
         testsRun = 0;
         currTest = null;
+        defaultPrintStream = System.out;
+    }
+
+    /**
+     * Changes the {@code System.out} PrintStream to a new PrintStream using a
+     * {@code ByteArrayOutputStream} that captures the printed bytes,
+     * which can be converted to {@code String}.
+     *
+     * @return A {@code ByteArrayOutputStream} that captures output written to
+     *         the {@code System.out} PrintStream
+     */
+    private final static ByteArrayOutputStream switchPrintStream() {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintStream stream = new PrintStream(outputStream);
+
+        System.setOut(stream);
+
+        return outputStream;
+    }
+
+    /**
+     * Resets the {@code System.out} PrintStream to stdout
+     */
+    private final static void resetPrintStream() {
+        System.setOut(defaultPrintStream);
     }
 
     public static void main(String[] args) throws IOException {
@@ -26,16 +52,39 @@ public class P2 {
         testAllTokens();
         CharNum.num = 1;
 
-        // ADD CALLS TO OTHER TEST METHODS HERE
+        // Switch Print Stream to reduce output
+        switchPrintStream();
+
+        // 1. Keywords
         testKeywords();
+
+        // 2. Operators
         testOperators();
+
+        // 3. Valid Integer Literals
         testValidIntLits();
+
+        // 4. Invalid Integer Literals
         testInvalidIntLits();
-        
+
+        // 5. Valid String Literals
         testValidStrLits();
+
+        // 6. Invalid String Literals
         testInvalidStrLits();
+
+        // 7. Valid Identifiers
         testValidIdentifiers();
-        randomTests();
+
+        // 8. Fuzz Testing
+        testRandomTokens();
+
+        // Reset Print Stream
+        resetPrintStream();
+
+        // Test Error Messages
+
+
         System.out.println("PASSED " + score + "/" + testsRun + " TESTS.");
     }
 
@@ -364,7 +413,7 @@ public class P2 {
     }
 
     // TODO: Cleanup
-    private static void randomTests() throws IOException {
+    private static void testRandomTokens() throws IOException {
         currTest = "Fuzz";
 
         TokenStream tokenStream = new TokenStream(TokenType.RANDOM);
@@ -439,8 +488,22 @@ public class P2 {
     }
 }
 
+/**
+ * @author Mrigank Kumar
+ *
+ * Representes a generated token
+ *
+ * @param  sym   The sym value of the token as in sym.java
+ * @param  token The token as a String
+ */
 record Token(int sym, String token) {}
 
+/**
+ * @author Mrigank Kumar
+ *
+ * Represents the different types of Tokens that can be  generated
+ * by the {@code TokenStream}'s Iterator
+ */
 enum TokenType {
     KEYWORDS,
     OPERATORS,
@@ -454,23 +517,45 @@ enum TokenType {
     RANDOM;
 }
 
-
+/**
+ * @author Mrigank Kumar
+ *
+ * Represents a stream of tokens
+ */
 class TokenStream implements Iterable<Token> {
     private final TokenType type;
 
+    /**
+     * Constructs a new TokenStream with type set to {@code TokenType.RANDOM}
+     */
     public TokenStream() {
         this.type = TokenType.RANDOM;
     }
 
+    /**
+     * Constructs a new TokenStream with the specified {@code TokenType}
+     *
+     * @param type the TokenType of the TokenStream
+     */
     public TokenStream(TokenType type) {
         this.type = type;
     }
 
+    /**
+     * Returns an iterator over the tokens in this stream
+     *
+     * @return an iterator over the tokens in this stream
+     */
     public Iterator<Token> iterator() {
         return new TokenStreamIterator(this.type);
     }
 }
 
+/**
+ * @author Mrigank Kumar
+ *
+ * An iterator over a stream of tokens
+ */
 class TokenStreamIterator implements Iterator<Token> {
     private static final int MAX_TOKEN_LENGTH;
     private static final int MIN_TOKEN_LENGTH;
@@ -546,6 +631,11 @@ class TokenStreamIterator implements Iterator<Token> {
     private int cur;
     private int idx = -1;
 
+    /**
+     * Constructs a new TokenStreamIterator with the specified TokenType.
+     *
+     * @param type the TokenType of the TokenStreamIterator
+     */
     public TokenStreamIterator(TokenType type) {
         this.type = type;
         cur = 0;
@@ -555,14 +645,33 @@ class TokenStreamIterator implements Iterator<Token> {
             idx = 1;
     }
 
+    /**
+     * Generates a random number in the range [min, max)
+     *
+     * @param  min Lower bound of the random number (inclusive)
+     * @param  max Upper bound of the random number (exclusive)
+     *
+     * @return random number in the range [min, max)
+     */
     private static int rng(int min, int max) {
         return (int) (random() * (max - min)) + min;
     }
 
+    /**
+     * Generates a random number in the range [0, max)
+     *
+     * @param  max Upper bound of the random number (exclusive)
+     *
+     * @return random number in the range [0, max)
+     */
     private static int rng(int max) {
         return (int) (random() * max);
     }
 
+    /**
+     * Whether
+     * @return [description]
+     */
     public boolean hasNext() {
         switch (type) {
         case KEYWORDS:
