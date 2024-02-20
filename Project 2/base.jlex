@@ -117,7 +117,11 @@ return new Symbol(sym.EOF);
         ErrMsg.warn(yyline+1, CharNum.num,
         "integer literal too large - using max value");
     } finally {
+        System.out.println("\n"+CharNum.num);
         CharNum.num += yytext().length();
+        System.out.println(CharNum.num);
+
+
     }
 }
 

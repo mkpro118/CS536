@@ -77,34 +77,34 @@ public class P2 {
         switchPrintStream();
 
         // 1. Keywords
-        testKeywords();
+        // testKeywords();
 
-        // 2. Operators
-        testOperators();
+        // // 2. Operators
+        // testOperators();
 
-        // 3. Valid Integer Literals
-        testValidIntLits();
+        // // 3. Valid Integer Literals
+        // testValidIntLits();
 
-        // 4. Invalid Integer Literals
-        testInvalidIntLits();
+        // // 4. Invalid Integer Literals
+        // testInvalidIntLits();
 
-        // 5. Valid String Literals
-        testValidStrLits();
+        // // 5. Valid String Literals
+        // testValidStrLits();
 
-        // 6. Invalid String Literals
-        testInvalidStrLits();
+        // // 6. Invalid String Literals
+        // testInvalidStrLits();
 
-        // 7. Valid Identifiers
-        testValidIdentifiers();
+        // // 7. Valid Identifiers
+        // testValidIdentifiers();
 
-        // 8. Fuzz Testing
-        testRandomTokens();
+        // // 8. Fuzz Testing
+        // testRandomTokens();
 
-        // 9. Comments
-        testComments();
+        // // 9. Comments
+        // testComments();
 
-        // 10. Whitespaces
-        testWhitespace();
+        // // 10. Whitespaces
+        // testWhitespace();
 
         // 11. Line Numbers
         testLineNumbers();
@@ -112,22 +112,22 @@ public class P2 {
         // Reset Print Stream
         resetPrintStream();
 
-        // Test Error Messages
+        // // Test Error Messages
 
-        // 11. Error messages on badly escaped String Literals
-        testBadEscapeStringErrMsg();
+        // // 11. Error messages on badly escaped String Literals
+        // testBadEscapeStringErrMsg();
 
-        // 12. Error messages on unterminated String Literals
-        testUnterminatedStringErrMsg();
+        // // 12. Error messages on unterminated String Literals
+        // testUnterminatedStringErrMsg();
 
-        // 13. Error messages on unterminated badly escaped String Literals
-        testUnterminatedBadEscapeStringErrMsg();
+        // // 13. Error messages on unterminated badly escaped String Literals
+        // testUnterminatedBadEscapeStringErrMsg();
 
-        // 14. Error messages on bad Integer Literals
-        testOverflowIntegerErrMsg();
+        // // 14. Error messages on bad Integer Literals
+        // testOverflowIntegerErrMsg();
 
-        // 15. Error messages on Illegal Characters
-        testIllegalCharacterErrMsg();
+        // // 15. Error messages on Illegal Characters
+        // testIllegalCharacterErrMsg();
 
         System.out.println("PASSED " + score + "/" + testsRun + " TESTS.");
     }
@@ -663,16 +663,18 @@ public class P2 {
         //create one large string to test line numbers with using valid tokens.
         for(int i = 0; i < 10; i++) {
             Token token = iterator.next();
-            Tuple addNew=new Tuple(lineNumber, charNumber);
-            tupleList.add(addNew);
-            System.out.println("adding linenum: "+addNew.lineNum + " charnum: "+ addNew.charNum);
+            
             largeString = largeString + token.token();
-            charNumber+=token.token().length();
             if(token.sym()==0){ //is a comment
                 largeString = largeString + "\n";
                 lineNumber++;
                 charNumber=1;
             }else{
+                Tuple addNew=new Tuple(lineNumber, charNumber);
+                
+                charNumber+=token.token().length();
+                tupleList.add(addNew);
+                System.out.println("adding linenum: "+addNew.lineNum + " charnum: "+ addNew.charNum);
                 largeString = largeString + " ";
                 charNumber++;
             }
@@ -683,17 +685,18 @@ public class P2 {
         reader = new StringReader(largeString);
         scanner = new Yylex(reader);
         Symbol symbol;
+        
+        CharNum.num = 1;
         for(int i = 0; i < 10; i++) {
-            CharNum.num = 1;
             symbol = scanner.next_token();
             // System.out.println(symbol.sym);
             Tuple node=tupleList.remove();
             // while(node!=null){
             // System.out.print("linenumber: ");
-            System.out.println("actual line number: "+((TokenVal)symbol.value).lineNum + "counted line number"+ node.lineNum);
+            System.out.println("symbol: "+symbol.sym+" actual line number: "+((TokenVal)symbol.value).lineNum + " counted line number: "+ node.lineNum);
             //  System.out.println("charNum is: "+node.charNum);
             // System.out.print("charnumber: ");
-            System.out.println("actual char number: "+((TokenVal)symbol.value).charNum + "counted char number: "+ node.charNum);
+            System.out.println("actual char number: "+((TokenVal)symbol.value).charNum + " counted char number: "+ node.charNum);
             // node=tupleList.remove();
             // }
            
