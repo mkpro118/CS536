@@ -83,7 +83,11 @@ public class P2 {
         resetPrintStream();
 
         // Test Error Messages
-
+        testBadEscapeStringErrMsg();
+        testUnterminatedStringErrMsg();
+        testUnterminatedBadEscapeStringErrMsg();
+        testOverflowIntegerErrMsg();
+        testIllegalCharacterErrMsg();
 
         System.out.println("PASSED " + score + "/" + testsRun + " TESTS.");
     }
@@ -253,7 +257,7 @@ public class P2 {
     }
 
     /**
-     *
+     * Tests the Scanner on keywords (12 tests)
      */
     private static void testKeywords() throws IOException {
         currTest = "Keywords";
@@ -269,9 +273,8 @@ public class P2 {
         }
     }
 
-
     /**
-     *  
+     * Tests the Scanner on Operators (28 tests)
      */
     private static void testOperators() throws IOException {
         currTest = "Operators";
@@ -289,7 +292,7 @@ public class P2 {
     }
 
     /**
-     *
+     * Tests the Scanner on Valid Integer Literals
      */
     private static void testValidIntLits() throws IOException {
         currTest = "Valid Integer Literals";
@@ -313,7 +316,7 @@ public class P2 {
 
 
     /**
-     *
+     * Tests the Scanner on Invalid Integer Literals
      */
     private static void testInvalidIntLits() throws IOException {
         currTest = "Invalid Integer Literals";
@@ -336,7 +339,7 @@ public class P2 {
     }
 
     /**
-     *
+     * Tests the Scanner on Valid String Literals
      */
     private static void testValidStrLits() throws IOException {
         currTest = "Valid String Literals";
@@ -354,13 +357,15 @@ public class P2 {
             reader = new StringReader(token.token());
             scanner = new Yylex(reader);
 
-            assertEquals(scanner.next_token().sym, token.sym());
+            Symbol sym = scanner.next_token();
+
+            assertEquals(sym.sym, token.sym());
+            assertEquals(((StrLitTokenVal)sym.value).strVal, token.token());
         }
     }
 
-
     /**
-     *
+     * Tests the Scanner on Invalid String Literals
      */
     private static void testInvalidStrLits() throws IOException {
         currTest = "Invalid String Literals";
@@ -380,12 +385,10 @@ public class P2 {
 
             assertEquals(scanner.next_token().sym, token.sym());
         }
-        
     }
 
-
     /**
-     * 
+     * Tests the Scanner on Valid Identifiers
      */
     private static void testValidIdentifiers() throws IOException {
         currTest = "Valid Identifiers";
@@ -406,8 +409,6 @@ public class P2 {
             Symbol symbol = scanner.next_token();
 
             assertEquals(symbol.sym, token.sym());
-
-
             assertEquals(((IdTokenVal)symbol.value).idVal, token.token());
         }
     }
@@ -471,6 +472,57 @@ public class P2 {
     // }
 
 
+    /**
+     * Tests the error message
+     */
+    private static void testBadEscapeStringErrMsg() {
+        ByteArrayOutputStream outputStream = switchPrintStream();
+        Iterator<Token> iterator =
+            new TokenStream(TokenType.BAD_ESCAPE_STRLIT).iterator();
+        resetPrintStream();
+    }
+
+    /**
+     *
+     */
+    private static void testUnterminatedStringErrMsg() {
+        ByteArrayOutputStream outputStream = switchPrintStream();
+        Iterator<Token> iterator =
+            new TokenStream(TokenType.UNTERMINATED_STRLIT).iterator();
+        resetPrintStream();
+    }
+
+    /**
+     *
+     */
+    private static void testUnterminatedBadEscapeStringErrMsg() {
+        ByteArrayOutputStream outputStream = switchPrintStream();
+        Iterator<Token> iterator =
+            new TokenStream(TokenType.UNTERMINATED_BAD_ESCAPE_STRLIT).iterator();
+        resetPrintStream();
+    }
+
+    /**
+     *
+     */
+    private static void testOverflowIntegerErrMsg() {
+        ByteArrayOutputStream outputStream = switchPrintStream();
+        Iterator<Token> iterator =
+            new TokenStream(TokenType.BAD_ESCAPE_STRLIT).iterator();
+        resetPrintStream();
+    }
+
+    /**
+     *
+     */
+    private static void testIllegalCharacterErrMsg() {
+        ByteArrayOutputStream outputStream = switchPrintStream();
+        Iterator<Token> iterator =
+            new TokenStream(TokenType.).iterator();
+        resetPrintStream();
+    }
+
+
     private final static void assertEquals(int a, int b) {
         testsRun++;
         if (a != b) {
@@ -511,6 +563,9 @@ enum TokenType {
     INVALID_INTLIT,
     VALID_STRLIT,
     INVALID_STRLIT,
+    UNTERMINATED_STRLIT,
+    BAD_ESCAPE_STRLIT,
+    UNTERMINATED_BAD_ESCAPE_STRLIT,
     VALID_IDENTIFIERS,
     COMMENTS,
     WHITESPACE,
@@ -622,8 +677,6 @@ class TokenStreamIterator implements Iterator<Token> {
             new Token(sym.LESSEQ, "<="),    new Token(sym.GREATEREQ, ">="),
             new Token(sym.EQUALS, "=="),    new Token(sym.NOTEQUALS, "~="),
         },
-
-
         };
     }
 
@@ -669,8 +722,10 @@ class TokenStreamIterator implements Iterator<Token> {
     }
 
     /**
-     * Whether
-     * @return [description]
+     * Whether there are more elements in the iterator
+     *
+     * @return {@code true} if there are more elements in the iterator,
+     *         {@code false} otherwise.
      */
     public boolean hasNext() {
         switch (type) {
@@ -682,7 +737,12 @@ class TokenStreamIterator implements Iterator<Token> {
         }
     }
 
-    public Token next() throws NoSuchElementException{
+    /**
+     * The next token in the iterator
+     *
+     * @return The next token
+     */
+    public Token next() {
         switch (type) {
         case KEYWORDS:
         case OPERATORS:
@@ -699,6 +759,15 @@ class TokenStreamIterator implements Iterator<Token> {
 
         case INVALID_STRLIT:
             return new Token(INVALID_SYM, generateInvalidString());
+
+        case UNTERMINATED_STRLIT:
+            return new Token(INVALID_SYM, generateUnterminatedString());
+
+        case BAD_ESCAPE_STRLIT:
+            return new Token(INVALID_SYM, generateBadEscapeString());
+
+        case UNTERMINATED_BAD_ESCAPE_STRLIT:
+            return new Token(INVALID_SYM, generateUnterminatedBadEscapeString());
 
         case VALID_IDENTIFIERS:
             return new Token(sym.ID, generateValidIdentifier());
@@ -718,28 +787,18 @@ class TokenStreamIterator implements Iterator<Token> {
                 return KNOWN_TOKENS[1][rng(KNOWN_TOKENS[1].length)];
 
             case 2: /* Integer literals */
-            
-            System.out.println("generate valid intlit");
                 return new Token(sym.INTLITERAL, generateValidInteger());
 
             case 3: /* Invalid integer literals */
-            System.out.println("generate invalid intlit");
-
                 return new Token(INVALID_SYM, generateInvalidInteger());
 
             case 4: /* String literals */
-            
-            System.out.println("generate valid string");
                 return new Token(sym.STRLITERAL, generateValidString());
 
             case 5: /* Invalid String literals */
-            
-            System.out.println("generate invalid string");
                 return new Token(INVALID_SYM, generateInvalidString());
 
             case 6: /* Identifiers */
-            
-            System.out.println("generate valid Identifiers");
                 return new Token(sym.ID, generateValidIdentifier());
             }
         }
@@ -747,6 +806,11 @@ class TokenStreamIterator implements Iterator<Token> {
         return null;
     }
 
+    /**
+     * Generate a valid Integer Literal token
+     *
+     * @return [description]
+     */
     private final static String generateValidInteger() {
         return String.valueOf(rng(Integer.MAX_VALUE));
     }
