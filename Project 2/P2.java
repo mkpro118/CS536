@@ -2,6 +2,7 @@ import java.util.*;
 import java.io.*;
 import java_cup.runtime.*;  // defines Symbol
 import static java.lang.Math.random;
+import java.util.LinkedList;
 
 /**
  * This program is to be used to test the base scanner.
@@ -91,8 +92,11 @@ public class P2 {
         // 9. Comments
         testComment();
 
-        // 10. White spaces
+        // 10. Whitespaces
         testWhitespace();
+
+        // 11. Line Numbers
+        testLineNumbers();
 
         // Reset Print Stream
         resetPrintStream();
@@ -103,6 +107,8 @@ public class P2 {
         testUnterminatedBadEscapeStringErrMsg();
         testOverflowIntegerErrMsg();
         // testIllegalCharacterErrMsg();
+
+        
 
         System.out.println("PASSED " + score + "/" + testsRun + " TESTS.");
     }
@@ -624,6 +630,59 @@ public class P2 {
     //     resetPrintStream();
     // }
 
+    /**
+     *
+     */
+    private static void testLineNumbers() {
+        currTest = "Test Line Numbers";
+        TokenStream tokenStream = new TokenStream(TokenType.VALID_TOKENS);
+        Iterator<Token> iterator = tokenStream.iterator();
+        String largeString="";
+        Reader reader;
+        Yylex scanner;
+
+
+        //create one large string to test line numbers with using valid tokens.
+        for(int i = 0; i < 10; i++) {
+            Token token = iterator.next();
+            
+            largeString = largeString + " "+ token.token();
+            if(token.sym()==0){
+                largeString = largeString + "\n";
+
+            }
+            // reader = new StringReader(token.token());
+            // scanner = new Yylex(reader);
+            // Symbol symbol = scanner.next_token();
+
+            // assertEquals(symbol.sym, token.sym());
+            // assertEquals(((IdTokenVal)symbol.value).idVal, token.token());
+        }
+
+        reader = new StringReader(largeString);
+        scanner = new Yylex(reader);
+        Symbol symbol;
+        for(int i = 0; i < 10; i++) {
+            CharNum.num = 1;
+            symbol = scanner.next_token();
+            
+            assertEquals(symbol.lineNum, token.sym());
+            assertEquals(((IdTokenVal)symbol.value).idVal, token.token());
+        }
+        
+        System.out.println(largeString);
+    }
+
+    /**
+     *
+     */
+    // private static void testCharNum() {
+    //     ByteArrayOutputStream outputStream = switchPrintStream();
+    //     Iterator<Token> iterator =
+    //         new TokenStream(TokenType.).iterator();
+    //     resetPrintStream();
+    // }
+
 
     /**
      * Fuzz Tests the Scanner by giving it random input across all tokens
@@ -856,7 +915,7 @@ class TokenStreamIterator implements Iterator<Token> {
         for (int j = 0; j < i; j++)
             illegal_subset[j] = illegal[j];
         ILLEGAL_CHARACTERS = new String(illegal_subset);
-        System.out.println(ILLEGAL_CHARACTERS);
+        // System.out.println(ILLEGAL_CHARACTERS);
     }
 
     private final TokenType type;
