@@ -633,47 +633,72 @@ public class P2 {
 
         resetPrintStream();
     }
+
+    /**
+     * @author Yesui Ulziibayar
+     *
+     * Represents a generated token
+     *
+     * @param  lineNum   
+     * @param  charNum 
+     */
+    record Tuple(int lineNum, int charNum) {}
+
     /**
      *
      */
-    private static void testLineNumbers() {
+    private static void testLineNumbers() throws IOException{
         currTest = "Test Line Numbers";
         TokenStream tokenStream = new TokenStream(TokenType.VALID_TOKENS);
         Iterator<Token> iterator = tokenStream.iterator();
         String largeString="";
         Reader reader;
         Yylex scanner;
+        int lineNumber=1;
+        int charNumber=1;
+
+        LinkedList<Tuple> tupleList = new LinkedList<>();
 
 
         //create one large string to test line numbers with using valid tokens.
         for(int i = 0; i < 10; i++) {
             Token token = iterator.next();
-            
-            largeString = largeString + " "+ token.token();
-            if(token.sym()==0){
+            Tuple addNew=new Tuple(lineNumber, charNumber);
+            tupleList.add(addNew);
+            System.out.println("adding linenum: "+addNew.lineNum + " charnum: "+ addNew.charNum);
+            largeString = largeString + token.token();
+            charNumber+=token.token().length();
+            if(token.sym()==0){ //is a comment
                 largeString = largeString + "\n";
-
+                lineNumber++;
+                charNumber=1;
+            }else{
+                largeString = largeString + " ";
+                charNumber++;
             }
-            // reader = new StringReader(token.token());
-            // scanner = new Yylex(reader);
-            // Symbol symbol = scanner.next_token();
-
-            // assertEquals(symbol.sym, token.sym());
-            // assertEquals(((IdTokenVal)symbol.value).idVal, token.token());
+            
         }
 
+        System.out.println(largeString);
         reader = new StringReader(largeString);
         scanner = new Yylex(reader);
         Symbol symbol;
         for(int i = 0; i < 10; i++) {
             CharNum.num = 1;
             symbol = scanner.next_token();
-            
-            assertEquals(symbol.lineNum, token.sym());
-            assertEquals(((IdTokenVal)symbol.value).idVal, token.token());
+            // System.out.println(symbol.sym);
+            Tuple node=tupleList.remove();
+            // while(node!=null){
+            // System.out.print("linenumber: ");
+            System.out.println("actual line number: "+((TokenVal)symbol.value).lineNum + "counted line number"+ node.lineNum);
+            //  System.out.println("charNum is: "+node.charNum);
+            // System.out.print("charnumber: ");
+            System.out.println("actual char number: "+((TokenVal)symbol.value).charNum + "counted char number: "+ node.charNum);
+            // node=tupleList.remove();
+            // }
+           
         }
         
-        System.out.println(largeString);
     }
 
     /**
