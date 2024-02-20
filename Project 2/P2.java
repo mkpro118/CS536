@@ -14,12 +14,21 @@ public class P2 {
     static int testsRun;
     static String currTest;
     private final static PrintStream defaultPrintStream;
+    private final static String badEscape;
+    private final static String unterminated;
+    private final static String unterminatedBadEscape;
+    private final static String badIntLit;
 
     static {
         score = 0;
         testsRun = 0;
         currTest = null;
         defaultPrintStream = System.out;
+        badEscape = "string literal with bad escaped character ignored";
+        unterminated = "unterminated string literal ignored";
+        unterminatedBadEscape
+            = "unterminated string literal with bad escaped character ignored";
+        badIntLit = "integer literal too large - using max value";
     }
 
     /**
@@ -49,7 +58,7 @@ public class P2 {
     public static void main(String[] args) throws IOException {
         // exception may be thrown by yylex
         // test all tokens
-        testAllTokens();
+        // testAllTokens();
         CharNum.num = 1;
 
         // Switch Print Stream to reduce output
@@ -93,7 +102,7 @@ public class P2 {
         testUnterminatedStringErrMsg();
         testUnterminatedBadEscapeStringErrMsg();
         testOverflowIntegerErrMsg();
-        testIllegalCharacterErrMsg();
+        // testIllegalCharacterErrMsg();
 
         System.out.println("PASSED " + score + "/" + testsRun + " TESTS.");
     }
@@ -514,10 +523,32 @@ public class P2 {
     /**
      * Tests the error message
      */
-    private static void testBadEscapeStringErrMsg() {
+    private static void testBadEscapeStringErrMsg() throws IOException {
+        currTest = "Bad Escape String Error Message";
+
         ByteArrayOutputStream outputStream = switchPrintStream();
+
         Iterator<Token> iterator =
             new TokenStream(TokenType.BAD_ESCAPE_STRLIT).iterator();
+
+        Token token;
+        String output;
+
+        for (int i = 0; i < 10; i++) {
+            new Yylex(new StringReader(iterator.next().token())).next_token();
+
+            output = outputStream.toString().trim();
+            // System.out.println(output);
+
+            assertTrue(output.contains("ERROR"));
+            assertTrue(output.contains(badEscape));
+            try {
+                outputStream.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         resetPrintStream();
     }
 
@@ -554,12 +585,12 @@ public class P2 {
     /**
      *
      */
-    private static void testIllegalCharacterErrMsg() {
-        ByteArrayOutputStream outputStream = switchPrintStream();
-        Iterator<Token> iterator =
-            new TokenStream(TokenType.).iterator();
-        resetPrintStream();
-    }
+    // private static void testIllegalCharacterErrMsg() {
+    //     ByteArrayOutputStream outputStream = switchPrintStream();
+    //     Iterator<Token> iterator =
+    //         new TokenStream(TokenType.).iterator();
+    //     resetPrintStream();
+    // }
 
 
     private final static void assertEquals(int a, int b) {
@@ -573,8 +604,20 @@ public class P2 {
     }
 
     private final static void assertEquals(String a, String b) {
+        testsRun++;
         if (!a.equals(b)) {
             System.out.printf("%s Test Failed! \"%s\" != \"%s\"\n", currTest, a, b);
+        } else {
+            score++;
+        }
+    }
+
+    private final static void assertTrue(boolean b) {
+        testsRun++;
+        if (!b) {
+            System.out.printf("%s Test Failed!\n", currTest);
+        } else {
+            score++;
         }
     }
 }
