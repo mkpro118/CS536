@@ -477,7 +477,7 @@ public class P2 {
             Symbol symbol = scanner.next_token();
 
             assertEquals(symbol.sym, token.sym());
-
+    
         }
 
     }
@@ -518,30 +518,99 @@ public class P2 {
     /**
      *
      */
-    private static void testUnterminatedStringErrMsg() {
+    private static void testUnterminatedStringErrMsg()  throws IOException {
+        currTest = "Unterminated String Error Message";
+
         ByteArrayOutputStream outputStream = switchPrintStream();
+
         Iterator<Token> iterator =
             new TokenStream(TokenType.UNTERMINATED_STRLIT).iterator();
+
+        Token token;
+        String output;
+
+        for (int i = 0; i < 10; i++) {
+            CharNum.num = 1;
+            new Yylex(new StringReader(iterator.next().token())).next_token();
+
+            output = outputStream.toString().trim();
+            // System.out.println(output);
+
+            assertTrue(output.contains("ERROR"));
+            assertTrue(output.contains(unterminated));
+            try {
+                outputStream.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         resetPrintStream();
     }
 
     /**
      *
      */
-    private static void testUnterminatedBadEscapeStringErrMsg() {
+    private static void testUnterminatedBadEscapeStringErrMsg()  throws IOException {
+        currTest = "Unterminated Bad Escape String Error Message";
+
         ByteArrayOutputStream outputStream = switchPrintStream();
+
         Iterator<Token> iterator =
             new TokenStream(TokenType.UNTERMINATED_BAD_ESCAPE_STRLIT).iterator();
+
+        Token token;
+        String output;
+
+        for (int i = 0; i < 10; i++) {
+            CharNum.num = 1;
+            new Yylex(new StringReader(iterator.next().token())).next_token();
+
+            output = outputStream.toString().trim();
+            // System.out.println(output);
+
+            assertTrue(output.contains("ERROR"));
+            assertTrue(output.contains(unterminatedBadEscape));
+            try {
+                outputStream.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         resetPrintStream();
     }
 
     /**
      *
      */
-    private static void testOverflowIntegerErrMsg() {
+    private static void testOverflowIntegerErrMsg()  throws IOException {
+        currTest = "Test Overflow Integer Error Message";
+
         ByteArrayOutputStream outputStream = switchPrintStream();
+
         Iterator<Token> iterator =
-            new TokenStream(TokenType.BAD_ESCAPE_STRLIT).iterator();
+            new TokenStream(TokenType.INVALID_INTLIT).iterator();
+
+        Token token;
+        String output;
+
+        for (int i = 0; i < 10; i++) {
+            CharNum.num = 1;
+            new Yylex(new StringReader(iterator.next().token())).next_token();
+
+            output = outputStream.toString().trim();
+            // System.out.println(output);
+
+            assertTrue(output.contains("WARNING"));
+            assertTrue(output.contains(badIntLit));
+            try {
+                outputStream.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         resetPrintStream();
     }
 
