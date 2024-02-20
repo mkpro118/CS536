@@ -350,7 +350,7 @@ public class P2 {
     }
 
     /**
-     * Tests the Scanner on Valid Integer Literals (100 tests)
+     * Tests the Scanner on Valid Integer Literals (10000 tests)
      */
     private static void testValidIntLits() throws IOException {
         currTest = "Valid Integer Literals";
@@ -358,8 +358,8 @@ public class P2 {
         Iterator<Token> iterator =
             new TokenStream(TokenType.VALID_INTLIT).iterator();
 
-        // Generate 100 random valid Integer Literals
-        for(int i = 0; i < 100; i++) {
+        // Generate 10000 random valid Integer Literals
+        for(int i = 0; i < 10000; i++) {
             Token token = iterator.next();
             Yylex scanner = new Yylex(new StringReader(token.token()));
 
@@ -368,7 +368,7 @@ public class P2 {
     }
 
     /**
-     * Tests the Scanner on Invalid Integer Literals (100 tests)
+     * Tests the Scanner on Invalid Integer Literals (10000 tests)
      */
     private static void testInvalidIntLits() throws IOException {
         currTest = "Invalid Integer Literals";
@@ -376,8 +376,8 @@ public class P2 {
         Iterator<Token> iterator =
             new TokenStream(TokenType.INVALID_INTLIT).iterator();
         
-        // Generate 100 invalid Integer Literals
-        for(int i = 0; i < 100; i++) {
+        // Generate 10000 invalid Integer Literals
+        for(int i = 0; i < 10000; i++) {
             Token token = iterator.next();
             Yylex scanner = new Yylex(new StringReader(token.token()));
 
@@ -386,7 +386,7 @@ public class P2 {
     }
 
     /**
-     * Tests the Scanner on Valid String Literals (100 tests)
+     * Tests the Scanner on Valid String Literals (10000 tests)
      */
     private static void testValidStrLits() throws IOException {
         currTest = "Valid String Literals";
@@ -394,8 +394,8 @@ public class P2 {
         Iterator<Token> iterator =
             new TokenStream(TokenType.VALID_STRLIT).iterator();
         
-        // Generate 100 valid String Literals
-        for(int i = 0; i < 100; i++) {
+        // Generate 10000 valid String Literals
+        for(int i = 0; i < 10000; i++) {
             Token token = iterator.next();
             Yylex scanner = new Yylex(new StringReader(token.token()));
 
@@ -407,7 +407,7 @@ public class P2 {
     }
 
     /**
-     * Tests the Scanner on Invalid String Literals (100 tests)
+     * Tests the Scanner on Invalid String Literals (10000 tests)
      */
     private static void testInvalidStrLits() throws IOException {
         currTest = "Invalid String Literals";
@@ -415,8 +415,8 @@ public class P2 {
         Iterator<Token> iterator =
             new TokenStream(TokenType.INVALID_STRLIT).iterator();
         
-        // Generate 100 invalid string literals
-        for(int i = 0; i < 100; i++) {
+        // Generate 10000 invalid string literals
+        for(int i = 0; i < 10000; i++) {
             Token token = iterator.next();
             Yylex scanner = new Yylex(new StringReader(token.token()));
 
@@ -425,7 +425,7 @@ public class P2 {
     }
 
     /**
-     * Tests the Scanner on Valid Identifiers (100 tests)
+     * Tests the Scanner on Valid Identifiers (10000 tests)
      */
     private static void testValidIdentifiers() throws IOException {
         currTest = "Valid Identifiers";
@@ -433,8 +433,8 @@ public class P2 {
         Iterator<Token> iterator =
             new TokenStream(TokenType.VALID_IDENTIFIERS).iterator();
         
-        // Generate 100 valid identifiers
-        for(int i = 0; i < 100; i++) {
+        // Generate 10000 valid identifiers
+        for(int i = 0; i < 10000; i++) {
             Token token = iterator.next();
             Yylex scanner = new Yylex(new StringReader(token.token()));
 
@@ -446,7 +446,7 @@ public class P2 {
     }
 
     /**
-     * Tests the Scanner on Comments (100 tests)
+     * Tests the Scanner on Comments (10000 tests)
      */
     private static void testComments() throws IOException {
         currTest = "Comments";
@@ -454,8 +454,8 @@ public class P2 {
         Iterator<Token> iterator =
             new TokenStream(TokenType.COMMENTS).iterator();
         
-        // Generate 100 comment strings
-        for(int i = 0; i < 100; i++) {
+        // Generate 10000 comment strings
+        for(int i = 0; i < 10000; i++) {
             Token token = iterator.next();
             Yylex scanner = new Yylex(new StringReader(token.token()));
 
@@ -464,7 +464,7 @@ public class P2 {
     }
 
     /**
-     * Tests the Scanner on Whitespace (100 tests)
+     * Tests the Scanner on Whitespace (10000 tests)
      */
     private static void testWhitespace() throws IOException {
         currTest = "Whitespaces";
@@ -472,8 +472,8 @@ public class P2 {
         Iterator<Token> iterator =
             new TokenStream(TokenType.WHITESPACE).iterator();
         
-        // Generate 100 valid whitespace characters
-        for(int i = 0; i < 100; i++) {
+        // Generate 10000 valid whitespace characters
+        for(int i = 0; i < 10000; i++) {
             Token token = iterator.next();
             Yylex scanner = new Yylex(new StringReader(token.token()));
 
@@ -482,7 +482,7 @@ public class P2 {
     }
 
     /**
-     * Tests the error messages on badly escaped strings (100 tests)
+     * Tests the error messages on badly escaped strings (10000 tests)
      */
     private static void testBadEscapeStringErrMsg() throws IOException {
         currTest = "Bad Escape String Error Message";
@@ -493,8 +493,8 @@ public class P2 {
         Iterator<Token> iterator =
             new TokenStream(TokenType.BAD_ESCAPE_STRLIT).iterator();
 
-        // Generate 100 bad escape String literals
-        for (int i = 0; i < 100; i++) {
+        // Generate 10000 bad escape String literals
+        for (int i = 0; i < 10000; i++) {
             // Reset and clear the outputstream before testing
             outputStream.reset();
 
@@ -512,7 +512,7 @@ public class P2 {
     }
 
     /**
-     * Tests the error messages on unterminated strings (100 tests)
+     * Tests the error messages on unterminated strings (10000 tests)
      */
     private static void testUnterminatedStringErrMsg()  throws IOException {
         currTest = "Unterminated String Error Message";
@@ -523,8 +523,8 @@ public class P2 {
         Iterator<Token> iterator =
             new TokenStream(TokenType.UNTERMINATED_STRLIT).iterator();
 
-        // Generate 100 unterminated String literals
-        for (int i = 0; i < 100; i++) {
+        // Generate 10000 unterminated String literals
+        for (int i = 0; i < 10000; i++) {
             // Reset and clear the outputstream before testing
             outputStream.reset();
 
@@ -543,7 +543,7 @@ public class P2 {
 
     /**
      * Tests the error messages on badly escaped and unterminated strings
-     * (100 tests)
+     * (10000 tests)
      */
     private static void testUnterminatedBadEscapeStringErrMsg()  throws IOException {
         currTest = "Unterminated Bad Escape String Error Message";
@@ -554,8 +554,8 @@ public class P2 {
         Iterator<Token> iterator =
             new TokenStream(TokenType.UNTERMINATED_BAD_ESCAPE_STRLIT).iterator();
 
-        // Generate 100 unterminated & bad escape String literals
-        for (int i = 0; i < 100; i++) {
+        // Generate 10000 unterminated & bad escape String literals
+        for (int i = 0; i < 10000; i++) {
             // Reset and clear the outputstream before testing
             outputStream.reset();
 
@@ -573,7 +573,7 @@ public class P2 {
     }
 
     /**
-     * Tests the error messages on badly integer literals (100 tests)
+     * Tests the error messages on badly integer literals (10000 tests)
      */
     private static void testOverflowIntegerErrMsg()  throws IOException {
         currTest = "Overflow Integer Error Message";
@@ -584,8 +584,8 @@ public class P2 {
         Iterator<Token> iterator =
             new TokenStream(TokenType.INVALID_INTLIT).iterator();
 
-        // Generate 100 overflowing integer literals
-        for (int i = 0; i < 100; i++) {
+        // Generate 10000 overflowing integer literals
+        for (int i = 0; i < 10000; i++) {
             // Reset and clear the outputstream before testing
             outputStream.reset();
 
@@ -604,7 +604,7 @@ public class P2 {
     }
 
     /**
-     * Tests the error messages on illegal characters (100 tests)
+     * Tests the error messages on illegal characters (10000 tests)
      */
     private static void testIllegalCharacterErrMsg() throws IOException {
         currTest = "Test Overflow Integer Error Message";
@@ -615,8 +615,8 @@ public class P2 {
         Iterator<Token> iterator =
             new TokenStream(TokenType.ILLEGAL_CHARACTERS).iterator();
 
-        // Generate 100 illegal characters
-        for (int i = 0; i < 100; i++) {
+        // Generate 10000 illegal characters
+        for (int i = 0; i < 10000; i++) {
             // Reset and clear the outputstream before testing
             outputStream.reset();
 
@@ -1271,22 +1271,35 @@ class TokenStreamIterator implements Iterator<Token> {
      * @return a valid identifier token as a String
      */
     private final static String generateValidIdentifier() {
-        int len = rng(MIN_TOKEN_LENGTH, MAX_TOKEN_LENGTH);
+        outer: while(true) {
+            int len = rng(MIN_TOKEN_LENGTH, MAX_TOKEN_LENGTH);
 
-        char[] buf = new char[len];
+            char[] buf = new char[len];
 
-        char c;
-        do {
-            c = CHARSET[rng(CHARSET_SIZE)];
-        } while (c <= '9');
+            char c;
+            do {
+                c = CHARSET[rng(CHARSET_SIZE)];
+            } while (c <= '9');
 
-        buf[0] = c;
+            buf[0] = c;
 
-        for (int i = 1; i < len; i++) {
-            buf[i] = CHARSET[rng(CHARSET_SIZE)];
+            for (int i = 1; i < len; i++) {
+                buf[i] = CHARSET[rng(CHARSET_SIZE)];
+            }
+
+            String id = new String(buf);
+
+            // Check generated identifier is not a keyword
+            for (Token t: KNOWN_TOKENS[0]) {
+                // if generated identifier is a keyword, case sensitive
+                // retry generation
+                if (t.token().equals(id)) {
+                    continue outer;
+                }
+            }
+
+            return id;
         }
-
-        return new String(buf);
     }
 
     /**
