@@ -1,8 +1,19 @@
-import java.util.*;
-import java.io.*;
-import java_cup.runtime.*;  // defines Symbol
-import static java.lang.Math.random;
+import java.util.Iterator;
 import java.util.LinkedList;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringReader;
+
+import java_cup.runtime.Symbol;  // defines Symbol
+
+import static java.lang.Math.random;
 
 /**
  * @author Yesui Ulziibayar
@@ -13,15 +24,15 @@ import java.util.LinkedList;
  * numbers, values associated with tokens)
  */
 public class P2 {
-    static int score;
-    static int testsRun;
-    static String currTest;
-    private final static PrintStream defaultPrintStream;
-    private final static String badEscape;
-    private final static String unterminated;
-    private final static String unterminatedBadEscape;
-    private final static String badIntLit;
-    private final static String illegalChar;
+    static int score;  // Number of tests passed
+    static int testsRun;  // Number of tests run
+    static String currTest;  // The test being run
+    private final static PrintStream defaultPrintStream;  // Default stderr
+    private final static String badEscape;  // Error message on bad escape
+    private final static String unterminated;  // Error message on unterminated
+    private final static String unterminatedBadEscape;  // Error message on both
+    private final static String badIntLit;  // Error message on bad integers
+    private final static String illegalChar;  // Error message on illegal chars
 
     static {
         score = 0;
@@ -37,12 +48,12 @@ public class P2 {
     }
 
     /**
-     * Changes the {@code System.out} PrintStream to a new PrintStream using a
+     * Changes the {@code System.err} PrintStream to a new PrintStream using a
      * {@code ByteArrayOutputStream} that captures the printed bytes,
      * which can be converted to {@code String}.
      *
      * @return A {@code ByteArrayOutputStream} that captures output written to
-     *         the {@code System.out} PrintStream
+     *         the {@code System.err} PrintStream
      */
     private final static ByteArrayOutputStream switchPrintStream() {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -54,14 +65,14 @@ public class P2 {
     }
 
     /**
-     * Resets the {@code System.out} PrintStream to stdout
+     * Resets the {@code System.err} PrintStream to stderr
      */
     private final static void resetPrintStream() {
         System.setErr(defaultPrintStream);
     }
 
     /**
-     * Driver
+     * Driver to test the functionality of the Scanner
      *
      * @param args  unused
      *
@@ -70,14 +81,20 @@ public class P2 {
     public static void main(String[] args) throws IOException {
         // exception may be thrown by yylex
         // test all tokens
-        // testAllTokens();
+        System.out.println("Running the given test");
+        testAllTokens();
+
+        // Reset character number
         CharNum.num = 1;
 
-        // Switch Print Stream to reduce output
+        System.out.println("\nStarting custom tests\n");
+
+        // Switch Print Stream to redirect output from console and reduce
+        // verbosity
         switchPrintStream();
 
         // 1. Keywords
-        // testKeywords();
+        testKeywords();
 
         // 2. Operators
         testOperators();
@@ -109,7 +126,7 @@ public class P2 {
         // 11. Line Numbers
         testLineNumbers();
 
-        // Reset Print Stream
+        // Reset Print Stream to test error messages
         resetPrintStream();
 
         // Test Error Messages
@@ -120,7 +137,7 @@ public class P2 {
         // 12. Error messages on unterminated String Literals
         testUnterminatedStringErrMsg();
 
-        // 13. Error messages on unterminated badly escaped String Literals
+        // 13. Error messages on unterminated & badly escaped String Literals
         testUnterminatedBadEscapeStringErrMsg();
 
         // 14. Error messages on bad Integer Literals
@@ -129,10 +146,18 @@ public class P2 {
         // 15. Error messages on Illegal Characters
         testIllegalCharacterErrMsg();
 
-        System.out.println("PASSED " + score + "/" + testsRun + " TESTS.");
+        // Display results
+        if (score < testsRun) {
+            System.out.printf("PASSED %d/%d TESTS.", score, testsRun);
+            System.out.printf("(FAILED %d TESTS)\n", (testsRun - score));
+        } else {
+            System.out.printf("ALL TESTS PASSED! (%d Tests)\n", testsRun);
+        }
+        System.out.println("Testing Complete!\n\n");
     }
 
     /**
+     * NOTE: This function/method has not been modified
      * testAllTokens
      *
      * Open and read from file allTokens.txt
@@ -302,30 +327,23 @@ public class P2 {
     private static void testKeywords() throws IOException {
         currTest = "Keywords";
 
-        Reader reader;
-        Yylex scanner;
+        // There are 12 keywords which are returned in alphabetical order
         for (Token token : new TokenStream(TokenType.KEYWORDS)) {
-            CharNum.num = 1;
-            reader = new StringReader(token.token());
-            scanner = new Yylex(reader);
+            Yylex scanner = new Yylex(new StringReader(token.token()));
 
             assertEquals(scanner.next_token().sym, token.sym());
         }
     }
 
     /**
-     * Tests the Scanner on Operators (28 tests)
+     * Tests the Scanner on Operators (27 tests)
      */
     private static void testOperators() throws IOException {
         currTest = "Operators";
 
-        Reader reader;
-        Yylex scanner;
-
+        // There are 27 operators, returned in lexicographical order
         for (Token token : new TokenStream(TokenType.OPERATORS)) {
-            CharNum.num = 1;
-            reader = new StringReader(token.token());
-            scanner = new Yylex(reader);
+            Yylex scanner = new Yylex(new StringReader(token.token()));
 
             assertEquals(scanner.next_token().sym, token.sym());
         }
@@ -337,18 +355,13 @@ public class P2 {
     private static void testValidIntLits() throws IOException {
         currTest = "Valid Integer Literals";
 
-        TokenStream tokenStream = new TokenStream(TokenType.VALID_INTLIT);
-        Iterator<Token> iterator = tokenStream.iterator();
-        
-        Reader reader;
-        Yylex scanner;
+        Iterator<Token> iterator =
+            new TokenStream(TokenType.VALID_INTLIT).iterator();
 
-        //generate 10 random valid intlits.
+        // Generate 100 random valid Integer Literals
         for(int i = 0; i < 100; i++) {
-            CharNum.num = 1;
             Token token = iterator.next();
-            reader = new StringReader(token.token());
-            scanner = new Yylex(reader);
+            Yylex scanner = new Yylex(new StringReader(token.token()));
 
             assertEquals(scanner.next_token().sym, token.sym());
         }
@@ -360,17 +373,13 @@ public class P2 {
     private static void testInvalidIntLits() throws IOException {
         currTest = "Invalid Integer Literals";
 
-        TokenStream tokenStream = new TokenStream(TokenType.INVALID_INTLIT);
-        Iterator<Token> iterator = tokenStream.iterator();
+        Iterator<Token> iterator =
+            new TokenStream(TokenType.INVALID_INTLIT).iterator();
         
-        Reader reader;
-        Yylex scanner;
-
+        // Generate 100 invalid Integer Literals
         for(int i = 0; i < 100; i++) {
-            CharNum.num = 1;
             Token token = iterator.next();
-            reader = new StringReader(token.token());
-            scanner = new Yylex(reader);
+            Yylex scanner = new Yylex(new StringReader(token.token()));
 
             assertEquals(scanner.next_token().sym, token.sym());
         }
@@ -382,17 +391,13 @@ public class P2 {
     private static void testValidStrLits() throws IOException {
         currTest = "Valid String Literals";
 
-        TokenStream tokenStream = new TokenStream(TokenType.VALID_STRLIT);
-        Iterator<Token> iterator = tokenStream.iterator();
+        Iterator<Token> iterator =
+            new TokenStream(TokenType.VALID_STRLIT).iterator();
         
-        Reader reader;
-        Yylex scanner;
-
+        // Generate 100 valid String Literals
         for(int i = 0; i < 100; i++) {
-            CharNum.num = 1;
             Token token = iterator.next();
-            reader = new StringReader(token.token());
-            scanner = new Yylex(reader);
+            Yylex scanner = new Yylex(new StringReader(token.token()));
 
             Symbol sym = scanner.next_token();
 
@@ -407,17 +412,13 @@ public class P2 {
     private static void testInvalidStrLits() throws IOException {
         currTest = "Invalid String Literals";
 
-        TokenStream tokenStream = new TokenStream(TokenType.INVALID_STRLIT);
-        Iterator<Token> iterator = tokenStream.iterator();
+        Iterator<Token> iterator =
+            new TokenStream(TokenType.INVALID_STRLIT).iterator();
         
-        Reader reader;
-        Yylex scanner;
-
+        // Generate 100 invalid string literals
         for(int i = 0; i < 100; i++) {
-            CharNum.num = 1;
             Token token = iterator.next();
-            reader = new StringReader(token.token());
-            scanner = new Yylex(reader);
+            Yylex scanner = new Yylex(new StringReader(token.token()));
 
             assertEquals(scanner.next_token().sym, token.sym());
         }
@@ -429,17 +430,13 @@ public class P2 {
     private static void testValidIdentifiers() throws IOException {
         currTest = "Valid Identifiers";
 
-        TokenStream tokenStream = new TokenStream(TokenType.VALID_IDENTIFIERS);
-        Iterator<Token> iterator = tokenStream.iterator();
+        Iterator<Token> iterator =
+            new TokenStream(TokenType.VALID_IDENTIFIERS).iterator();
         
-        Reader reader;
-        Yylex scanner;
-
+        // Generate 100 valid identifiers
         for(int i = 0; i < 100; i++) {
-            CharNum.num = 1;
             Token token = iterator.next();
-            reader = new StringReader(token.token());
-            scanner = new Yylex(reader);
+            Yylex scanner = new Yylex(new StringReader(token.token()));
 
             Symbol symbol = scanner.next_token();
 
@@ -452,19 +449,15 @@ public class P2 {
      * Tests the Scanner on Comments (100 tests)
      */
     private static void testComments() throws IOException {
-        currTest = "comments";
+        currTest = "Comments";
 
-        TokenStream tokenStream = new TokenStream(TokenType.COMMENTS);
-        Iterator<Token> iterator = tokenStream.iterator();
+        Iterator<Token> iterator =
+            new TokenStream(TokenType.COMMENTS).iterator();
         
-        Reader reader;
-        Yylex scanner;
-
+        // Generate 100 comment strings
         for(int i = 0; i < 100; i++) {
-            CharNum.num = 1;
             Token token = iterator.next();
-            reader = new StringReader(token.token());
-            scanner = new Yylex(reader);
+            Yylex scanner = new Yylex(new StringReader(token.token()));
 
             assertEquals(scanner.next_token().sym, token.sym());
         }
@@ -474,19 +467,15 @@ public class P2 {
      * Tests the Scanner on Whitespace (100 tests)
      */
     private static void testWhitespace() throws IOException {
-        currTest = "white spaces";
+        currTest = "Whitespaces";
 
-        TokenStream tokenStream = new TokenStream(TokenType.WHITESPACE);
-        Iterator<Token> iterator = tokenStream.iterator();
+        Iterator<Token> iterator =
+            new TokenStream(TokenType.WHITESPACE).iterator();
         
-        Reader reader;
-        Yylex scanner;
-
+        // Generate 100 valid whitespace characters
         for(int i = 0; i < 100; i++) {
-            CharNum.num = 1;
             Token token = iterator.next();
-            reader = new StringReader(token.token());
-            scanner = new Yylex(reader);
+            Yylex scanner = new Yylex(new StringReader(token.token()));
 
             assertEquals(scanner.next_token().sym, token.sym());
         }
@@ -498,25 +487,27 @@ public class P2 {
     private static void testBadEscapeStringErrMsg() throws IOException {
         currTest = "Bad Escape String Error Message";
 
+        // Switch stderr to capture output
         ByteArrayOutputStream outputStream = switchPrintStream();
 
         Iterator<Token> iterator =
             new TokenStream(TokenType.BAD_ESCAPE_STRLIT).iterator();
 
-        Token token;
-        String output;
-
-        for (int i = 0; i < 5; i++) {
+        // Generate 100 bad escape String literals
+        for (int i = 0; i < 100; i++) {
+            // Reset and clear the outputstream before testing
             outputStream.reset();
-            CharNum.num = 1;
+
+            // We do not need the scanner value
             new Yylex(new StringReader(iterator.next().token())).next_token();
 
-            output = outputStream.toString().trim();
+            String output = outputStream.toString().trim();
 
             assertTrue(output.contains("ERROR"));
             assertTrue(output.contains(badEscape));
         }
 
+        // Restore stderr
         resetPrintStream();
     }
 
@@ -526,25 +517,27 @@ public class P2 {
     private static void testUnterminatedStringErrMsg()  throws IOException {
         currTest = "Unterminated String Error Message";
 
+        // Switch stderr to capture output
         ByteArrayOutputStream outputStream = switchPrintStream();
 
         Iterator<Token> iterator =
             new TokenStream(TokenType.UNTERMINATED_STRLIT).iterator();
 
-        Token token;
-        String output;
-
+        // Generate 100 unterminated String literals
         for (int i = 0; i < 100; i++) {
+            // Reset and clear the outputstream before testing
             outputStream.reset();
-            CharNum.num = 1;
+
+            // We do not need the scanner value
             new Yylex(new StringReader(iterator.next().token())).next_token();
 
-            output = outputStream.toString().trim();
+            String output = outputStream.toString().trim();
 
             assertTrue(output.contains("ERROR"));
             assertTrue(output.contains(unterminated));
         }
 
+        // Restore stderr
         resetPrintStream();
     }
 
@@ -555,25 +548,27 @@ public class P2 {
     private static void testUnterminatedBadEscapeStringErrMsg()  throws IOException {
         currTest = "Unterminated Bad Escape String Error Message";
 
+        // Switch stderr to capture output
         ByteArrayOutputStream outputStream = switchPrintStream();
 
         Iterator<Token> iterator =
             new TokenStream(TokenType.UNTERMINATED_BAD_ESCAPE_STRLIT).iterator();
 
-        Token token;
-        String output;
-
+        // Generate 100 unterminated & bad escape String literals
         for (int i = 0; i < 100; i++) {
+            // Reset and clear the outputstream before testing
             outputStream.reset();
-            CharNum.num = 1;
+
+            // We do not need the scanner value
             new Yylex(new StringReader(iterator.next().token())).next_token();
 
-            output = outputStream.toString().trim();
+            String output = outputStream.toString().trim();
 
             assertTrue(output.contains("ERROR"));
             assertTrue(output.contains(unterminatedBadEscape));
         }
 
+        // Restore stderr
         resetPrintStream();
     }
 
@@ -583,25 +578,28 @@ public class P2 {
     private static void testOverflowIntegerErrMsg()  throws IOException {
         currTest = "Overflow Integer Error Message";
 
+        // Switch stderr to capture output
         ByteArrayOutputStream outputStream = switchPrintStream();
 
         Iterator<Token> iterator =
             new TokenStream(TokenType.INVALID_INTLIT).iterator();
 
-        Token token;
-        String output;
-
+        // Generate 100 overflowing integer literals
         for (int i = 0; i < 100; i++) {
+            // Reset and clear the outputstream before testing
             outputStream.reset();
-            CharNum.num = 1;
+
+            // We do not need the scanner value
             new Yylex(new StringReader(iterator.next().token())).next_token();
 
-            output = outputStream.toString().trim();
+            String output = outputStream.toString().trim();
 
+            // Should be a warning, not an error
             assertTrue(output.contains("WARNING"));
             assertTrue(output.contains(badIntLit));
         }
 
+        // Restore stderr
         resetPrintStream();
     }
 
@@ -611,81 +609,99 @@ public class P2 {
     private static void testIllegalCharacterErrMsg() throws IOException {
         currTest = "Test Overflow Integer Error Message";
 
+        // Switch stderr to capture output
         ByteArrayOutputStream outputStream = switchPrintStream();
 
         Iterator<Token> iterator =
             new TokenStream(TokenType.ILLEGAL_CHARACTERS).iterator();
 
-        Token token;
-        String output;
-
+        // Generate 100 illegal characters
         for (int i = 0; i < 100; i++) {
+            // Reset and clear the outputstream before testing
             outputStream.reset();
-            CharNum.num = 1;
-            token = iterator.next();
+
+            Token token = iterator.next();  // Get an illegal character
+
+            // We do not need the scanner value
             new Yylex(new StringReader(token.token())).next_token();
 
-            output = outputStream.toString().trim();
+            String output = outputStream.toString().trim();
 
             assertTrue(output.contains("ERROR"));
             assertTrue(output.endsWith(illegalChar + token.token()));
         }
 
+        // Restore stderr
         resetPrintStream();
     }
 
     /**
-     * @author Yesui Ulziibayar
-     *
-     * Represents a generated token
-     *
-     * @param  lineNum   
-     * @param  charNum 
-     */
-    record Tuple(int sym, int lineNum, int charNum) {}
-
-    /**
-     * Tests Line Numbers and Character Numbers
+     * Tests Line Numbers and Character Numbers (<= 10000)
      */
     private static void testLineNumbers() throws IOException{
         currTest = "Test Line Numbers";
-        TokenStream tokenStream = new TokenStream(TokenType.VALID_TOKENS);
-        Iterator<Token> iterator = tokenStream.iterator();
-        String largeString = "";
-        Yylex scanner;
+
+        Iterator<Token> iterator =
+            new TokenStream(TokenType.VALID_TOKENS).iterator();
+
+        StringBuilder tokens = new StringBuilder("");
+
+        // Local fields to track metadata during data generation
         int lineNumber = 1;
         int charNumber = 1;
 
-        LinkedList<Tuple> tupleList = new LinkedList<>();
+        LinkedList<Tuple3> tokenList = new LinkedList<>();
 
-
-        //create one large string to test line numbers with using valid tokens.
-        for(int i = 0; i < 1000; i++) {
+        // Create one large string to test line and character numbers
+        for(int i = 0; i < 10000; i++) {
             Token token = iterator.next();
-            
-            largeString = largeString + token.token();
+
+            tokens = tokens.append(token.token());
 
             if (token.sym() == 0) { // Sym is a comment
-                largeString += "\n";
-                lineNumber++;
-                charNumber = 1;
-            } else{
-                tupleList.add(new Tuple(token.sym(), lineNumber, charNumber));
+                // Cannot test anything after a comment, so add a newline
+                tokens.append("\n");
+
+                lineNumber++;  // Increment local line number
+                charNumber = 1;  // Reset local character number
+            } else {
+                // Not a comment, store the symbol
+                tokenList.add(new Tuple3(token.sym(), lineNumber, charNumber));
+
+                // Update local character number
                 charNumber += token.token().length();
-                largeString += " ";
-                charNumber++;
+
+                // We add a newline with a 25% probability
+                if (random() > 0.75) {
+                    tokens.append("\n");
+
+                    lineNumber++;  // Increment local line number
+                    charNumber = 1;  // Reset local character number
+                } else {
+                    // Add a whitespace token to differentiate symbols
+                    tokens.append(" ");
+
+                    // Whitespaces are single characters, update local variable
+                    charNumber++;
+                }
             }
         }
 
-        scanner = new Yylex(new StringReader(largeString));
-        
+        // Reset to ensure correct character numbers
         CharNum.num = 1;
+
+        // Scanner over the large string
+        Yylex scanner = new Yylex(new StringReader(tokens.toString()));
         Symbol symbol = scanner.next_token();
+
+        // Loop over the entire large string
         while (symbol.sym != sym.EOF) {
-            Tuple node = tupleList.remove();
-            assertEquals(symbol.sym, node.sym());
-            assertEquals(((TokenVal)symbol.value).lineNum, node.lineNum());
-            assertEquals(((TokenVal)symbol.value).charNum, node.charNum());
+            // Expected symbol metadata
+            Tuple3 tuple = tokenList.remove();
+
+            assertEquals(symbol.sym, tuple.sym());
+            assertEquals(((TokenVal)symbol.value).lineNum, tuple.lineNum());
+            assertEquals(((TokenVal)symbol.value).charNum, tuple.charNum());
 
             symbol = scanner.next_token();
         }
@@ -693,28 +709,23 @@ public class P2 {
 
     /**
      * Fuzz Tests the Scanner by giving it random input across all tokens, both
-     * valid and invalid (100 tests)
+     * valid and invalid (10000 tests)
      */
     private static void testRandomTokens() throws IOException {
         currTest = "Fuzz";
 
-        TokenStream tokenStream = new TokenStream(TokenType.RANDOM);
-        Iterator<Token> iterator = tokenStream.iterator();
+        Iterator<Token> iterator = new TokenStream(TokenType.RANDOM).iterator();
 
-        Reader reader;
-        Yylex scanner;
-
-        //generate 100 random tokens
-        for(int i = 0; i < 100; i++){
-            CharNum.num = 1;
+        //generate 10000 random tokens, both valid and invalid
+        for(int i = 0; i < 10000; i++){
             Token token = iterator.next();
-            reader = new StringReader(token.token());
-            scanner = new Yylex(reader);
+            Yylex scanner = new Yylex(new StringReader(token.token()));
 
             Symbol symbol = scanner.next_token();
 
             assertEquals(symbol.sym, token.sym());
 
+            // Check values for Identifiers, Integers and Strings
             switch (symbol.sym) {
             case sym.ID:
                 assertEquals(((IdTokenVal)symbol.value).idVal, token.token());
@@ -781,6 +792,16 @@ public class P2 {
         }
     }
 }
+
+/**
+ * @author Yesui Ulziibayar
+ *
+ * Represents a generated token
+ *
+ * @param  lineNum
+ * @param  charNum
+ */
+record Tuple3(int sym, int lineNum, int charNum) {}
 
 /**
  * @author Mrigank Kumar
@@ -903,30 +924,30 @@ class TokenStreamIterator implements Iterator<Token> {
         /* Keywords */
         {
 
-            new Token(sym.VOID, "void"),       new Token(sym.LOGICAL, "logical"),
-            new Token(sym.INTEGER, "integer"), new Token(sym.TRUE, "True"),
-            new Token(sym.FALSE, "False"),     new Token(sym.TUPLE, "tuple"),
-            new Token(sym.READ, "read"),       new Token(sym.WRITE, "write"),
-            new Token(sym.IF, "if"),           new Token(sym.ELSE, "else"),
-            new Token(sym.WHILE, "while"),     new Token(sym.RETURN, "return"),
+            new Token(sym.ELSE, "else"),       new Token(sym.FALSE, "False"),
+            new Token(sym.IF, "if"),           new Token(sym.INTEGER, "integer"),
+            new Token(sym.LOGICAL, "logical"), new Token(sym.READ, "read"),
+            new Token(sym.RETURN, "return"),   new Token(sym.TRUE, "True"),
+            new Token(sym.TUPLE, "tuple"),     new Token(sym.VOID, "void"),
+            new Token(sym.WHILE, "while"),     new Token(sym.WRITE, "write"),
         },
 
         /* Operators */
         {
-            new Token(sym.ASSIGN, "="),     new Token(sym.LCURLY, "{"),
-            new Token(sym.RCURLY, "}"),     new Token(sym.LPAREN, "("),
-            new Token(sym.RPAREN, ")"),     new Token(sym.LSQBRACKET, "["),
-            new Token(sym.RSQBRACKET, "]"), new Token(sym.COLON, ":"),
-            new Token(sym.COMMA, ","),      new Token(sym.DOT, "."),
-            new Token(sym.OUTPUTOP, "<<"),  new Token(sym.INPUTOP, ">>"),
-            new Token(sym.ASSIGN, "="),     new Token(sym.NOT, "~"),
-            new Token(sym.AND, "&"),        new Token(sym.OR, "|"),
-            new Token(sym.PLUSPLUS, "++"),  new Token(sym.MINUSMINUS, "--"),
-            new Token(sym.PLUS, "+"),       new Token(sym.MINUS, "-"),
-            new Token(sym.TIMES, "*"),      new Token(sym.DIVIDE, "/"),
-            new Token(sym.LESS, "<"),       new Token(sym.GREATER, ">"),
-            new Token(sym.LESSEQ, "<="),    new Token(sym.GREATEREQ, ">="),
-            new Token(sym.EQUALS, "=="),    new Token(sym.NOTEQUALS, "~="),
+            new Token(sym.AND, "&"),         new Token(sym.LPAREN, "("),
+            new Token(sym.RPAREN, ")"),      new Token(sym.TIMES, "*"),
+            new Token(sym.PLUS, "+"),        new Token(sym.PLUSPLUS, "++"),
+            new Token(sym.COMMA, ","),       new Token(sym.MINUS, "-"),
+            new Token(sym.MINUSMINUS, "--"), new Token(sym.DOT, "."),
+            new Token(sym.DIVIDE, "/"),      new Token(sym.COLON, ":"),
+            new Token(sym.LESS, "<"),        new Token(sym.OUTPUTOP, "<<"),
+            new Token(sym.LESSEQ, "<="),     new Token(sym.ASSIGN, "="),
+            new Token(sym.EQUALS, "=="),     new Token(sym.GREATER, ">"),
+            new Token(sym.GREATEREQ, ">="),  new Token(sym.INPUTOP, ">>"),
+            new Token(sym.LSQBRACKET, "["),  new Token(sym.RSQBRACKET, "]"),
+            new Token(sym.LCURLY, "{"),      new Token(sym.OR, "|"),
+            new Token(sym.RCURLY, "}"),      new Token(sym.NOT, "~"),
+            new Token(sym.NOTEQUALS, "~="),
         },
         };
 
