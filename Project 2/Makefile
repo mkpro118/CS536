@@ -46,6 +46,7 @@ ErrMsg.class: ErrMsg.java
 ###
 test: base.jlex
 	java -cp $(CP) P2
+	diff allTokens.in allTokens.out
 
 ###
 # clean up

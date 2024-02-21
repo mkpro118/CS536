@@ -111,6 +111,7 @@ public class P2 {
         // exception may be thrown by yylex
 
         // Reset character number
+        testAllTokens();
         CharNum.num = 1;
 
         System.out.println("\nStarting scanner tests\n");
