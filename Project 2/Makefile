@@ -56,4 +56,4 @@ clean:
 	rm -f *~ *.class base.jlex.java bin/*.class
 
 cleantest:
-	rf -fr allTokens.out
+	rm -fr allTokens.out
