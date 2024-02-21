@@ -24,9 +24,14 @@ import static java.lang.Math.random;
  * numbers, values associated with tokens)
  */
 public class P2 {
-    static int score;  // Number of tests passed
-    static int testsRun;  // Number of tests run
+    static int score;  // Number of overall tests passed
+    static int testsRun;  // Number of overall tests run
+    static int numTests;  // Number of overall expected tests
+    static int currScore;  // Number of tests passed in the current test
+    static int currTestsRun;  // Number of tests run in the current test
+    static int currNumTests;  // Number of expected tests in the current test
     static String currTest;  // The test being run
+    private final static int N_TESTS = 10000;  // Number of tests per case
     private final static PrintStream defaultPrintStream;  // Default stderr
     private final static String badEscape;  // Error message on bad escape
     private final static String unterminated;  // Error message on unterminated
@@ -75,14 +80,24 @@ public class P2 {
      * Display the name of the test about to be run
      */
     private final static void startTest() {
-        System.out.printf("Starting %s Test...\n", currTest);
+        currScore = 0;
+        currTestsRun = 0;
+        System.out.printf("\nStarting %s Test...\n", currTest);
     }
 
     /**
      * Display "Done!" after a test is finished
      */
     private final static void endTest() {
-        System.out.println("Done!");
+        score += currScore;
+        testsRun += currTestsRun;
+        numTests += currNumTests;
+        System.out.printf("Done! %d/%d Passed.", currScore, currTestsRun);
+
+        if (currTestsRun < currNumTests) {
+            System.out.printf(" %d Tests skipped", currNumTests - currTestsRun);
+        }
+        System.out.println();
     }
 
     /**
@@ -94,14 +109,11 @@ public class P2 {
      */
     public static void main(String[] args) throws IOException {
         // exception may be thrown by yylex
-        // test all tokens
-        System.out.println("Running the given test");
-        testAllTokens();
 
         // Reset character number
         CharNum.num = 1;
 
-        System.out.println("\nStarting custom tests\n");
+        System.out.println("\nStarting scanner tests\n");
 
         // Switch Print Stream to redirect output from console and reduce
         // verbosity
@@ -163,7 +175,8 @@ public class P2 {
         // Display results
         if (score < testsRun) {
             System.out.printf("PASSED %d/%d TESTS.", score, testsRun);
-            System.out.printf("(FAILED %d TESTS)\n", (testsRun - score));
+            System.out.printf(" FAILED %d TESTS.", (testsRun - score));
+            System.out.printf(" SKIPPED %d TESTS.\n", (numTests - testsRun));
         } else {
             System.out.printf("ALL TESTS PASSED! (%d Tests)\n", testsRun);
         }
@@ -340,13 +353,15 @@ public class P2 {
      */
     private static void testKeywords() throws IOException {
         currTest = "Keywords";
+        currNumTests = 12;
         startTest();
 
         // There are 12 keywords which are returned in alphabetical order
         for (Token token : new TokenStream(TokenType.KEYWORDS)) {
             Yylex scanner = new Yylex(new StringReader(token.token()));
 
-            assertEquals(scanner.next_token().sym, token.sym());
+            if(assertEquals(scanner.next_token().sym, token.sym()))
+                break;
         }
         endTest();
     }
@@ -356,13 +371,15 @@ public class P2 {
      */
     private static void testOperators() throws IOException {
         currTest = "Operators";
+        currNumTests = 27;
         startTest();
 
         // There are 27 operators, returned in lexicographical order
         for (Token token : new TokenStream(TokenType.OPERATORS)) {
             Yylex scanner = new Yylex(new StringReader(token.token()));
 
-            assertEquals(scanner.next_token().sym, token.sym());
+            if(assertEquals(scanner.next_token().sym, token.sym()))
+                break;
         }
         endTest();
     }
@@ -372,17 +389,19 @@ public class P2 {
      */
     private static void testValidIntLits() throws IOException {
         currTest = "Valid Integer Literals";
+        currNumTests = N_TESTS;
         startTest();
 
         Iterator<Token> iterator =
             new TokenStream(TokenType.VALID_INTLIT).iterator();
 
         // Generate 10000 random valid Integer Literals
-        for(int i = 0; i < 10000; i++) {
+        for(int i = 0; i < N_TESTS; i++) {
             Token token = iterator.next();
             Yylex scanner = new Yylex(new StringReader(token.token()));
 
-            assertEquals(scanner.next_token().sym, token.sym());
+            if(assertEquals(scanner.next_token().sym, token.sym()))
+                break;
         }
         endTest();
     }
@@ -392,17 +411,19 @@ public class P2 {
      */
     private static void testInvalidIntLits() throws IOException {
         currTest = "Invalid Integer Literals";
+        currNumTests = N_TESTS;
         startTest();
 
         Iterator<Token> iterator =
             new TokenStream(TokenType.INVALID_INTLIT).iterator();
         
         // Generate 10000 invalid Integer Literals
-        for(int i = 0; i < 10000; i++) {
+        for(int i = 0; i < N_TESTS; i++) {
             Token token = iterator.next();
             Yylex scanner = new Yylex(new StringReader(token.token()));
 
-            assertEquals(scanner.next_token().sym, token.sym());
+            if(assertEquals(scanner.next_token().sym, token.sym()))
+                break;
         }
         endTest();
     }
@@ -412,20 +433,23 @@ public class P2 {
      */
     private static void testValidStrLits() throws IOException {
         currTest = "Valid String Literals";
+        currNumTests = 2 * N_TESTS;
         startTest();
 
         Iterator<Token> iterator =
             new TokenStream(TokenType.VALID_STRLIT).iterator();
         
         // Generate 10000 valid String Literals
-        for(int i = 0; i < 10000; i++) {
+        for(int i = 0; i < N_TESTS; i++) {
             Token token = iterator.next();
             Yylex scanner = new Yylex(new StringReader(token.token()));
 
             Symbol sym = scanner.next_token();
 
-            assertEquals(sym.sym, token.sym());
-            assertEquals(((StrLitTokenVal)sym.value).strVal, token.token());
+            if(assertEquals(sym.sym, token.sym()))
+                break;
+            if(assertEquals(((StrLitTokenVal)sym.value).strVal, token.token()))
+                break;
         }
         endTest();
     }
@@ -435,17 +459,19 @@ public class P2 {
      */
     private static void testInvalidStrLits() throws IOException {
         currTest = "Invalid String Literals";
+        currNumTests = N_TESTS;
         startTest();
 
         Iterator<Token> iterator =
             new TokenStream(TokenType.INVALID_STRLIT).iterator();
         
         // Generate 10000 invalid string literals
-        for(int i = 0; i < 10000; i++) {
+        for(int i = 0; i < N_TESTS; i++) {
             Token token = iterator.next();
             Yylex scanner = new Yylex(new StringReader(token.token()));
 
-            assertEquals(scanner.next_token().sym, token.sym());
+            if(assertEquals(scanner.next_token().sym, token.sym()))
+                break;
         }
         endTest();
     }
@@ -455,20 +481,23 @@ public class P2 {
      */
     private static void testValidIdentifiers() throws IOException {
         currTest = "Valid Identifiers";
+        currNumTests = 2 * N_TESTS;
         startTest();
 
         Iterator<Token> iterator =
             new TokenStream(TokenType.VALID_IDENTIFIERS).iterator();
         
         // Generate 10000 valid identifiers
-        for(int i = 0; i < 10000; i++) {
+        for(int i = 0; i < N_TESTS; i++) {
             Token token = iterator.next();
             Yylex scanner = new Yylex(new StringReader(token.token()));
 
             Symbol symbol = scanner.next_token();
 
-            assertEquals(symbol.sym, token.sym());
-            assertEquals(((IdTokenVal)symbol.value).idVal, token.token());
+            if(assertEquals(symbol.sym, token.sym()))
+                break;
+            if(assertEquals(((IdTokenVal)symbol.value).idVal, token.token()))
+                break;
         }
         endTest();
     }
@@ -478,17 +507,19 @@ public class P2 {
      */
     private static void testComments() throws IOException {
         currTest = "Comments";
+        currNumTests = N_TESTS;
         startTest();
 
         Iterator<Token> iterator =
             new TokenStream(TokenType.COMMENTS).iterator();
         
         // Generate 10000 comment strings
-        for(int i = 0; i < 10000; i++) {
+        for(int i = 0; i < N_TESTS; i++) {
             Token token = iterator.next();
             Yylex scanner = new Yylex(new StringReader(token.token()));
 
-            assertEquals(scanner.next_token().sym, token.sym());
+            if(assertEquals(scanner.next_token().sym, token.sym()))
+                break;
         }
         endTest();
     }
@@ -498,17 +529,19 @@ public class P2 {
      */
     private static void testWhitespace() throws IOException {
         currTest = "Whitespaces";
+        currNumTests = N_TESTS;
         startTest();
 
         Iterator<Token> iterator =
             new TokenStream(TokenType.WHITESPACE).iterator();
         
         // Generate 10000 valid whitespace characters
-        for(int i = 0; i < 10000; i++) {
+        for(int i = 0; i < N_TESTS; i++) {
             Token token = iterator.next();
             Yylex scanner = new Yylex(new StringReader(token.token()));
 
-            assertEquals(scanner.next_token().sym, token.sym());
+            if(assertEquals(scanner.next_token().sym, token.sym()))
+                break;
         }
         endTest();
     }
@@ -518,6 +551,7 @@ public class P2 {
      */
     private static void testBadEscapeStringErrMsg() throws IOException {
         currTest = "Bad Escape String Error Message";
+        currNumTests = 2 * N_TESTS;
         startTest();
 
         // Switch stderr to capture output
@@ -527,7 +561,7 @@ public class P2 {
             new TokenStream(TokenType.BAD_ESCAPE_STRLIT).iterator();
 
         // Generate 10000 bad escape String literals
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < N_TESTS; i++) {
             // Reset and clear the outputstream before testing
             outputStream.reset();
 
@@ -536,8 +570,10 @@ public class P2 {
 
             String output = outputStream.toString().trim();
 
-            assertTrue(output.contains("ERROR"));
-            assertTrue(output.contains(badEscape));
+            if (assertTrue(output.contains("ERROR")))
+                break;
+            if (assertTrue(output.contains(badEscape)))
+                break;
         }
 
         // Restore stderr
@@ -551,6 +587,7 @@ public class P2 {
      */
     private static void testUnterminatedStringErrMsg()  throws IOException {
         currTest = "Unterminated String Error Message";
+        currNumTests = 2 * N_TESTS;
         startTest();
 
         // Switch stderr to capture output
@@ -560,7 +597,7 @@ public class P2 {
             new TokenStream(TokenType.UNTERMINATED_STRLIT).iterator();
 
         // Generate 10000 unterminated String literals
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < N_TESTS; i++) {
             // Reset and clear the outputstream before testing
             outputStream.reset();
 
@@ -569,8 +606,10 @@ public class P2 {
 
             String output = outputStream.toString().trim();
 
-            assertTrue(output.contains("ERROR"));
-            assertTrue(output.contains(unterminated));
+            if (assertTrue(output.contains("ERROR")))
+                break;
+            if (assertTrue(output.contains(unterminated)))
+                break;
         }
 
         // Restore stderr
@@ -585,6 +624,7 @@ public class P2 {
      */
     private static void testUnterminatedBadEscapeStringErrMsg()  throws IOException {
         currTest = "Unterminated Bad Escape String Error Message";
+        currNumTests = 2 * N_TESTS;
         startTest();
 
         // Switch stderr to capture output
@@ -594,7 +634,7 @@ public class P2 {
             new TokenStream(TokenType.UNTERMINATED_BAD_ESCAPE_STRLIT).iterator();
 
         // Generate 10000 unterminated & bad escape String literals
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < N_TESTS; i++) {
             // Reset and clear the outputstream before testing
             outputStream.reset();
 
@@ -603,8 +643,10 @@ public class P2 {
 
             String output = outputStream.toString().trim();
 
-            assertTrue(output.contains("ERROR"));
-            assertTrue(output.contains(unterminatedBadEscape));
+            if (assertTrue(output.contains("ERROR")))
+                break;
+            if (assertTrue(output.contains(unterminatedBadEscape)))
+                break;
         }
 
         // Restore stderr
@@ -618,6 +660,7 @@ public class P2 {
      */
     private static void testOverflowIntegerErrMsg()  throws IOException {
         currTest = "Overflow Integer Error Message";
+        currNumTests = 2 * N_TESTS;
         startTest();
 
         // Switch stderr to capture output
@@ -627,7 +670,7 @@ public class P2 {
             new TokenStream(TokenType.INVALID_INTLIT).iterator();
 
         // Generate 10000 overflowing integer literals
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < N_TESTS; i++) {
             // Reset and clear the outputstream before testing
             outputStream.reset();
 
@@ -637,8 +680,10 @@ public class P2 {
             String output = outputStream.toString().trim();
 
             // Should be a warning, not an error
-            assertTrue(output.contains("WARNING"));
-            assertTrue(output.contains(badIntLit));
+            if (assertTrue(output.contains("WARNING")))
+                break;
+            if (assertTrue(output.contains(badIntLit)))
+                break;
         }
 
         // Restore stderr
@@ -652,6 +697,7 @@ public class P2 {
      */
     private static void testIllegalCharacterErrMsg() throws IOException {
         currTest = "Illegal Character Error Message";
+        currNumTests = 2 * N_TESTS;
         startTest();
 
         // Switch stderr to capture output
@@ -661,7 +707,7 @@ public class P2 {
             new TokenStream(TokenType.ILLEGAL_CHARACTERS).iterator();
 
         // Generate 10000 illegal characters
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < N_TESTS; i++) {
             // Reset and clear the outputstream before testing
             outputStream.reset();
 
@@ -672,8 +718,10 @@ public class P2 {
 
             String output = outputStream.toString().trim();
 
-            assertTrue(output.contains("ERROR"));
-            assertTrue(output.endsWith(illegalChar + token.token()));
+            if (assertTrue(output.contains("ERROR")))
+                break;
+            if (assertTrue(output.endsWith(illegalChar + token.token())))
+                break;
         }
 
         // Restore stderr
@@ -686,6 +734,8 @@ public class P2 {
      * Tests Line Numbers and Character Numbers (<= 10000)
      */
     private static void testLineAndCharacterNumbers() throws IOException{
+        // NOTE: currNumTests will be set after data generation
+
         currTest = "Line and Character Numbers";
         startTest();
 
@@ -701,7 +751,7 @@ public class P2 {
         LinkedList<Tuple3> tokenList = new LinkedList<>();
 
         // Create one large string to test line and character numbers
-        for(int i = 0; i < 10000; i++) {
+        for(int i = 0; i < N_TESTS; i++) {
             Token token = iterator.next();
 
             tokens = tokens.append(token.token());
@@ -735,6 +785,8 @@ public class P2 {
             }
         }
 
+        currNumTests = 3 * tokenList.size();
+
         // Reset to ensure correct character numbers
         CharNum.num = 1;
 
@@ -747,9 +799,12 @@ public class P2 {
             // Expected symbol metadata
             Tuple3 tuple = tokenList.remove();
 
-            assertEquals(symbol.sym, tuple.sym());
-            assertEquals(((TokenVal)symbol.value).lineNum, tuple.lineNum());
-            assertEquals(((TokenVal)symbol.value).charNum, tuple.charNum());
+            if(assertEquals(symbol.sym, tuple.sym()))
+                break;
+            if(assertEquals(((TokenVal)symbol.value).lineNum, tuple.lineNum()))
+                break;
+            if(assertEquals(((TokenVal)symbol.value).charNum, tuple.charNum()))
+                break;
 
             symbol = scanner.next_token();
         }
@@ -763,30 +818,38 @@ public class P2 {
      */
     private static void testRandomTokens() throws IOException {
         currTest = "Fuzz";
+        currNumTests = N_TESTS;
         startTest();
 
         Iterator<Token> iterator = new TokenStream(TokenType.RANDOM).iterator();
 
         //generate 10000 random tokens, both valid and invalid
-        for(int i = 0; i < 10000; i++){
+        for(int i = 0; i < N_TESTS; i++){
             Token token = iterator.next();
             Yylex scanner = new Yylex(new StringReader(token.token()));
 
             Symbol symbol = scanner.next_token();
 
-            assertEquals(symbol.sym, token.sym());
+            if(assertEquals(symbol.sym, token.sym()))
+                break;
 
             // Check values for Identifiers, Integers and Strings
             switch (symbol.sym) {
             case sym.ID:
-                assertEquals(((IdTokenVal)symbol.value).idVal, token.token());
+                currNumTests++;
+                if(assertEquals(((IdTokenVal)symbol.value).idVal, token.token()))
+                    break;
                 break;
             case sym.INTLITERAL:
+                currNumTests++;
                 int val = Integer.parseInt(token.token());
-                assertEquals(((IntLitTokenVal)symbol.value).intVal, val);
+                if(assertEquals(((IntLitTokenVal)symbol.value).intVal, val))
+                    break;
                 break;
             case sym.STRLITERAL:
-                assertEquals(((StrLitTokenVal)symbol.value).strVal, token.token());
+                currNumTests++;
+                if(assertEquals(((StrLitTokenVal)symbol.value).strVal, token.token()))
+                    break;
                 break;
             }
         }
@@ -801,14 +864,19 @@ public class P2 {
      *
      * @param a LHS of the comparison
      * @param b RHS of the comparison
+     *
+     * @return True if the assertion fails, false otherwise
      */
-    private final static void assertEquals(int a, int b) {
-        testsRun++;
-        if (a != b) {
-            System.out.printf("%s Test Failed! %d != %d\n", currTest, a, b);
+    private final static boolean assertEquals(int a, int b) {
+        currTestsRun++;
+        boolean cmp = a != b;
+        if (cmp) {
+            System.out.printf("\n**FAILED**: %s Test Failed! %d != %d\n",
+                currTest, a, b);
         } else {
-            score++;
+            currScore++;
         }
+        return cmp;
     }
 
     /**
@@ -818,15 +886,19 @@ public class P2 {
      *
      * @param a LHS of the comparison (assumed non null)
      * @param b RHS of the comparison (assumed non null)
+     *
+     * @return True if the assertion fails, false otherwise
      */
-    private final static void assertEquals(String a, String b) {
-        testsRun++;
-        if (!a.equals(b)) {
-            System.out.printf("%s Test Failed! \"%s\" != \"%s\"\n",
+    private final static boolean assertEquals(String a, String b) {
+        currTestsRun++;
+        boolean cmp = !a.equals(b);
+        if (cmp) {
+            System.out.printf("\n**FAILED**: %s Test Failed! \"%s\" != \"%s\"\n",
                 currTest, a, b);
         } else {
-            score++;
+            currScore++;
         }
+        return cmp;
     }
 
     /**
@@ -835,14 +907,18 @@ public class P2 {
      * Increments the number of tests run and the score value appropriately
      *
      * @param b Result of a condition to be tested for {@code true}
+     *
+     * @return True if the assertion fails, false otherwise
      */
-    private final static void assertTrue(boolean b) {
-        testsRun++;
-        if (!b) {
-            System.out.printf("%s Test Failed!\n", currTest);
+    private final static boolean assertTrue(boolean b) {
+        currTestsRun++;
+        boolean cmp = !b;
+        if (cmp) {
+            System.out.printf("\n**FAILED**: %s Test Failed!\n", currTest);
         } else {
-            score++;
+            currScore++;
         }
+        return cmp;
     }
 }
 
