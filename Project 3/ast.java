@@ -107,6 +107,7 @@ import java.util.*;
 // **********************************************************************
 
 abstract class ASTnode { 
+    static final int indent = 4;
     // every subclass must provide an unparse operation
     abstract public void unparse(PrintWriter p, int indent);
 
@@ -341,6 +342,8 @@ class AssignStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+        myAssign.unparse(p, indent);
+        p.println(".");
     }
 
     // 1 child
@@ -353,6 +356,8 @@ class PostIncStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+        myExp.unparse(p, indent);
+        p.println("++.");
     }
 
     // 1 child
@@ -365,6 +370,8 @@ class PostDecStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+        myExp.unparse(p, indent);
+        p.println("--.");
     }
 
     // 1 child
@@ -379,6 +386,19 @@ class IfStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+        doIndent(p, indent);
+        p.print("if (");
+        myExp.unparse(p, indent);
+        p.println(") ["); // Start bracket
+
+        myDeclList.unparse(p, indent + ASTnode.indent);
+        p.println(); // Does myDeclList have newline? Should it?
+
+        // This should have a newline automatically
+        myStmtList.unparse(p, indent + ASTnode.indent);
+
+        doIndent(p, indent);
+        p.println("]"); // End bracket
     }
 
     // 3 children
@@ -399,6 +419,29 @@ class IfElseStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+        doIndent(p, indent);
+        p.print("if (");
+        myExp.unparse(p, indent);
+        p.println(") [");
+
+        myThenDeclList.unparse(p, indent + ASTnode.indent);
+        p.println();
+
+        myThenStmtList.unparse(p, indent + ASTnode.indent);
+
+        doIndent(p, indent);
+        p.println("]");
+
+        doIndent(p, indent);
+        p.println("else [");
+
+        myElseDeclList.unparse(p, indent + ASTnode.indent);
+        p.println();
+
+        myElseStmtList.unparse(p, indent + ASTnode.indent);
+
+        doIndent(p, indent);
+        p.println("]");
     }
 
     // 5 children
@@ -417,6 +460,18 @@ class WhileStmtNode extends StmtNode {
     }
 	
     public void unparse(PrintWriter p, int indent) {
+        doIndent(p, indent);
+        p.print("while (");
+        myExp.unparse(p, indent);
+        p.println(") [");
+
+        myDeclList.unparse(p, indent + ASTnode.indent);
+        p.println();
+
+        myStmtList.unparse(p, indent + ASTnode.indent);
+
+        doIndent(p, indent);
+        p.println("]");
     }
 
     // 3 children
@@ -431,6 +486,12 @@ class ReadStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+        doIndent(p, indent);
+        p.print("read >> ");
+
+        myExp.unparse(p, indent);
+
+        p.println(".");
     }
 
     // 1 child (actually can only be an IdNode or a TupleAccessNode)
@@ -443,6 +504,12 @@ class WriteStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+        doIndent(p,indent);
+        p.print("write << ");
+
+        myExp.unparse(p, indent);
+
+        p.println(".");
     }
 
     // 1 child
@@ -455,6 +522,11 @@ class CallStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+        doIndent(p, indent);
+
+        myCall.unparse(p, indent);
+
+        p.println(".");
     }
 
     // 1 child
@@ -467,6 +539,16 @@ class ReturnStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+        doIndent(p, indent);
+
+        if (myExp == null) {
+            p.println("return.");
+            return;
+        }
+
+        p.print("return ");
+        myExp.unparse(p, indent);
+        p.println(".");
     }
 
     // 1 child
@@ -573,6 +655,10 @@ class AssignExpNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+        doIndent(p, indent);
+        myLhs.unparse(p, 0);
+        p.print(" = ");
+        myExp.unparse(p, 0);
     }
 
     // 2 children
