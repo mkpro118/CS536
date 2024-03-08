@@ -569,6 +569,7 @@ class TrueNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+        p.print("True");
     }
 
     private int myLineNum;
@@ -582,6 +583,7 @@ class FalseNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+        p.print("False")
     }
 
     private int myLineNum;
@@ -612,6 +614,7 @@ class IntLitNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+        p.print(myIntVal);
     }
 
     private int myLineNum;
@@ -627,6 +630,7 @@ class StringLitNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+        p.println(myStrVal);
     }
 
     private int myLineNum;
@@ -641,6 +645,9 @@ class TupleAccessExpNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+        myLoc.unparse(p, indent);
+        p.print(":");
+        myId.unparse(p, indent);
     }
 
     // 2 children
@@ -679,6 +686,14 @@ class CallExpNode extends ExpNode {
 
     // **** unparse ****
     public void unparse(PrintWriter p, int indent) {
+        myId.unparse(p, indent);
+        p.print("(");
+
+        if(myExpList != null) {
+            myExpList.unparse(p, indent);
+        }
+
+        p.print(")");
     }
 
     // 2 children
