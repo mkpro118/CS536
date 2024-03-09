@@ -131,4 +131,19 @@ id              ::= ID:i
                 {: RESULT = new IdNode(i.lineNum, i.charNum, i.idVal);
                 :}
                 ;
+
+tupleDecl       ::= TUPLE id:i LCURLY tupleBody:tb RCURLY DOT
+                {: RESULT = new TupleDeclNode(i, new DeclListNode(tb));
+                :}
+                ;
+	
+tupleBody       ::= tupleBody:tb varDecl:vd
+                {: tb.add(vd); RESULT = tb;
+                :}
+                | varDecl:vd
+                {: List<DeclNode> myDecls=new LinkedList<> ();
+                   myDecls.add(vd);
+                   RESULT = myDecls;
+                :}
+                ;
 				

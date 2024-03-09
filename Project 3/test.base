@@ -2,3 +2,7 @@ logical a.
 logical b.
 integer c.
 void d.
+tuple yesui {
+    integer mk.
+    logical mt.
+}.
