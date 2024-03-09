@@ -22,11 +22,16 @@ sym.java
 # DO NOT IGNORE DEPENDENCIES
 !deps
 !deps/*
+!deps/*.class
 !deps/java_cup
 !deps/java_cup/*
+!deps/java_cup/*.class
 !deps/java_cup/anttask
 !deps/java_cup/anttask/*
+!deps/java_cup/anttask/*.class
 !deps/java_cup/runtime
 !deps/java_cup/runtime/*
+!deps/java_cup/runtime/*.class
 !deps/JLex
 !deps/JLex/*
+!deps/JLex/*.class
