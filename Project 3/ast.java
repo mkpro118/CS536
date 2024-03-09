@@ -179,14 +179,20 @@ class ExpListNode extends ASTnode {
     // list of children (ExpNodes)
     private List<ExpNode> myExps;
 }
+
 class FormalsListNode extends ASTnode {
     public FormalsListNode(List<FormalDeclNode> S) {
         myFormals = S;
     }
 
     public void unparse(PrintWriter p, int indent) {
+        int i = 0;
+        final int size = myFormals.size();
     	for (FormalDeclNode formal : myFormals) {
             formal.unparse(p, indent);
+            if (++i < size) {
+                p.print(", ");
+            }
         }
     }
 
@@ -257,10 +263,11 @@ class FctnDeclNode extends DeclNode {
         myType.unparse(p, 0);
         p.print(" ");
         myId.unparse(p, 0);
-        p.print("(");
+        p.print(" {");
         myFormalsList.unparse(p, 0);
-        p.print(") ");
-        myBody.unparse(p, indent);
+        p.println("} [");
+        myBody.unparse(p, indent + ASTnode.indent);
+        p.println("]\n");
     }
 
     // 4 children
@@ -279,6 +286,7 @@ class FormalDeclNode extends DeclNode {
     public void unparse(PrintWriter p, int indent) {
     	doIndent(p, indent);
         myType.unparse(p, indent);
+        p.print(" ");
         myId.unparse(p, indent);
     }
 
@@ -298,7 +306,7 @@ class TupleDeclNode extends DeclNode {
         myId.unparse(p, 0);
         p.println(" {");
         myDeclList.unparse(p, indent + ASTnode.indent);
-        p.println("}.");
+        p.println("}.\n");
     }
 
     // 2 children
@@ -411,12 +419,12 @@ class IfStmtNode extends StmtNode {
 
     public void unparse(PrintWriter p, int indent) {
         doIndent(p, indent);
-        p.print("if (");
+        p.print("if ");
         myExp.unparse(p, indent);
-        p.println(") ["); // Start bracket
+        p.println(" ["); // Start bracket
 
         myDeclList.unparse(p, indent + ASTnode.indent);
-        p.println(); // Does myDeclList have newline? Should it?
+        // p.println(); // Does myDeclList have newline? Should it?
 
         // This should have a newline automatically
         myStmtList.unparse(p, indent + ASTnode.indent);
@@ -444,12 +452,12 @@ class IfElseStmtNode extends StmtNode {
 
     public void unparse(PrintWriter p, int indent) {
         doIndent(p, indent);
-        p.print("if (");
+        p.print("if ");
         myExp.unparse(p, indent);
-        p.println(") [");
+        p.println(" [");
 
         myThenDeclList.unparse(p, indent + ASTnode.indent);
-        p.println();
+        // p.println();
 
         myThenStmtList.unparse(p, indent + ASTnode.indent);
 
@@ -460,7 +468,7 @@ class IfElseStmtNode extends StmtNode {
         p.println("else [");
 
         myElseDeclList.unparse(p, indent + ASTnode.indent);
-        p.println();
+        // p.println();
 
         myElseStmtList.unparse(p, indent + ASTnode.indent);
 
