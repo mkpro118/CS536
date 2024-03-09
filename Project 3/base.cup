@@ -80,6 +80,8 @@ non terminal DeclNode         decl;
 non terminal VarDeclNode      varDecl;
 non terminal TypeNode         type;
 non terminal IdNode           id;
+non terminal TupleDeclNode    tupleDecl;
+non terminal LinkedList       tupleBody;
  
  
 /* NOTE: Add precedence and associativity declarations here */
@@ -108,6 +110,9 @@ declList        ::= declList:dl decl:d
 
 decl            ::= varDecl:v
                 {: RESULT = v;
+                :}
+                | tupleDecl:td
+                {: RESULT = td;
                 :}
                 ;
 
@@ -138,12 +143,15 @@ tupleDecl       ::= TUPLE id:i LCURLY tupleBody:tb RCURLY DOT
                 ;
 	
 tupleBody       ::= tupleBody:tb varDecl:vd
-                {: tb.add(vd); RESULT = tb;
+                {:
+                if (tb == null) {
+                      tb = new LinkedList<DeclNode>();
+                   }
+                   tb.add(vd);
+                   RESULT = tb;
                 :}
                 | varDecl:vd
-                {: List<DeclNode> myDecls=new LinkedList<> ();
-                   myDecls.add(vd);
-                   RESULT = myDecls;
+                {: RESULT = new LinkedList<DeclNode>();
+                   RESULT.add(vd);
                 :}
                 ;
-				
