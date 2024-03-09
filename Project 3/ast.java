@@ -162,6 +162,15 @@ class StmtListNode extends ASTnode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+    	Iterator it = myStmts.iterator();
+        try {
+            while (it.hasNext()) {
+                ((StmtNode)it.next()).unparse(p, indent);
+            }
+        } catch (NoSuchElementException ex) {
+            System.err.println("unexpected NoSuchElementException in StmtListNode.print");
+            System.exit(-1);
+        }
     }
 
     // list of children (StmtNodes)
@@ -174,6 +183,15 @@ class ExpListNode extends ASTnode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+    	Iterator it = myExps.iterator();
+        try {
+            while (it.hasNext()) {
+                ((StmtNode)it.next()).unparse(p, indent);
+            }
+        } catch (NoSuchElementException ex) {
+            System.err.println("unexpected NoSuchElementException in ExpListNode.print");
+            System.exit(-1);
+        }
     }
 
     // list of children (ExpNodes)
@@ -185,6 +203,15 @@ class FormalsListNode extends ASTnode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+    	Iterator it = myFormals.iterator();
+        try {
+            while (it.hasNext()) {
+                ((StmtNode)it.next()).unparse(p, indent);
+            }
+        } catch (NoSuchElementException ex) {
+            System.err.println("unexpected NoSuchElementException in FormalsListNode.print");
+            System.exit(-1);
+        }
     }
 
     // list of children (FormalDeclNodes)
@@ -198,6 +225,8 @@ class FctnBodyNode extends ASTnode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+    	myDeclList.unparse(p, indent);
+        myStmtList.unparse(p, indent);
     }
 
     // 2 children
@@ -248,6 +277,14 @@ class FctnDeclNode extends DeclNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+    	doIndent(p, indent);
+        myType.unparse(p, 0);
+        p.print(" ");
+        myId.unparse(p, 0);
+        p.print("(");
+        myFormalsList.unparse(p, 0); //do I iterate to unparse?
+        p.print(") ");
+        myBody.unparse(p, indent);
     }
 
     // 4 children
@@ -264,6 +301,9 @@ class FormalDeclNode extends DeclNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+    	doIndent(p, indent);
+        myType.unparse(p, indent);
+        myId.unparse(p, indent);
     }
 
     // 2 children
@@ -278,6 +318,11 @@ class TupleDeclNode extends DeclNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+    	doIndent(p, indent);
+        myType.unparse(p, 0);
+        p.print(" ");
+        myId.unparse(p, 0);
+        p.println(".");
     }
 
     // 2 children
@@ -306,6 +351,7 @@ class IntegerNode extends TypeNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+    	p.print("integer");
     }
 }
 
@@ -314,6 +360,7 @@ class VoidNode extends TypeNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+    	p.print("void");
     }
 }
 
@@ -323,6 +370,9 @@ class TupleNode extends TypeNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+    	//CHECK
+	doIndent(p, indent);
+        myId.unparse(p, indent);
     }
 	
 	// 1 child
