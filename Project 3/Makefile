@@ -55,7 +55,7 @@ test:
 # clean
 ###
 clean:
-	rm -f *~ *.class parser.java base.jlex.java sym.java
+	rm -fr *~ *.class parser.java base.jlex.java sym.java $(TARGET_DIR)
 
 ## cleantest (delete test artifacts)
 cleantest:

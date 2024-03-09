@@ -295,9 +295,10 @@ class TupleDeclNode extends DeclNode {
 
     public void unparse(PrintWriter p, int indent) {
     	doIndent(p, indent);
-        myType.unparse(p, 0);
-        p.print(" ");
         myId.unparse(p, 0);
+        p.print("{ ");
+        myDeclList.unparse(p, indent + ASTnode.indent);
+        p.print("}.");
         p.println(".");
     }
 

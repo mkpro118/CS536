@@ -119,6 +119,12 @@ varDecl         ::= type:t id:i DOT
 type            ::= LOGICAL
                 {: RESULT = new LogicalNode();
                 :}
+                | INTEGER
+                {: RESULT = new IntegerNode();
+                :}
+                | VOID
+                {: RESULT = new VoidNode();
+                :}
                 ;
 
 id              ::= ID:i
