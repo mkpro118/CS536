@@ -3,7 +3,7 @@
 
 # Compiled Files
 bin/
-*.class
+bin/*.class
 
 # Ignore file download script
 download_files.py
