@@ -8,3 +8,14 @@ tuple yesui {
     logical mt.
     void    am.
 }.
+
+logical x {integer y, integer z} [
+    while (y < 2) [
+        y = y + 2.
+        z--.
+    ]
+
+    if (7 < z & 3 > z) [ write << z. ] else [ write << z+4.]
+
+    return x(z, y).
+]
