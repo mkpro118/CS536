@@ -13,6 +13,20 @@ automate.py
 
 # ignore generated source files
 base.jlex.java
+parser.java
+sym.java
 
 #ignore generated output files
 *.out
+
+# DO NOT IGNORE DEPENDENCIES
+!deps
+!deps/*
+!deps/java_cup
+!deps/java_cup/*
+!deps/java_cup/anttask
+!deps/java_cup/anttask/*
+!deps/java_cup/runtime
+!deps/java_cup/runtime/*
+!deps/JLex
+!deps/JLex/*
