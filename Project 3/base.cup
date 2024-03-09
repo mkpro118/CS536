@@ -78,14 +78,36 @@ non terminal ProgramNode      program;
 non terminal LinkedList       declList;
 non terminal DeclNode         decl;
 non terminal VarDeclNode      varDecl;
+non terminal LinkedList       varDeclList;
 non terminal TypeNode         type;
 non terminal IdNode           id;
 non terminal TupleDeclNode    tupleDecl;
 non terminal LinkedList       tupleBody;
- 
+non terminal FctnDeclNode     fctnDecl;
+non terminal FormalsListNode  formals;
+non terminal LinkedList       formalsList;
+non terminal FctnBodyNode     fctnBody;
+non terminal FormalDeclNode   formalDecl;
+non terminal LinkedList       stmtList;
+non terminal StmtNode         stmt;
+non terminal AssignExpNode    assignExp;
+non terminal ExpNode          loc;
+non terminal ExpNode          exp;
+non terminal ExpNode          term;
+non terminal CallExpNode      fctnCall;
+non terminal LinkedList       actualList;
  
 /* NOTE: Add precedence and associativity declarations here */
+precedence right ASSIGN;
 
+precedence left OR;
+precedence left AND;
+precedence left DOT;
+
+precedence nonassoc LESS, LESSEQ, GREATER, GREATEREQ, EQUALS, NOTEQUALS;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE;
+precedence left NOT;
 
 start with program;
 
@@ -113,6 +135,9 @@ decl            ::= varDecl:v
                 :}
                 | tupleDecl:td
                 {: RESULT = td;
+                :}
+                | fctnDecl:fd
+                {: RESULT = fd;
                 :}
                 ;
 
@@ -143,15 +168,208 @@ tupleDecl       ::= TUPLE id:i LCURLY tupleBody:tb RCURLY DOT
                 ;
 	
 tupleBody       ::= tupleBody:tb varDecl:vd
-                {:
-                if (tb == null) {
-                      tb = new LinkedList<DeclNode>();
-                   }
-                   tb.add(vd);
-                   RESULT = tb;
+                {: RESULT = tb == null ? new LinkedList<DeclNode>(): tb;
+                   RESULT.add(vd);
                 :}
                 | varDecl:vd
                 {: RESULT = new LinkedList<DeclNode>();
                    RESULT.add(vd);
+                :}
+                ;
+
+fctnDecl        ::= type:t id:i formals:f fctnBody:fb
+                {: RESULT = new FctnDeclNode(t, i, f, fb);
+                :}
+                ;
+
+formals         ::= LCURLY RCURLY
+                {: RESULT = new FormalsListNode(new LinkedList());
+                :}
+                | LCURLY formalsList:fl RCURLY
+                {: RESULT = new FormalsListNode(fl);
+                :}
+                ;
+
+formalsList     ::= formalDecl: fd
+                {: RESULT = new LinkedList<FormalDeclNode>();
+                   RESULT.add(fd);
+                :}
+                | formalDecl:fd COMMA formalsList:fl
+                {: RESULT = fl == null ? new LinkedList<FormalDeclNode>() : fl;
+                   RESULT.addFirst(fd);
+                :}
+                ;
+
+formalDecl      ::= type:t id:i
+                {: RESULT = new FormalDeclNode(t, i);
+                :}
+                ;
+
+fctnBody        ::= LSQBRACKET varDeclList:vdl stmtList:sl RSQBRACKET
+                {: RESULT = new FctnBodyNode(new DeclListNode(vdl), new StmtListNode(sl));
+                :}
+                ;
+
+varDeclList     ::= varDeclList:vdl varDecl:vd
+                {: RESULT = vdl == null ? new LinkedList() : vdl;
+                   RESULT.add(vd);
+                :}
+                | /* epsilon */
+                {: RESULT = new LinkedList();
+                :}
+                ;
+
+stmtList        ::= stmtList:sl stmt:s
+                {: RESULT = sl == null ? new LinkedList() : sl;
+                   RESULT.add(s);
+                :}
+                | /* epsilon */
+                {: RESULT = new LinkedList();
+                :}
+                ;
+
+stmt            ::= assignExp:e DOT
+                {: RESULT = new AssignStmtNode(e);
+                :}
+                | fctnCall:fc DOT
+                {: RESULT = new CallStmtNode(fc);
+                :}
+                | loc:l PLUSPLUS DOT
+                {: RESULT = new PostIncStmtNode(l);
+                :}
+                | loc:l MINUSMINUS DOT
+                {: RESULT = new PostDecStmtNode(l);
+                :}
+                | IF exp:e LSQBRACKET varDeclList:vdl stmtList:sl RSQBRACKET
+                {: RESULT = new IfStmtNode(e, new DeclListNode(vdl), new StmtListNode(sl));
+                :}
+                | IF exp:e LSQBRACKET varDeclList:vdl1 stmtList:sl1 RSQBRACKET ELSE LSQBRACKET varDeclList:vdl2 stmtList:sl2 RSQBRACKET
+                {: RESULT = new IfElseStmtNode(e, new DeclListNode(vdl1), new StmtListNode(sl1),
+                                               new DeclListNode(vdl2), new StmtListNode(sl2));
+                :}
+                | WHILE exp:e LSQBRACKET varDeclList:vdl stmtList:sl RSQBRACKET
+                {: RESULT = new WhileStmtNode(e, new DeclListNode(vdl), new StmtListNode(sl));
+                :}
+                | READ INPUTOP loc:l DOT
+                {: RESULT = new ReadStmtNode(l);
+                :}
+                | WRITE OUTPUTOP exp:e DOT
+                {: RESULT = new WriteStmtNode(e);
+                :}
+                | RETURN exp:e DOT
+                {: RESULT = new ReturnStmtNode(e);
+                :}
+                | RETURN DOT
+                {: RESULT = new ReturnStmtNode(null);
+                :}
+                ;
+
+assignExp       ::= loc:l ASSIGN exp:e
+                {: RESULT = new AssignExpNode(l, e);
+                :}
+                ;
+
+exp             ::= assignExp:e
+                {: RESULT = e;
+                :}
+                | exp:e1 PLUS exp:e2
+                {: RESULT = new PlusNode(e1, e2);
+                :}
+                | exp:e1 MINUS exp:e2
+                {: RESULT = new MinusNode(e1, e2);
+                :}
+                | exp:e1 TIMES exp:e2
+                {: RESULT = new TimesNode(e1, e2);
+                :}
+                | exp:e1 DIVIDE exp:e2
+                {: RESULT = new DivideNode(e1, e2);
+                :}
+                | exp:e1 EQUALS exp:e2
+                {: RESULT = new EqualsNode(e1, e2);
+                :}
+                | exp:e1 NOTEQUALS exp:e2
+                {: RESULT = new NotEqualsNode(e1, e2);
+                :}
+                | exp:e1 GREATER exp:e2
+                {: RESULT = new GreaterNode(e1, e2);
+                :}
+                | exp:e1 GREATEREQ exp:e2
+                {: RESULT = new GreaterEqNode(e1, e2);
+                :}
+                | exp:e1 LESS exp:e2
+                {: RESULT = new LessNode(e1, e2);
+                :}
+                | exp:e1 LESSEQ exp:e2
+                {: RESULT = new LessEqNode(e1, e2);
+                :}
+                | exp:e1 AND exp:e2
+                {: RESULT = new AndNode(e1, e2);
+                :}
+                | exp:e1 OR exp:e2
+                {: RESULT = new OrNode(e1, e2);
+                :}
+                | NOT exp:e
+                {: RESULT = new NotNode(e);
+                :}
+                | MINUS term:t
+                {: RESULT = new UnaryMinusNode(t);
+                :}
+                | term:t
+                {: RESULT = t;
+                :}
+                ;
+
+loc             ::= id:i
+                {: RESULT = i;
+                :}
+                | loc:l COLON id:i
+                {:
+                   RESULT = new TupleAccessExpNode(l, i);
+                :}
+                ;
+
+term            ::= loc:l
+                {:
+                RESULT = l;
+                :}
+                | TRUE:t
+                {: TokenVal x = (TokenVal) t;
+                RESULT = new TrueNode(x.lineNum, x.charNum);
+                :}
+                | FALSE:f
+                {: TokenVal x = (TokenVal) f;
+                RESULT = new FalseNode(x.lineNum, x.charNum);
+                :}
+                | INTLITERAL:i
+                {: TokenVal x = (TokenVal) i;
+                RESULT = new IntLitNode(x.lineNum, x.charNum, ((IntLitTokenVal) x).intVal);
+                :}
+                | STRLITERAL:s
+                {: TokenVal x = (TokenVal) s;
+                RESULT = new StringLitNode(x.lineNum, x.charNum, ((StrLitTokenVal) x).strVal);
+                :}
+                | LPAREN exp:e RPAREN
+                {: RESULT = e;
+                :}
+                | fctnCall:fc
+                {: RESULT = fc;
+                :}
+                ;
+
+fctnCall        ::=  id:i LPAREN RPAREN              // fctn call with no args
+                {: RESULT = new CallExpNode(i, new ExpListNode(new LinkedList()));
+                :}
+                | id:i LPAREN actualList:al RPAREN      // fctn call with args
+                {: RESULT = new CallExpNode(i, new ExpListNode(al));
+                :}
+                ;
+
+actualList      ::= exp:e
+                {: RESULT = new LinkedList();
+                   RESULT.add(e);
+                :}
+                | actualList:al COMMA exp:e
+                {: RESULT = al == null ? new LinkedList() : al;
+                   RESULT.add(e);
                 :}
                 ;
