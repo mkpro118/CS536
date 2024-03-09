@@ -171,8 +171,8 @@ class ExpListNode extends ASTnode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-    	for (ExpNode : myExps) {
-            ExpNode.unparse(p, indent);
+    	for (ExpNode exp: myExps) {
+            exp.unparse(p, indent);
         }
     }
 
@@ -185,7 +185,7 @@ class FormalsListNode extends ASTnode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-    	for (FormalsNode formal : myFormals) {
+    	for (FormalDeclNode formal : myFormals) {
             formal.unparse(p, indent);
         }
     }
