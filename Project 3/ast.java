@@ -141,14 +141,8 @@ class DeclListNode extends ASTnode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-        Iterator it = myDecls.iterator();
-        try {
-            while (it.hasNext()) {
-                ((DeclNode)it.next()).unparse(p, indent);
-            }
-        } catch (NoSuchElementException ex) {
-            System.err.println("unexpected NoSuchElementException in DeclListNode.print");
-            System.exit(-1);
+    	for (DeclNode decl : myDecls) {
+            decl.unparse(p, indent);
         }
     }
 
@@ -162,14 +156,8 @@ class StmtListNode extends ASTnode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-    	Iterator it = myStmts.iterator();
-        try {
-            while (it.hasNext()) {
-                ((StmtNode)it.next()).unparse(p, indent);
-            }
-        } catch (NoSuchElementException ex) {
-            System.err.println("unexpected NoSuchElementException in StmtListNode.print");
-            System.exit(-1);
+    	for (StmtNode stmt : myStmts) {
+            stmt.unparse(p, indent);
         }
     }
 
@@ -183,14 +171,8 @@ class ExpListNode extends ASTnode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-    	Iterator it = myExps.iterator();
-        try {
-            while (it.hasNext()) {
-                ((StmtNode)it.next()).unparse(p, indent);
-            }
-        } catch (NoSuchElementException ex) {
-            System.err.println("unexpected NoSuchElementException in ExpListNode.print");
-            System.exit(-1);
+    	for (ExpNode : myExps) {
+            ExpNode.unparse(p, indent);
         }
     }
 
@@ -203,14 +185,8 @@ class FormalsListNode extends ASTnode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-    	Iterator it = myFormals.iterator();
-        try {
-            while (it.hasNext()) {
-                ((StmtNode)it.next()).unparse(p, indent);
-            }
-        } catch (NoSuchElementException ex) {
-            System.err.println("unexpected NoSuchElementException in FormalsListNode.print");
-            System.exit(-1);
+    	for (FormalsNode formal : myFormals) {
+            formal.unparse(p, indent);
         }
     }
 
@@ -370,8 +346,6 @@ class TupleNode extends TypeNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-    	//CHECK
-	doIndent(p, indent);
         myId.unparse(p, indent);
     }
 	
