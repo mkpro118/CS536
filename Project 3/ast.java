@@ -258,7 +258,7 @@ class FctnDeclNode extends DeclNode {
         p.print(" ");
         myId.unparse(p, 0);
         p.print("(");
-        myFormalsList.unparse(p, 0); //do I iterate to unparse?
+        myFormalsList.unparse(p, 0);
         p.print(") ");
         myBody.unparse(p, indent);
     }
@@ -294,9 +294,9 @@ class TupleDeclNode extends DeclNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-    	doIndent(p, indent);
+    	p.print("tuple ");
         myId.unparse(p, 0);
-        p.print("{ ");
+        p.println(" {");
         myDeclList.unparse(p, indent + ASTnode.indent);
         p.print("}.");
         p.println(".");
