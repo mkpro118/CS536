@@ -141,24 +141,25 @@ decl            ::= varDecl:v
                 :}
                 ;
 
+varDeclList     ::= varDeclList:vdl varDecl:vd
+                {: RESULT = vdl == null ? new LinkedList() : vdl;
+                   RESULT.add(vd);
+                :}
+                | /* epsilon */
+                {: RESULT = new LinkedList();
+                :}
+                ;
+
 varDecl         ::= type:t id:i DOT
                 {: RESULT = new VarDeclNode(t, i, VarDeclNode.NON_TUPLE);
                 :}
-                ;
-
-type            ::= LOGICAL
-                {: RESULT = new LogicalNode();
-                :}
-                | INTEGER
-                {: RESULT = new IntegerNode();
-                :}
-                | VOID
-                {: RESULT = new VoidNode();
+                | TUPLE id:i1 id:i2 DOT
+                {: RESULT = new VarDeclNode(new TupleNode(i1), i2, ~VarDeclNode.NON_TUPLE);
                 :}
                 ;
 
-id              ::= ID:i
-                {: RESULT = new IdNode(i.lineNum, i.charNum, i.idVal);
+fctnDecl        ::= type:t id:i formals:f fctnBody:fb
+                {: RESULT = new FctnDeclNode(t, i, f, fb);
                 :}
                 ;
 
@@ -174,11 +175,6 @@ tupleBody       ::= tupleBody:tb varDecl:vd
                 | varDecl:vd
                 {: RESULT = new LinkedList<DeclNode>();
                    RESULT.add(vd);
-                :}
-                ;
-
-fctnDecl        ::= type:t id:i formals:f fctnBody:fb
-                {: RESULT = new FctnDeclNode(t, i, f, fb);
                 :}
                 ;
 
@@ -207,15 +203,6 @@ formalDecl      ::= type:t id:i
 
 fctnBody        ::= LSQBRACKET varDeclList:vdl stmtList:sl RSQBRACKET
                 {: RESULT = new FctnBodyNode(new DeclListNode(vdl), new StmtListNode(sl));
-                :}
-                ;
-
-varDeclList     ::= varDeclList:vdl varDecl:vd
-                {: RESULT = vdl == null ? new LinkedList() : vdl;
-                   RESULT.add(vd);
-                :}
-                | /* epsilon */
-                {: RESULT = new LinkedList();
                 :}
                 ;
 
@@ -319,15 +306,6 @@ exp             ::= assignExp:e
                 :}
                 ;
 
-loc             ::= id:i
-                {: RESULT = i;
-                :}
-                | loc:l COLON id:i
-                {:
-                   RESULT = new TupleAccessExpNode(l, i);
-                :}
-                ;
-
 term            ::= loc:l
                 {:
                 RESULT = l;
@@ -371,5 +349,30 @@ actualList      ::= exp:e
                 | actualList:al COMMA exp:e
                 {: RESULT = al == null ? new LinkedList() : al;
                    RESULT.add(e);
+                :}
+                ;
+
+type            ::= LOGICAL
+                {: RESULT = new LogicalNode();
+                :}
+                | INTEGER
+                {: RESULT = new IntegerNode();
+                :}
+                | VOID
+                {: RESULT = new VoidNode();
+                :}
+                ;
+
+loc             ::= id:i
+                {: RESULT = i;
+                :}
+                | loc:l COLON id:i
+                {:
+                   RESULT = new TupleAccessExpNode(l, i);
+                :}
+                ;
+
+id              ::= ID:i
+                {: RESULT = new IdNode(i.lineNum, i.charNum, i.idVal);
                 :}
                 ;
