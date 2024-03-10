@@ -7,6 +7,8 @@ tuple swap_t {
     integer b.
 }.
 
+tuple swap_t swapper.
+
 integer factorial {integer n} [
   integer p.p=1.
   if n<0|n==0[return 0.]if n==1[return 1.]
@@ -20,7 +22,6 @@ integer fibonacci {integer n} [
 ]
 
 void test {} [ !! ]
-tuple swap_t swapper.
 while k == 0 [ $ ]
 write << "Interesting!! didn't know it could do \"this\"".
 ]
@@ -53,3 +54,11 @@ integer gcd {integer x, integer y} [
 
   return x.
 ]
+
+!! Okay, no more fun and games.
+!! Now we start sequential testing
+
+!! Variable Declarations.
+integer x. integer y. integer z.
+logical x. logical y. logical z.
+void    x. void
