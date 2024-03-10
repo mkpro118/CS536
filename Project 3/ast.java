@@ -171,8 +171,13 @@ class ExpListNode extends ASTnode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+        int i = 0;
+        final int size = myExps.size();
     	for (ExpNode exp: myExps) {
             exp.unparse(p, indent);
+            if (++i < size) {
+                p.print(", ");
+            }
         }
     }
 
@@ -388,6 +393,7 @@ class PostIncStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+        doIndent(p, indent);
         myExp.unparse(p, indent);
         p.println("++.");
     }
@@ -402,6 +408,7 @@ class PostDecStmtNode extends StmtNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+        doIndent(p, indent);
         myExp.unparse(p, indent);
         p.println("--.");
     }
@@ -421,16 +428,14 @@ class IfStmtNode extends StmtNode {
         doIndent(p, indent);
         p.print("if ");
         myExp.unparse(p, indent);
-        p.println(" ["); // Start bracket
+        p.println(" [");
 
         myDeclList.unparse(p, indent + ASTnode.indent);
-        // p.println(); // Does myDeclList have newline? Should it?
 
-        // This should have a newline automatically
         myStmtList.unparse(p, indent + ASTnode.indent);
 
         doIndent(p, indent);
-        p.println("]"); // End bracket
+        p.println("]");
     }
 
     // 3 children
@@ -457,7 +462,6 @@ class IfElseStmtNode extends StmtNode {
         p.println(" [");
 
         myThenDeclList.unparse(p, indent + ASTnode.indent);
-        // p.println();
 
         myThenStmtList.unparse(p, indent + ASTnode.indent);
 
@@ -468,7 +472,6 @@ class IfElseStmtNode extends StmtNode {
         p.println("else [");
 
         myElseDeclList.unparse(p, indent + ASTnode.indent);
-        // p.println();
 
         myElseStmtList.unparse(p, indent + ASTnode.indent);
 
@@ -498,7 +501,6 @@ class WhileStmtNode extends StmtNode {
         p.println(") [");
 
         myDeclList.unparse(p, indent + ASTnode.indent);
-        p.println();
 
         myStmtList.unparse(p, indent + ASTnode.indent);
 
@@ -662,7 +664,7 @@ class StringLitNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-        p.println(myStrVal);
+        p.print(myStrVal);
     }
 
     private int myLineNum;
