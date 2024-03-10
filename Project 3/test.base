@@ -55,10 +55,246 @@ integer gcd {integer x, integer y} [
   return x.
 ]
 
-!! Okay, no more fun and games.
+!! Okay, no more fun and games!
 !! Now we start sequential testing
 
-!! Variable Declarations.
+!! Variable Declarations
 integer x. integer y. integer z.
 logical x. logical y. logical z.
-void    x. void
+void    x. void    y. void    z.
+
+!! Tuple Declarations
+tuple point {integer x. integer y. integer z.}.
+tuple vector3 {integer i. integer j. integer k. logical normalized.}.
+tuple complex {integer real. integer imag.}.
+tuple queue_node {void data. integer priority.}.
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!                               FOR YESUI                                !!!!
+!!!!                         TODO: THE REST OF THESE                        !!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!! Tuple Instantiations.
+$ TODO
+
+
+!! Function Declaratations (No parameters, Empty Body)
+$ TODO
+
+
+!! Function Declaratations (No parameters, With Decls Only)
+$ TODO
+
+
+!! Function Declaratations (No parameters, With Stmts Only)
+$ TODO
+
+
+!! Function Declaratations (No parameters, Both Decls and Stmts)
+$ TODO
+
+
+!! Function Declaratations (With parameters, Empty Body)
+$ TODO
+
+
+!! Function Declaratations (With parameters, With Decls Only)
+$ TODO
+
+
+!! Function Declaratations (With parameters, With Stmts Only)
+$ TODO
+
+
+!! Function Declaratations (With parameters, Both Decls and Stmts)
+$ TODO
+
+
+!! Assignment Expressions, normal identifiers, simple RHS
+$ TODO
+
+
+!! Assignment Expressions, normal identifiers, complex RHS
+$ TODO
+
+
+!! Assignment Expressions, tuple members, simple RHS
+$ TODO
+
+
+!! Assignment Expressions, tuple members, complex RHS
+$ TODO
+
+
+!! Function Calls, no arguments
+$ TODO
+
+
+!! Function Calls, single simple argument
+$ TODO
+
+
+!! Function Calls, single complex argument
+$ TODO
+
+
+!! Function Calls, multiple simple arguments
+$ TODO
+
+
+!! Function Calls, multiple complex arguments
+$ TODO
+
+
+!! PostFix Increment, normal identifier
+$ TODO
+
+
+!! Postfix Incremeent, tuple members
+$ TODO
+
+
+!! PostFix Decrement, normal identifier
+$ TODO
+
+
+!! Postfix Decremeent, tuple members
+$ TODO
+
+
+!! If statements, simple condition, empty body
+$ TODO
+
+
+!! If statements, simple condition, Decls only
+$ TODO
+
+
+!! If statements, simple condition, Stmts only
+$ TODO
+
+
+!! If statements, simple condition, Decls and Stmts
+$ TODO
+
+
+!! If statements, complex condition, empty body
+$ TODO
+
+
+!! If statements, complex condition, Decls only
+$ TODO
+
+
+!! If statements, complex condition, Stmts only
+$ TODO
+
+
+!! If statements, complex condition, Decls and Stmts
+$ TODO
+
+!! If-Else statements, simple condition, empty body
+$ TODO
+
+
+!! If-Else statements, simple condition, Decls only
+$ TODO
+
+
+!! If-Else statements, simple condition, Stmts only
+$ TODO
+
+
+!! If-Else statements, simple condition, Decls and Stmts
+$ TODO
+
+
+!! If-Else statements, complex condition, empty body
+$ TODO
+
+
+!! If-Else statements, complex condition, Decls only
+$ TODO
+
+
+!! If-Else statements, complex condition, Stmts only
+$ TODO
+
+
+!! If-Else statements, complex condition, Decls and Stmts
+$ TODO
+
+
+!! While statements, simple condition, empty body
+$ TODO
+
+
+!! While statements, simple condition, Decls only
+$ TODO
+
+
+!! While statements, simple condition, Stmts only
+$ TODO
+
+
+!! While statements, simple condition, Decls and Stmts
+$ TODO
+
+
+!! While statements, complex condition, empty body
+$ TODO
+
+
+!! While statements, complex condition, Decls only
+$ TODO
+
+
+!! While statements, complex condition, Stmts only
+$ TODO
+
+
+!! While statements, complex condition, Decls and Stmts
+$ TODO
+
+
+!! Read statement, normal identifier
+$ TODO
+
+
+!! Read statement, tuple member
+$ TODO
+
+
+!! Write statement, normal identifier
+$ TODO
+
+
+!! Write statement, tuple member
+$ TODO
+
+
+!! Return statment, no retval.
+$ TODO
+
+
+!! Return statment, simple retval.
+$ TODO
+
+
+!! Return statment, complex retval.
+$ TODO
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!                           END FOR YESUI                                !!!!
+!!!!                         TODO: THE REST OF THESE                        !!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!                  THIS SECTION WAS AUTO-GENERATED                       !!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!                     END AUTO-GENERATED SECTION                         !!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
