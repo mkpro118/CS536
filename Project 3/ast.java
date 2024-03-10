@@ -359,6 +359,7 @@ class TupleNode extends TypeNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
+        p.print("tuple ");
         myId.unparse(p, indent);
     }
 	
@@ -876,7 +877,7 @@ class NotEqualsNode extends BinaryExpNode {
         p.print("(");
         myExp1.unparse(p, indent);
 
-        p.print(" != ");
+        p.print(" ~= ");
 
         myExp2.unparse(p, indent);
         p.print(")");
