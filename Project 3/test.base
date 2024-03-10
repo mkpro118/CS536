@@ -293,7 +293,275 @@ $ TODO
 !!!!                  THIS SECTION WAS AUTO-GENERATED                       !!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+!! Plus operator, LHS: Integer, RHS: Integer
+void test_func {} [_ = 0 + 1.]
 
+!! Plus operator, LHS: Integer, RHS: Identifier
+void test_func {} [_ = 9 + p.]
+
+!! Plus operator, LHS: Integer, RHS: Tuple Member
+void test_func {} [_ = 9 + V:L.]
+
+!! Plus operator, LHS: Identifier, RHS: Integer
+void test_func {} [_ = a + 2.]
+
+!! Plus operator, LHS: Identifier, RHS: Identifier
+void test_func {} [_ = U + Q.]
+
+!! Plus operator, LHS: Identifier, RHS: Tuple Member
+void test_func {} [_ = n + N:p.]
+
+!! Plus operator, LHS: Tuple Member, RHS: Integer
+void test_func {} [_ = N:I + 2.]
+
+!! Plus operator, LHS: Tuple Member, RHS: Identifier
+void test_func {} [_ = R:y + S.]
+
+!! Plus operator, LHS: Tuple Member, RHS: Tuple Member
+void test_func {} [_ = U:I + a:A.]
+
+!! Minus operator, LHS: Integer, RHS: Integer
+void test_func {} [_ = 9 - 8.]
+
+!! Minus operator, LHS: Integer, RHS: Identifier
+void test_func {} [_ = 2 - T.]
+
+!! Minus operator, LHS: Integer, RHS: Tuple Member
+void test_func {} [_ = 0 - V:o.]
+
+!! Minus operator, LHS: Identifier, RHS: Integer
+void test_func {} [_ = W - 3.]
+
+!! Minus operator, LHS: Identifier, RHS: Identifier
+void test_func {} [_ = C - j.]
+
+!! Minus operator, LHS: Identifier, RHS: Tuple Member
+void test_func {} [_ = h - v:N.]
+
+!! Minus operator, LHS: Tuple Member, RHS: Integer
+void test_func {} [_ = j:n - 2.]
+
+!! Minus operator, LHS: Tuple Member, RHS: Identifier
+void test_func {} [_ = U:L - b.]
+
+!! Minus operator, LHS: Tuple Member, RHS: Tuple Member
+void test_func {} [_ = b:x - K:b.]
+
+!! Times operator, LHS: Integer, RHS: Integer
+void test_func {} [_ = 1 * 9.]
+
+!! Times operator, LHS: Integer, RHS: Identifier
+void test_func {} [_ = 8 * L.]
+
+!! Times operator, LHS: Integer, RHS: Tuple Member
+void test_func {} [_ = 7 * i:c.]
+
+!! Times operator, LHS: Identifier, RHS: Integer
+void test_func {} [_ = T * 0.]
+
+!! Times operator, LHS: Identifier, RHS: Identifier
+void test_func {} [_ = r * f.]
+
+!! Times operator, LHS: Identifier, RHS: Tuple Member
+void test_func {} [_ = q * y:C.]
+
+!! Times operator, LHS: Tuple Member, RHS: Integer
+void test_func {} [_ = c:q * 4.]
+
+!! Times operator, LHS: Tuple Member, RHS: Identifier
+void test_func {} [_ = K:G * g.]
+
+!! Times operator, LHS: Tuple Member, RHS: Tuple Member
+void test_func {} [_ = y:K * v:A.]
+
+!! Divide operator, LHS: Integer, RHS: Integer
+void test_func {} [_ = 6 / 9.]
+
+!! Divide operator, LHS: Integer, RHS: Identifier
+void test_func {} [_ = 6 / K.]
+
+!! Divide operator, LHS: Integer, RHS: Tuple Member
+void test_func {} [_ = 7 / q:d.]
+
+!! Divide operator, LHS: Identifier, RHS: Integer
+void test_func {} [_ = F / 4.]
+
+!! Divide operator, LHS: Identifier, RHS: Identifier
+void test_func {} [_ = L / F.]
+
+!! Divide operator, LHS: Identifier, RHS: Tuple Member
+void test_func {} [_ = E / o:l.]
+
+!! Divide operator, LHS: Tuple Member, RHS: Integer
+void test_func {} [_ = k:h / 7.]
+
+!! Divide operator, LHS: Tuple Member, RHS: Identifier
+void test_func {} [_ = X:h / S.]
+
+!! Divide operator, LHS: Tuple Member, RHS: Tuple Member
+void test_func {} [_ = M:P / F:o.]
+
+!! Equals operator, LHS: Integer, RHS: Integer
+void test_func {} [_ = 9 == 1.]
+
+!! Equals operator, LHS: Integer, RHS: Identifier
+void test_func {} [_ = 4 == b.]
+
+!! Equals operator, LHS: Integer, RHS: Tuple Member
+void test_func {} [_ = 4 == q:Q.]
+
+!! Equals operator, LHS: Identifier, RHS: Integer
+void test_func {} [_ = u == 0.]
+
+!! Equals operator, LHS: Identifier, RHS: Identifier
+void test_func {} [_ = v == P.]
+
+!! Equals operator, LHS: Identifier, RHS: Tuple Member
+void test_func {} [_ = U == K:p.]
+
+!! Equals operator, LHS: Tuple Member, RHS: Integer
+void test_func {} [_ = B:G == 7.]
+
+!! Equals operator, LHS: Tuple Member, RHS: Identifier
+void test_func {} [_ = j:Y == U.]
+
+!! Equals operator, LHS: Tuple Member, RHS: Tuple Member
+void test_func {} [_ = d:t == u:b.]
+
+!! Greater operator, LHS: Integer, RHS: Integer
+void test_func {} [_ = 9 > 5.]
+
+!! Greater operator, LHS: Integer, RHS: Identifier
+void test_func {} [_ = 6 > x.]
+
+!! Greater operator, LHS: Integer, RHS: Tuple Member
+void test_func {} [_ = 7 > X:V.]
+
+!! Greater operator, LHS: Identifier, RHS: Integer
+void test_func {} [_ = s > 6.]
+
+!! Greater operator, LHS: Identifier, RHS: Identifier
+void test_func {} [_ = b > n.]
+
+!! Greater operator, LHS: Identifier, RHS: Tuple Member
+void test_func {} [_ = q > d:H.]
+
+!! Greater operator, LHS: Tuple Member, RHS: Integer
+void test_func {} [_ = C:v > 7.]
+
+!! Greater operator, LHS: Tuple Member, RHS: Identifier
+void test_func {} [_ = f:i > U.]
+
+!! Greater operator, LHS: Tuple Member, RHS: Tuple Member
+void test_func {} [_ = x:D > J:C.]
+
+!! GreaterEq operator, LHS: Integer, RHS: Integer
+void test_func {} [_ = 8 >= 6.]
+
+!! GreaterEq operator, LHS: Integer, RHS: Identifier
+void test_func {} [_ = 1 >= G.]
+
+!! GreaterEq operator, LHS: Integer, RHS: Tuple Member
+void test_func {} [_ = 3 >= D:l.]
+
+!! GreaterEq operator, LHS: Identifier, RHS: Integer
+void test_func {} [_ = R >= 4.]
+
+!! GreaterEq operator, LHS: Identifier, RHS: Identifier
+void test_func {} [_ = L >= u.]
+
+!! GreaterEq operator, LHS: Identifier, RHS: Tuple Member
+void test_func {} [_ = k >= g:G.]
+
+!! GreaterEq operator, LHS: Tuple Member, RHS: Integer
+void test_func {} [_ = T:d >= 8.]
+
+!! GreaterEq operator, LHS: Tuple Member, RHS: Identifier
+void test_func {} [_ = H:b >= q.]
+
+!! GreaterEq operator, LHS: Tuple Member, RHS: Tuple Member
+void test_func {} [_ = o:B >= T:H.]
+
+!! Lesser operator, LHS: Integer, RHS: Integer
+void test_func {} [_ = 6 < 7.]
+
+!! Lesser operator, LHS: Integer, RHS: Identifier
+void test_func {} [_ = 8 < G.]
+
+!! Lesser operator, LHS: Integer, RHS: Tuple Member
+void test_func {} [_ = 8 < d:M.]
+
+!! Lesser operator, LHS: Identifier, RHS: Integer
+void test_func {} [_ = M < 8.]
+
+!! Lesser operator, LHS: Identifier, RHS: Identifier
+void test_func {} [_ = k < F.]
+
+!! Lesser operator, LHS: Identifier, RHS: Tuple Member
+void test_func {} [_ = S < a:p.]
+
+!! Lesser operator, LHS: Tuple Member, RHS: Integer
+void test_func {} [_ = W:L < 10.]
+
+!! Lesser operator, LHS: Tuple Member, RHS: Identifier
+void test_func {} [_ = Y:w < d.]
+
+!! Lesser operator, LHS: Tuple Member, RHS: Tuple Member
+void test_func {} [_ = Y:B < J:Z.]
+
+!! LesserEq operator, LHS: Integer, RHS: Integer
+void test_func {} [_ = 3 <= 0.]
+
+!! LesserEq operator, LHS: Integer, RHS: Identifier
+void test_func {} [_ = 7 <= V.]
+
+!! LesserEq operator, LHS: Integer, RHS: Tuple Member
+void test_func {} [_ = 2 <= h:N.]
+
+!! LesserEq operator, LHS: Identifier, RHS: Integer
+void test_func {} [_ = T <= 9.]
+
+!! LesserEq operator, LHS: Identifier, RHS: Identifier
+void test_func {} [_ = Z <= U.]
+
+!! LesserEq operator, LHS: Identifier, RHS: Tuple Member
+void test_func {} [_ = U <= W:E.]
+
+!! LesserEq operator, LHS: Tuple Member, RHS: Integer
+void test_func {} [_ = e:T <= 1.]
+
+!! LesserEq operator, LHS: Tuple Member, RHS: Identifier
+void test_func {} [_ = c:h <= p.]
+
+!! LesserEq operator, LHS: Tuple Member, RHS: Tuple Member
+void test_func {} [_ = i:Q <= B:F.]
+
+!! NotEquals operator, LHS: Integer, RHS: Integer
+void test_func {} [_ = 9 ~= 9.]
+
+!! NotEquals operator, LHS: Integer, RHS: Identifier
+void test_func {} [_ = 1 ~= b.]
+
+!! NotEquals operator, LHS: Integer, RHS: Tuple Member
+void test_func {} [_ = 6 ~= N:u.]
+
+!! NotEquals operator, LHS: Identifier, RHS: Integer
+void test_func {} [_ = z ~= 2.]
+
+!! NotEquals operator, LHS: Identifier, RHS: Identifier
+void test_func {} [_ = Z ~= r.]
+
+!! NotEquals operator, LHS: Identifier, RHS: Tuple Member
+void test_func {} [_ = Y ~= a:v.]
+
+!! NotEquals operator, LHS: Tuple Member, RHS: Integer
+void test_func {} [_ = N:k ~= 1.]
+
+!! NotEquals operator, LHS: Tuple Member, RHS: Identifier
+void test_func {} [_ = W:V ~= T.]
+
+!! NotEquals operator, LHS: Tuple Member, RHS: Tuple Member
+void test_func {} [_ = p:g ~= I:v.]
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!                     END AUTO-GENERATED SECTION                         !!!!
