@@ -1,21 +1,55 @@
 logical a.
-logical b.
-integer c.
-void d.
+integer i1.
+void x.
 
-tuple yesui {
-    integer mk.
-    logical mt.
-    void    am.
+tuple swap_t {
+    integer a.
+    integer b.
 }.
 
-logical x {integer y, integer z} [
-    while (y < 2) [
-        y = y + 2.
-        z--.
-    ]
+integer factorial {integer n} [
+  integer p.p=1.
+  if n<0|n==0[return 0.]if n==1[return 1.]
+  while n>0[p=p*n.n--.]
+]
 
-    if (7 < z & 3 > z) [ write << z. ] else [ write << z+4.]
+integer fibonacci {integer n} [
+  if n == 0[return 0.]else[if n <= 2[return 1.]
+  return fibonacci(n - 1) + fibonacci(n - 2).
+  ]
+]
 
-    return x(z, y).
+void test {} [ !! ]
+tuple swap_t swapper.
+while k == 0 [ $ ]
+write << "Interesting!! didn't know it could do \"this\"".
+]
+]
+
+void swap {} [
+  integer z. z = swapper:a.
+  swapper:a = swapper:b. swapper:b = z.
+]
+
+integer mod {integer x, integer y} [
+  integer q. q = x / y.
+
+  if x < 0 | y <= 0 [ write << "Cannot perform modulo". ]
+
+  return q * y - x.
+]
+
+integer gcd {integer x, integer y} [
+  integer z.
+  if (y > x) [z = x. x = y. y = z.]
+
+  swapper:a = x. swapper:b = y.
+
+  swap().
+
+  x = swapper:a. y = swapper:b.
+
+  while y ~= 0 [ z = y. y = mod(x, y). x = z.]
+
+  return x.
 ]
