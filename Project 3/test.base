@@ -69,13 +69,7 @@ tuple vector3 {integer i. integer j. integer k. logical normalized.}.
 tuple complex {integer real. integer imag.}.
 tuple queue_node {void data. integer priority.}.
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!                               FOR YESUI                                !!!!
-!!!!                         TODO: THE REST OF THESE                        !!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 !! Tuple Instantiations.
-$ TODO
 tuple point p .
 tuple vector3 v.
 tuple complex c02   .
@@ -88,7 +82,6 @@ integer tupletest {integer x, integer y, integer z}[
 ]
 
 !! Function Declaratations (No parameters, Empty Body)
-$ TODO
 integer tupletest {}[
 ]
 integer _ {}[
@@ -110,7 +103,6 @@ void _100 {}[
 
 
 !! Function Declaratations (No parameters, With Decls Only)
-$ TODO  
 integer tupletest1 {}[
   tuple decl d.
   integer this. integer is. integer a.
@@ -120,7 +112,6 @@ integer tupletest1 {}[
 
 
 !! Function Declaratations (No parameters, With Stmts Only)
-$ TODO
 integer tupletest {}[
   p:i=10.
   p:i++.
@@ -134,7 +125,6 @@ integer tupletest {}[
 ]
 
 !! Function Declaratations (No parameters, Both Decls and Stmts)
-$ TODO 
 integer tupletest {}[
   integer this. integer is. integer random. 
   p:i=10.
@@ -150,19 +140,16 @@ integer tupletest {}[
 
 
 !! Function Declaratations (With parameters, Empty Body)
-$ TODO
 integer tupletest {integer x, integer y, integer z}[
 
 ]
 
 !! Function Declaratations (With parameters, With Decls Only)
-$ TODO
 integer tupletest {integer x, integer y, integer z}[
   integer this. integer is. integer random.
 ]
 
 !! Function Declaratations (With parameters, With Stmts Only)
-$ TODO
 integer tupletest {integer x, integer y, integer z}[
   p:i=10.
   p:i++.
@@ -176,7 +163,6 @@ integer tupletest {integer x, integer y, integer z}[
 ]
 
 !! Function Declaratations (With parameters, Both Decls and Stmts)
-$ TODO
 integer tupletest {integer x, integer y, integer z}[
   integer this. integer is. integer random. 
   p:i=10.
@@ -191,21 +177,18 @@ integer tupletest {integer x, integer y, integer z}[
 ]
 
 !! Assignment Expressions, normal identifiers, simple RHS
-$ TODO
 integer simpleAssign {} [
   random=nonsense.
   integ322= taylor234.
 ]
 
 !! Assignment Expressions, normal identifiers, complex RHS
-$ TODO
 integer complexAssign {} [
   notAssign=(33+23+(3 | not (tupletest()))).
   notEqualsAssign=(33/23 <= (3 | not =(tupletest()))).
 ]
 
 !! Assignment Expressions, tuple members, simple RHS
-$ TODO
 integer TewE7 {} [
   p: name=hello.
   c02: runningout=of4oxygen| 4.
@@ -213,14 +196,12 @@ integer TewE7 {} [
 ]
 
 !! Assignment Expressions, tuple members, complex RHS
-$ TODO
 integer complexAssign {} [
   x: name=(33+23+(3 | not (tupletest()))).
   p: pointerElement=(33/23 <= (3 | not =(tupletest()))).
 ]
 
 !! Function Calls, no arguments
-$ TODO
 integer fcnCallNoArg {} [
   complexAssign().
   return TewE7().
@@ -232,14 +213,16 @@ void randomFctnCall {}[
 
 
 !! Function Calls, single simple argument
-$ TODO
 integer fcnCall1Arg {} [
   nonExistent1Arg(hello).
   return nonExistentAnother1Arg(one).
 ]
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!                  THIS SECTION WAS AUTO-GENERATED                       !!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 !! Function Calls, single complex argument
-$ TODO
 integer fcnCallMultipleSimpleArg {} [
   vKiFE(U0fig:nG2Pe = mX3Yl:yW5Yt < 8).
   vKiFE(True & 5 < glcVe:id7Yl & a6uV0:HIqFI < nDdJS & Gp6Ln
@@ -247,14 +230,12 @@ integer fcnCallMultipleSimpleArg {} [
 ]
 
 !! Function Calls, multiple simple arguments
-$ TODO
 integer fcnCallMultipleSimpleArg {} [
   vKiFE(CWEKG, False, "RUq1x9tFRx", 1827296517, "H25F3WtQWz").
 ]
 
 
 !! Function Calls, multiple complex arguments
-$ TODO
 integer fcnCallMultipleSimpleArg {} [
   vKiFE(U0fig:nG2Pe = mX3Yl:yW5Yt < 8, True & 5 < glcVe:id7Yl 
   & a6uV0:HIqFI < nDdJS & Gp6Ln <= 1 & ((True & True) 
@@ -266,7 +247,6 @@ integer fcnCallMultipleSimpleArg {} [
 ]
 
 !! PostFix Increment, normal identifier
-$ TODO
 void postfix {} [
   hello++.
   randvar1=1231.
@@ -274,7 +254,6 @@ void postfix {} [
 ]
 
 !! Postfix Increment, tuple members
-$ TODO
 tuple trackstar {integer tup1. logical tup2. void tup3.}.
 tuple trackstar i.
 tuple trackstar r.
@@ -285,7 +264,6 @@ void postfixTuple {} [
 ]
 
 !! PostFix Decrement, normal identifier
-$ TODO
 void postfix {} [
   hello--.
   randvar1=1231.
@@ -293,7 +271,6 @@ void postfix {} [
 ]
 
 !! Postfix Decrement, tuple members
-$ TODO
 void postfixTuple {} [
   i: i--.
   i: i--.
@@ -301,13 +278,11 @@ void postfixTuple {} [
 ]
 
 !! If statements, simple condition, empty body
-$ TODO
 void ifstmt {} [
   if 2 <= 4 []
 ]
 
 !! If statements, simple condition, Decls only
-$ TODO
 void ifstmt {} [
   if False [
   integer VZY.
@@ -317,7 +292,6 @@ void ifstmt {} [
 ]]]
 
 !! If statements, simple condition, Stmts only
-$ TODO
 void ifstmt {} [
 if False
 [ 
@@ -329,7 +303,6 @@ if True
 ]
 
 !! If statements, simple condition, Decls and Stmts
-$ TODO
 logical Stmt{}[
 if True[ 
   if (False | False) | (1 == 6) & False
@@ -339,14 +312,12 @@ if True[
 
 
 !! If statements, complex condition, empty body
-$ TODO
 logical Stmt{}[
   if (False | sOji3 > 4 & False & True | (True & False) 
   | True & True) [    ] 
 ]
 
 !! If statements, complex condition, Decls only
-$ TODO
 logical complexCond{}[if True & (8 < W7_ft:fFvRP) 
 & (True | False)[
   integer xbG.
@@ -354,7 +325,6 @@ logical complexCond{}[if True & (8 < W7_ft:fFvRP)
 ]]
 
 !! If statements, complex condition, Stmts only
-$ TODO
 
 void complextStmt{}[
 if (4 > wm0KZ & True) | (Tt9I3:YdElQ >= bVBHF & True) 
@@ -364,7 +334,6 @@ if (4 > wm0KZ & True) | (Tt9I3:YdElQ >= bVBHF & True)
 ]]
 
 !! If statements, complex condition, Decls and Stmts
-$ TODO
 logical declStmt{}[
 if ((lMtAV:TKmNz > FviLs & (True)) & True & True) 
 | ((8 ~= cgC8F:mMo0D) & 5 >= uu_ml & ((False) & True)) 
@@ -373,13 +342,11 @@ if ((lMtAV:TKmNz > FviLs & (True)) & True & True)
 ]]]
 
 !! If-Else statements, simple condition, empty body
-$ TODO
 void simpEmpty{}[
 if DEMyW:FjPI9 > 3[]  else[]
 ]
 
 !! If-Else statements, simple condition, Decls only
-$ TODO
 integer ifelseDecls{}[
   if True
   [integer ldQ.]
@@ -400,7 +367,6 @@ integer ifelseDecls{}[
 ]
 
 !! If-Else statements, simple condition, Stmts only
-$ TODO
 void ifElseStmts{}[
   if 8 > YH2En:E3yb0 [ qAfp0:aCRgs++. 
   ]  else
@@ -428,7 +394,6 @@ void ifElseStmts{}[
 ]
 
 !! If-Else statements, simple condition, Decls and Stmts
-$ TODO
 logical ifElseDeclStmts{}[
   if False
   [
@@ -466,13 +431,11 @@ logical ifElseDeclStmts{}[
 ]
 
 !! If-Else statements, complex condition, empty body
-$ TODO
 void ifElseComplex{}[
   if (8 > rjYik:b41lD & (WpW3T == MXV1M)) [ ]  else[]
 ]
 
 !! If-Else statements, complex condition, Decls only
-$ TODO
 void ifElseComplex{}[
   if (False & True)
   [integer LZy.]  else[]
@@ -485,7 +448,6 @@ void ifElseComplex{}[
 ]
 
 !! If-Else statements, complex condition, Stmts only
-$ TODO
 logical ifElseComplexStmts{}[
   if (False | False) | (HeECV ~= 5 & 5 < 5) | 
   False & YsxDW:_Czx6 > z01n4:xyy01 & (False | TWkiS >= QFE3f:DctCx)
@@ -509,7 +471,6 @@ logical ifElseComplexStmts{}[
 ]
 
 !! If-Else statements, complex condition, Decls and Stmts
-$ TODO
 integer complexDeclStmts{}[
   if False | False | ZqQzl == HtV3U | (1 >= mODyp) | True | (7 < 7) | ((True) & True)
   [hqgD_:FYALx--.]
@@ -529,13 +490,11 @@ integer complexDeclStmts{}[
 ]
 
 !! While statements, simple condition, empty body
-$ TODO
 logical whileSimple{}[
   while PMoST <= gyhZU[]
 ]
 
 !! While statements, simple condition, Decls only
-$ TODO
 integer whileDecl{}[
   while 9 >= eY3s6[integer BJ_.]
 
@@ -548,7 +507,6 @@ integer whileDecl{}[
 
 
 !! While statements, simple condition, Stmts only
-$ TODO
 void simpleStmts{}[
   while ZeJS3 > T1Zt4:cTmXd
   [ if (False & False) & ((True) & ezZIZ >= 9)
@@ -569,7 +527,6 @@ void simpleStmts{}[
 ]
 
 !! While statements, simple condition, Decls and Stmts
-$ TODO
 logical whileSimpleDeclStmts{}[
   while False [ while (False | True & (False & (True)))
   & (True | True & (False & False))
@@ -585,13 +542,11 @@ logical whileSimpleDeclStmts{}[
 
 
 !! While statements, complex condition, empty body
-$ TODO
 void complexEmpty{}[
   while (((XaJ3j >= wpGZO:rqRtL) & True & (True | False)) | ((True & 3 <= uXaNd)) & (False) & False) []
 ]
 
 !! While statements, complex condition, Decls only
-$ TODO
 integer whileComplexDecls{}
   [while (False) | (f9lz_:GuJC9 >= d1_Kp) & True & (False) [  logical Gng.]
   while False & (False) | kMfpw <= lldMM:IQqP4 | False [  void CGi.
@@ -605,7 +560,6 @@ integer whileComplexDecls{}
 ]
 
 !! While statements, complex condition, Stmts only
-$ TODO
 logical whileComplexStmts{}[
   while ((nJdGm < dfofp & KEmcS:ZWYN_ > 4)) | False & False 
   | (True & True) & True & (mU0lC < 4) [ if False [
@@ -631,7 +585,6 @@ logical whileComplexStmts{}[
 ]
 
 !! While statements, complex condition, Decls and Stmts
-$ TODO
 void whileComplexDeclsStmts{}[
   while (DV2zO ~= hm636 | False) [
   write << f8Ftg.]
@@ -648,7 +601,6 @@ void whileComplexDeclsStmts{}[
 ]
 
 !! Read statement, normal identifier
-$ TODO
 
 integer reader {} [
   read >> hello.
@@ -659,54 +611,39 @@ integer oqJK1 {} [
 ]
 
 !! Read statement, tuple member
-$ TODO
 integer readWithTuple {} [ 
   read >> _funK:mJniU.
 ]
 
 
 !! Write statement, normal identifier
-$ TODO
 integer writer {} [ 
   write << MCkSS.
 ]
 
 
 !! Write statement, tuple member
-$ TODO
 integer writeWithTuple {} [ 
   write << SrN75:TEewv.
 ]
 
 
 !! Return statment, no retval.
-$ TODO
 integer returnNoRetVal {} [ 
   return .
 ]
 
 
 !! Return statment, simple retval.
-$ TODO
 integer returnNoRetVal {} [ 
   return 43>21.
 ]
 
 !! Return statment, complex retval.
-$ TODO
 integer complexRetVal {} [ 
   return (True) & False & (False) & Fyevr >= 5 | D01Kg >= 1 & True 
   | t3CXM <= JVQ10 | (XIG4g:Rddcp < 1) .
 ]
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!                           END FOR YESUI                                !!!!
-!!!!                         TODO: THE REST OF THESE                        !!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!                  THIS SECTION WAS AUTO-GENERATED                       !!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !! Plus operator, LHS: Integer, RHS: Integer
 void test_func {} [_ = 0 + 1.]
@@ -977,6 +914,24 @@ void test_func {} [_ = W:V ~= T.]
 
 !! NotEquals operator, LHS: Tuple Member, RHS: Tuple Member
 void test_func {} [_ = p:g ~= I:v.]
+
+!! Not operator, EXP: Literal
+void test_func {} [_ = ~True.]
+
+!! Not operator, EXP: Identifier
+void test_func {} [_ = ~lollipop.]
+
+!! Not operator, EXP: Tuple Member
+void test_func {} [_ = ~caramel:macchiato.]
+
+!! Unary Minus operator, EXP: Literal
+void test_func {} [_ = -10.]
+
+!! Unary Minus operator, EXP: Identifier
+void test_func {} [_ = -lollipop.]
+
+!! Unary Minus operator, EXP: Tuple Member
+void test_func {} [_ = -caramel:macchiato.]
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!                     END AUTO-GENERATED SECTION                         !!!!
