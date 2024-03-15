@@ -76,213 +76,628 @@ tuple queue_node {void data. integer priority.}.
 
 !! Tuple Instantiations.
 $ TODO
-
+tuple point p .
+tuple vector3 v.
+tuple complex c02   .
+tuple queue_node q.
+integer tupletest {integer x, integer y, integer z}[
+  p:x=1.
+  p:y=5.
+  p:z=10.
+  p:i=10.
+]
 
 !! Function Declaratations (No parameters, Empty Body)
 $ TODO
+integer tupletest {}[
+]
+integer _ {}[
+]
+integer _100 {}[
+]
+logical tupletest {}
+[]
+logical _ {}
+[
+]
+logical _100 {}[
+]
+void tupletest {}[]
+void _ {}[
+]
+void _100 {}[
+]
 
 
 !! Function Declaratations (No parameters, With Decls Only)
-$ TODO
+$ TODO  
+integer tupletest1 {}[
+  tuple decl d.
+  integer this. integer is. integer a.
+  logical random. logical int. logical log.
+  void and. void _. void test.
+]
 
 
 !! Function Declaratations (No parameters, With Stmts Only)
 $ TODO
-
+integer tupletest {}[
+  p:i=10.
+  p:i++.
+  p:i--.
+  tupletest1().
+  if (4-2) [z = x. x = y. y = z.]
+  if (40-22) [z = x. x = y. y = z.] else [z = x. x = y. y = z.]
+  while 4-2 [z = x. x = y. y = z.]
+  return 93-3.
+  return .
+]
 
 !! Function Declaratations (No parameters, Both Decls and Stmts)
-$ TODO
+$ TODO 
+integer tupletest {}[
+  integer this. integer is. integer random. 
+  p:i=10.
+  p:i++.
+  p:i--.
+  tupletest1().
+  if (4-2) [z = x. x = y. y = z.]
+  if (40-22) [z = x. x = y. y = z.] else [z = x. x = y. y = z.]
+  while 4-2 [z = x. x = y. y = z.]
+  return 93-3.
+  return .
+]
 
 
 !! Function Declaratations (With parameters, Empty Body)
 $ TODO
+integer tupletest {integer x, integer y, integer z}[
 
+]
 
 !! Function Declaratations (With parameters, With Decls Only)
 $ TODO
-
+integer tupletest {integer x, integer y, integer z}[
+  integer this. integer is. integer random.
+]
 
 !! Function Declaratations (With parameters, With Stmts Only)
 $ TODO
-
+integer tupletest {integer x, integer y, integer z}[
+  p:i=10.
+  p:i++.
+  p:i--.
+  tupletest1().
+  if (4-2) [z = x. x = y. y = z.]
+  if (40-22) [z = x. x = y. y = z.] else [z = x. x = y. y = z.]
+  while 4-2 [z = x. x = y. y = z.]
+  return 93-3.
+  return .
+]
 
 !! Function Declaratations (With parameters, Both Decls and Stmts)
 $ TODO
-
+integer tupletest {integer x, integer y, integer z}[
+  integer this. integer is. integer random. 
+  p:i=10.
+  p:i++.
+  p:i--.
+  tupletest1().
+  if (4-2) [z = x. x = y. y = z.]
+  if (40-22) [z = x. x = y. y = z.] else [z = x. x = y. y = z.]
+  while 4-2 [z = x. x = y. y = z.]
+  return 93-3.
+  return .
+]
 
 !! Assignment Expressions, normal identifiers, simple RHS
 $ TODO
-
+integer simpleAssign {} [
+  random=nonsense.
+  integ322= taylor234.
+]
 
 !! Assignment Expressions, normal identifiers, complex RHS
 $ TODO
-
+integer complexAssign {} [
+  notAssign=(33+23+(3 | not (tupletest()))).
+  notEqualsAssign=(33/23 <= (3 | not =(tupletest()))).
+]
 
 !! Assignment Expressions, tuple members, simple RHS
 $ TODO
-
+integer TewE7 {} [
+  p: name=hello.
+  c02: runningout=of4oxygen| 4.
+  return p. 
+]
 
 !! Assignment Expressions, tuple members, complex RHS
 $ TODO
-
+integer complexAssign {} [
+  x: name=(33+23+(3 | not (tupletest()))).
+  p: pointerElement=(33/23 <= (3 | not =(tupletest()))).
+]
 
 !! Function Calls, no arguments
 $ TODO
+integer fcnCallNoArg {} [
+  complexAssign().
+  return TewE7().
+]
+
+void randomFctnCall {}[
+  nonexistent().
+]
 
 
 !! Function Calls, single simple argument
 $ TODO
-
+integer fcnCall1Arg {} [
+  nonExistent1Arg(hello).
+  return nonExistentAnother1Arg(one).
+]
 
 !! Function Calls, single complex argument
 $ TODO
-
+integer fcnCallMultipleSimpleArg {} [
+  vKiFE(U0fig:nG2Pe = mX3Yl:yW5Yt < 8).
+  vKiFE(True & 5 < glcVe:id7Yl & a6uV0:HIqFI < nDdJS & Gp6Ln
+   <= 1 & ((True & True) | tH8xl:jsbHv > 8 | 5 >= rWIuc)).
+]
 
 !! Function Calls, multiple simple arguments
 $ TODO
+integer fcnCallMultipleSimpleArg {} [
+  vKiFE(CWEKG, False, "RUq1x9tFRx", 1827296517, "H25F3WtQWz").
+]
 
 
 !! Function Calls, multiple complex arguments
 $ TODO
-
+integer fcnCallMultipleSimpleArg {} [
+  vKiFE(U0fig:nG2Pe = mX3Yl:yW5Yt < 8, True & 5 < glcVe:id7Yl 
+  & a6uV0:HIqFI < nDdJS & Gp6Ln <= 1 & ((True & True) 
+  | tH8xl:jsbHv > 8 | 5 >= rWIuc)).
+  complexArgs((False) | (True) | (False & Xf0vO < CasRR) 
+  | True & Zx1qP:n5OUG < YVTwT:F7sWw & ((True) | ZeusW < 6), 
+  False & (d7Yn2:QZVkx < HrOTP:LWJ42) | False | True,  False 
+  | DTrBm < uVaZl:_YHPD ).
+]
 
 !! PostFix Increment, normal identifier
 $ TODO
+void postfix {} [
+  hello++.
+  randvar1=1231.
+  randvar1++.
+]
 
-
-!! Postfix Incremeent, tuple members
+!! Postfix Increment, tuple members
 $ TODO
-
+tuple trackstar {integer tup1. logical tup2. void tup3.}.
+tuple trackstar i.
+tuple trackstar r.
+void postfixTuple {} [
+  i: i++.
+  i: i++.
+  r: r++.
+]
 
 !! PostFix Decrement, normal identifier
 $ TODO
+void postfix {} [
+  hello--.
+  randvar1=1231.
+  randvar1--.
+]
 
-
-!! Postfix Decremeent, tuple members
+!! Postfix Decrement, tuple members
 $ TODO
-
+void postfixTuple {} [
+  i: i--.
+  i: i--.
+  r: r--.
+]
 
 !! If statements, simple condition, empty body
 $ TODO
-
+void ifstmt {} [
+  if 2 <= 4 []
+]
 
 !! If statements, simple condition, Decls only
 $ TODO
-
+void ifstmt {} [
+  if False [
+  integer VZY.
+  if False [  integer G_I.  ]
+  if (x>y) [
+  logical DWB.
+]]]
 
 !! If statements, simple condition, Stmts only
 $ TODO
-
+void ifstmt {} [
+if False
+[ 
+  Ih1T2(H34K0, 2025118449, pmJge, VQLFC).
+]
+if True
+  [while (True | False) & (((False) | False)) [
+    read >> mOTH_:aKik9.]]
+]
 
 !! If statements, simple condition, Decls and Stmts
 $ TODO
+logical Stmt{}[
+if True[ 
+  if (False | False) | (1 == 6) & False
+  [UTLB0(True, "_YcXvdHiN9").
+  return range(0, 4). 
+]]]
 
 
 !! If statements, complex condition, empty body
 $ TODO
-
+logical Stmt{}[
+  if (False | sOji3 > 4 & False & True | (True & False) 
+  | True & True) [    ] 
+]
 
 !! If statements, complex condition, Decls only
 $ TODO
-
+logical complexCond{}[if True & (8 < W7_ft:fFvRP) 
+& (True | False)[
+  integer xbG.
+  void lw2.
+]]
 
 !! If statements, complex condition, Stmts only
 $ TODO
 
+void complextStmt{}[
+if (4 > wm0KZ & True) | (Tt9I3:YdElQ >= bVBHF & True) 
+& True & False | True & 5 < 5 [ 
+  oD1wL:GsWKx = zFKok:Fgvxr.
+  _sj21:x38pj--.
+]]
 
 !! If statements, complex condition, Decls and Stmts
 $ TODO
+logical declStmt{}[
+if ((lMtAV:TKmNz > FviLs & (True)) & True & True) 
+| ((8 ~= cgC8F:mMo0D) & 5 >= uu_ml & ((False) & True)) 
+[ while False | True | False & True[
+ integer DE8.
+]]]
 
 !! If-Else statements, simple condition, empty body
 $ TODO
-
+void simpEmpty{}[
+if DEMyW:FjPI9 > 3[]  else[]
+]
 
 !! If-Else statements, simple condition, Decls only
 $ TODO
+integer ifelseDecls{}[
+  if True
+  [integer ldQ.]
+  else[]
+  if False [  void XVt.]
 
+  else[
+  void YKl.]
+  if jGT4i:EzFJo ~= 4 [
+  void gQm.
+  return chkS.
+  ] else[return True.]
+
+  if False [
+  integer UGK.
+  return Rkt0. ]
+  else[logical dMe.  return YOgX.]
+]
 
 !! If-Else statements, simple condition, Stmts only
 $ TODO
-
+void ifElseStmts{}[
+  if 8 > YH2En:E3yb0 [ qAfp0:aCRgs++. 
+  ]  else
+  []
+  if False[if True [ read >> uIrFR:UDxf2.]]
+  else  [ tWdYJ:ppAqc++.]
+  if 8 >= f2Wsl [
+  if 6 ~= LNzvO:Di9K7 & False [return. ]
+  else[   return range(0, 5). ]
+  return range(0, 1).]
+  else[return Erox. ]
+  if True [ RC_Wo:g61yb = JT2lW.
+  return False. ]
+  else[
+  PzX9S(344026328, bzCpr).
+  return rbJ7. ]
+  if True [
+  return False. ]  else
+  [
+    return range(0, 3). ]
+  if t1YGl:JAvKy ~= _uHED:TQW9I [   return False. ]
+  else
+  [ KGc5a--.
+  return range(0, 4). ]
+]
 
 !! If-Else statements, simple condition, Decls and Stmts
 $ TODO
+logical ifElseDeclStmts{}[
+  if False
+  [
+  while (True & 4 <= Sj_LL:VH9dl) & (rZS8t > dpWVH:CFurs) | True
+  [ YruXG(False, ZFY2q, "s7Xdnzfa4A").  return Xmhj. ]    ]  else  []
 
+  if False [
+  while False & False | 2 >= hQp3A & True & False & (t1BQd:IbzhK <= DnbvR:v81TP) 
+  & (False | (M_1Yd:OJFsi ~= SQEt_)) [
+  BExKY++.  return False.]]
+  else  [write << G6AHz.]
+  if True[ aoImd--. return range(0, 1).]  else  [return xIDT.]
+
+  if True [ if True | False | (cCqrO > gSBZ_ & False) [ if True [
+  if 7 <= gUjNm:aPcC0[ jkQie:flySC++.
+  return False.]
+  return.
+  ]  else  []
+  return. ]  else  [
+  return. ]
+  return lKWm.
+  ]
+  else[JXOMY = (ebsHZ) / movHv.
+  return range(0, 2).]
+
+  if 7 ~= L55FB [
+  void CyU.  return NJsC. ]
+  else  [
+  return True. ]
+
+  if False
+  [
+  void Re4.
+  return True. ]  else  [ gvTRM(F7Kaf).  return CMcj. ]
+]
 
 !! If-Else statements, complex condition, empty body
 $ TODO
-
+void ifElseComplex{}[
+  if (8 > rjYik:b41lD & (WpW3T == MXV1M)) [ ]  else[]
+]
 
 !! If-Else statements, complex condition, Decls only
 $ TODO
+void ifElseComplex{}[
+  if (False & True)
+  [integer LZy.]  else[]
 
+  if 1 < 9 | True[]  else[integer Iu7.]
+
+  if ((3 >= L6xaS) | False) & False | False & zju5P >= zgAN6:oeJt7 
+  | True & (4 ~= rUDTA:j2P1l | (I8F24:BiuiT >= u2OTk:Kf90d))
+  [  integer _xH.]else  [logical ZJL.]
+]
 
 !! If-Else statements, complex condition, Stmts only
 $ TODO
+logical ifElseComplexStmts{}[
+  if (False | False) | (HeECV ~= 5 & 5 < 5) | 
+  False & YsxDW:_Czx6 > z01n4:xyy01 & (False | TWkiS >= QFE3f:DctCx)
+  [while (True | FGugr ~= 1 | False & False) [
+  logical a46.
+  return EBQn. ]]
+  else[]
 
+  if (p8Lwi:nc3Kt >= 6 & 5 < 9 & True | (True)) | ((I7Bc0:EMQL3 < 1 | xLv9o < AhSq6) 
+  | rfkYU <= SE_Tx:oSC8w | False)[]
+  else  [ a_O90("maZ1ivTu4K").]
+
+  if (False & True | (True | 10 >= KczeJ)) [
+  read >> ZK0LX.
+  return Peb3.]
+  else  [ write << qG57H.
+  return e77x.]
+
+  if (Jh3fb:jrx94 < CoqLF:J4OpW | False) [ fOU2Z:YAo4P--.
+  ]else  [ejP3T().]
+]
 
 !! If-Else statements, complex condition, Decls and Stmts
 $ TODO
+integer complexDeclStmts{}[
+  if False | False | ZqQzl == HtV3U | (1 >= mODyp) | True | (7 < 7) | ((True) & True)
+  [hqgD_:FYALx--.]
+  else[]
 
+  if ((False) | True & False | True) | False | True | True & False []  
+  else[ read >> G3yNm:dEDav.]
+
+  if (True & (True) & False & False) [Qj0QS--. return CDb8. ]
+  else[ vEBvO:YmKCM = qdWUo <= SrGfh:QUMt2.
+  return False.
+  ]
+
+  if (True & (1 <= JJUSb) & True | False) [
+    XXiTT++.   ]  else[hQXTm(dpEYq).
+  ]
+]
 
 !! While statements, simple condition, empty body
 $ TODO
-
+logical whileSimple{}[
+  while PMoST <= gyhZU[]
+]
 
 !! While statements, simple condition, Decls only
 $ TODO
+integer whileDecl{}[
+  while 9 >= eY3s6[integer BJ_.]
+
+  while False[integer Y4S.  return.]
+
+  while False [  integer bXL.]
+
+  while False [logical sFL.  return range(0, 4).]
+]
 
 
 !! While statements, simple condition, Stmts only
 $ TODO
+void simpleStmts{}[
+  while ZeJS3 > T1Zt4:cTmXd
+  [ if (False & False) & ((True) & ezZIZ >= 9)
+  [ wTXGx = ZI7Ke.]
+  else
+  [return.
+  ]]
 
+  while UYOBO ~= dxPZ_
+  [dwKZC = g19Wm * 6 + (2 * 5).
+  return.]
+
+  while False
+  [if False[ e1MIi++. return range(0, 3). ]]
+
+  while False [ WvJDO:EmIms = H990G:QDH9o + cXUU9:qDTX4.
+  return MGwF. ]
+]
 
 !! While statements, simple condition, Decls and Stmts
 $ TODO
+logical whileSimpleDeclStmts{}[
+  while False [ while (False | True & (False & (True)))
+  & (True | True & (False & False))
+  [integer QfL.]]
+  while MDGJg:svXv7 == g2OVq:UfPgh [
+  read >> mD_h7:gl9JD.  return.]
+
+  while False[ CGXby(-497327199).]
+
+  while False
+  [ B5nwf:YItLH = Kg1Fl - 4.  return range(0, 1). ]
+]
 
 
 !! While statements, complex condition, empty body
 $ TODO
-
+void complexEmpty{}[
+  while (((XaJ3j >= wpGZO:rqRtL) & True & (True | False)) | ((True & 3 <= uXaNd)) & (False) & False) []
+]
 
 !! While statements, complex condition, Decls only
 $ TODO
+integer whileComplexDecls{}
+  [while (False) | (f9lz_:GuJC9 >= d1_Kp) & True & (False) [  logical Gng.]
+  while False & (False) | kMfpw <= lldMM:IQqP4 | False [  void CGi.
+  return. ]
 
+  while (False | EHbcQ == N1veO:IKrnk) & TGOlM <= bW0MI & False
+  [void rHy.]
+
+  while 5 > AEnJZ | True
+  [  integer EgB. return False.]
+]
 
 !! While statements, complex condition, Stmts only
 $ TODO
+logical whileComplexStmts{}[
+  while ((nJdGm < dfofp & KEmcS:ZWYN_ > 4)) | False & False 
+  | (True & True) & True & (mU0lC < 4) [ if False [
+  bGe82(False, e4oJi, "D7bjlwh_3X").
+  return ijDL. ]
+  else  [ if jZmkz <= C4TOf[A0JtZ:PnTgC--.]
+  return. 
+  ]]
 
+  while ((False) | Dnke6 <= TFsGC) | (False | True)
+  [if doTrJ < w2rIv:RkYHc[  logical wAn. return.]
+  else  [integer ZSZ.   ]   return.]
+
+  while ((True & False) | False | aXSoh <= 7 | True | True 
+  | ((True | (tUuT0 <= GQvdh:vvOPJ))))
+  [ while (True | False) & 5 <= jkRVW & True & eUr4i:wlOJD == k04QT:sJ8Vl 
+  | True & (T0OO0:Qq_Mq == WpAeo & qMn1i:fZdw5 == 4) [
+  return u9hE.]]
+
+  while (True) & False & (False) & Fyevr >= 5 | D01Kg >= 1 & True 
+  | t3CXM <= JVQ10 | (XIG4g:Rddcp < 1)
+  [if 10 == OS5E4 []   return iBgt.]
+]
 
 !! While statements, complex condition, Decls and Stmts
 $ TODO
+void whileComplexDeclsStmts{}[
+  while (DV2zO ~= hm636 | False) [
+  write << f8Ftg.]
 
+  while True | True [ write << n2ZYU.
+  return. ]
+
+  while ((CEoKo:i4rb1 ~= VJzuP & True)) & ((True & EiyYU:jymEx >= Hy4H8)) 
+  | ((True & (9 > nQTDP:qw7aa)) | False | False) [ read >> s2yAs:q0crv.]
+
+  while ((True & False) | (7 == 3 | False)) [
+  HRisp++.
+  return True. ]
+]
 
 !! Read statement, normal identifier
 $ TODO
 
+integer reader {} [
+  read >> hello.
+  read >> HBxm5.
+]
+integer oqJK1 {} [ 
+  if True [ read >> AaJwW. return False. ]
+]
 
 !! Read statement, tuple member
 $ TODO
+integer readWithTuple {} [ 
+  read >> _funK:mJniU.
+]
 
 
 !! Write statement, normal identifier
 $ TODO
+integer writer {} [ 
+  write << MCkSS.
+]
 
 
 !! Write statement, tuple member
 $ TODO
+integer writeWithTuple {} [ 
+  write << SrN75:TEewv.
+]
 
 
 !! Return statment, no retval.
 $ TODO
+integer returnNoRetVal {} [ 
+  return .
+]
 
 
 !! Return statment, simple retval.
 $ TODO
-
+integer returnNoRetVal {} [ 
+  return 43>21.
+]
 
 !! Return statment, complex retval.
 $ TODO
+integer complexRetVal {} [ 
+  return (True) & False & (False) & Fyevr >= 5 | D01Kg >= 1 & True 
+  | t3CXM <= JVQ10 | (XIG4g:Rddcp < 1) .
+]
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!                           END FOR YESUI                                !!!!
