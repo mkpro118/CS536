@@ -376,4 +376,3 @@ id              ::= ID:i
                 {: RESULT = new IdNode(i.lineNum, i.charNum, i.idVal);
                 :}
                 ;
-				

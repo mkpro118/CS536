@@ -16,7 +16,7 @@ public class P4 {
         // check for command-line args
         if (args.length != 2) {
             System.err.println("please supply name of file to be parsed " +
-			                   "and name of file for unparsed version");
+                               "and name of file for unparsed version");
             System.exit(-1);
         }
 
@@ -52,9 +52,9 @@ public class P4 {
             System.err.println("exception occured during parse: " + ex);
             System.exit(-1);
         }
-		
-			// ****** Add name analysis part here ******
-		
+
+            // ****** Add name analysis part here ******
+
         ((ASTnode)root.value).unparse(outFile, 0);
         outFile.close();
 

@@ -307,7 +307,7 @@ class FormalDeclNode extends DeclNode {
 class TupleDeclNode extends DeclNode {
     public TupleDeclNode(IdNode id, DeclListNode declList) {
         myId = id;
-		myDeclList = declList;
+        myDeclList = declList;
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -322,7 +322,7 @@ class TupleDeclNode extends DeclNode {
 
     // 2 children
     private IdNode myId;
-	private DeclListNode myDeclList;
+    private DeclListNode myDeclList;
 }
 
 // **********************************************************************
@@ -361,15 +361,15 @@ class VoidNode extends TypeNode {
 
 class TupleNode extends TypeNode {
     public TupleNode(IdNode id) {
-		myId = id;
+        myId = id;
     }
 
     public void unparse(PrintWriter p, int indent) {
         p.print("tuple ");
         myId.unparse(p, 0);
     }
-	
-	// 1 child
+
+    // 1 child
     private IdNode myId;
 }
 
@@ -440,7 +440,7 @@ class IfStmtNode extends StmtNode {
         myDeclList.unparse(p, indent+4);
         myStmtList.unparse(p, indent+4);
         doIndent(p, indent);
-        p.println("]");  
+        p.println("]");
     }
 
     // 3 children
@@ -474,7 +474,7 @@ class IfElseStmtNode extends StmtNode {
         myElseDeclList.unparse(p, indent+4);
         myElseStmtList.unparse(p, indent+4);
         doIndent(p, indent);
-        p.println("]"); 
+        p.println("]");
     }
 
     // 5 children
@@ -491,7 +491,7 @@ class WhileStmtNode extends StmtNode {
         myDeclList = dlist;
         myStmtList = slist;
     }
-	
+
     public void unparse(PrintWriter p, int indent) {
         doIndent(p, indent);
         p.print("while ");
@@ -660,7 +660,7 @@ class StrLitNode extends ExpNode {
 
 class TupleAccessNode extends ExpNode {
     public TupleAccessNode(ExpNode loc, IdNode id) {
-        myLoc = loc;	
+        myLoc = loc;
         myId = id;
     }
 
@@ -672,7 +672,7 @@ class TupleAccessNode extends ExpNode {
     }
 
     // 2 children
-    private ExpNode myLoc;	
+    private ExpNode myLoc;
     private IdNode myId;
 }
 

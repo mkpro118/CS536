@@ -1,3 +1,1 @@
-public class DuplicateSymNameException extends Exception {
-	
-}
+public class DuplicateSymNameException extends Exception {}
