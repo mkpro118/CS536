@@ -20,51 +20,51 @@ import java.util.*;
 //
 //     Subclass              Children
 //     --------              --------
-//     ProgramNode           DeclListNode
-//     DeclListNode          linked list of DeclNode
+//     -ProgramNode           DeclListNode
+//     -DeclListNode          linked list of DeclNode
 //     DeclNode:
-//       VarDeclNode         TypeNode, IdNode, int
-//       FctnDeclNode        TypeNode, IdNode, FormalsListNode, FctnBodyNode
-//       FormalDeclNode      TypeNode, IdNode
-//       TupleDeclNode       IdNode, DeclListNode
+//       -VarDeclNode         TypeNode, IdNode, int
+//       -FctnDeclNode        TypeNode, IdNode, FormalsListNode, FctnBodyNode
+//       -FormalDeclNode      TypeNode, IdNode
+//       -TupleDeclNode       IdNode, DeclListNode
 //
-//     StmtListNode          linked list of StmtNode
-//     ExpListNode           linked list of ExpNode
-//     FormalsListNode       linked list of FormalDeclNode
-//     FctnBodyNode          DeclListNode, StmtListNode
+//     -StmtListNode          linked list of StmtNode
+//     -ExpListNode           linked list of ExpNode
+//     -FormalsListNode       linked list of FormalDeclNode
+//     -FctnBodyNode          DeclListNode, StmtListNode
 //
 //     TypeNode:
 //       LogicalNode         --- none ---
 //       IntegerNode         --- none ---
 //       VoidNode            --- none ---
-//       TupleNode           IdNode
+//       -TupleNode           IdNode
 //
 //     StmtNode:
-//       AssignStmtNode      AssignExpNode
-//       PostIncStmtNode     ExpNode
-//       PostDecStmtNode     ExpNode
-//       IfStmtNode          ExpNode, DeclListNode, StmtListNode
-//       IfElseStmtNode      ExpNode, DeclListNode, StmtListNode,
+//       -AssignStmtNode      AssignExpNode
+//       -PostIncStmtNode     ExpNode
+//       -PostDecStmtNode     ExpNode
+//       -IfStmtNode          ExpNode, DeclListNode, StmtListNode
+//       -IfElseStmtNode      ExpNode, DeclListNode, StmtListNode,
 //                                    DeclListNode, StmtListNode
-//       WhileStmtNode       ExpNode, DeclListNode, StmtListNode
-//       ReadStmtNode        ExpNode
-//       WriteStmtNode       ExpNode
-//       CallStmtNode        CallExpNode
-//       ReturnStmtNode      ExpNode
+//       -WhileStmtNode       ExpNode, DeclListNode, StmtListNode
+//       -ReadStmtNode        ExpNode
+//       -WriteStmtNode       ExpNode
+//       -CallStmtNode        CallExpNode
+//       -ReturnStmtNode      ExpNode
 //
 //     ExpNode:
 //       TrueNode            --- none ---
 //       FalseNode           --- none ---
-//       IdNode              --- none ---
+//       -IdNode              --- none ---
 //       IntLitNode          --- none ---
 //       StrLitNode          --- none ---
-//       TupleAccessNode     ExpNode, IdNode
-//       AssignExpNode       ExpNode, ExpNode
-//       CallExpNode         IdNode, ExpListNode
+//       -TupleAccessNode     ExpNode, IdNode
+//       -AssignExpNode       ExpNode, ExpNode
+//       -CallExpNode         IdNode, ExpListNode
 //       UnaryExpNode        ExpNode
-//         UnaryMinusNode
-//         NotNode
-//       BinaryExpNode       ExpNode ExpNode
+//         -UnaryMinusNode
+//         -NotNode
+//       -BinaryExpNode       ExpNode ExpNode
 //         PlusNode     
 //         MinusNode
 //         TimesNode
@@ -106,7 +106,12 @@ import java.util.*;
 //   ASTnode class (base class for all other kinds of nodes)
 // **********************************************************************
 
-abstract class ASTnode { 
+abstract class ASTnode {
+    protected static final SymTable symTable;
+    static {
+        symTable = new SymTable();
+    }
+
     // every subclass must provide an unparse operation
     abstract public void unparse(PrintWriter p, int indent);
 
@@ -114,6 +119,8 @@ abstract class ASTnode {
     protected void doIndent(PrintWriter p, int indent) {
         for (int k=0; k<indent; k++) p.print(" ");
     }
+
+    public void resolveNames() {}
 }
 
 // **********************************************************************
