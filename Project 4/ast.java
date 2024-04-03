@@ -20,18 +20,18 @@ import java.util.*;
 //
 //     Subclass              Children
 //     --------              --------
-//     -ProgramNode           DeclListNode
-//     -DeclListNode          linked list of DeclNode
+//     ProgramNode           DeclListNode
+//     DeclListNode          linked list of DeclNode
 //     DeclNode:
 //       -VarDeclNode         TypeNode, IdNode, int
 //       -FctnDeclNode        TypeNode, IdNode, FormalsListNode, FctnBodyNode
 //       -FormalDeclNode      TypeNode, IdNode
 //       -TupleDeclNode       IdNode, DeclListNode
 //
-//     -StmtListNode          linked list of StmtNode
-//     -ExpListNode           linked list of ExpNode
-//     -FormalsListNode       linked list of FormalDeclNode
-//     -FctnBodyNode          DeclListNode, StmtListNode
+//     StmtListNode          linked list of StmtNode
+//     ExpListNode           linked list of ExpNode
+//     FormalsListNode       linked list of FormalDeclNode
+//     FctnBodyNode          DeclListNode, StmtListNode
 //
 //     TypeNode:
 //       LogicalNode         --- none ---
@@ -137,6 +137,11 @@ class ProgramNode extends ASTnode {
         myDeclList.unparse(p, indent);
     }
 
+    @Override
+    public void resolveNames() {
+        myDeclList.resolveNames();
+    }
+
     // 1 child
     private DeclListNode myDeclList;
 }
@@ -158,6 +163,11 @@ class DeclListNode extends ASTnode {
         }
     }
 
+    @Override
+    public void resolveNames() {
+        myDecls.forEach(d -> d.resolveNames());
+    }
+
     // list of children (DeclNodes)
     private List<DeclNode> myDecls;
 }
@@ -172,6 +182,11 @@ class StmtListNode extends ASTnode {
         while (it.hasNext()) {
             it.next().unparse(p, indent);
         } 
+    }
+
+    @Override
+    public void resolveNames() {
+        myStmts.forEach(s -> s.resolveNames());
     }
 
     // list of children (StmtNodes)
@@ -194,6 +209,11 @@ class ExpListNode extends ASTnode {
         } 
     }
 
+    @Override
+    public void resolveNames() {
+        myExps.forEach(e -> e.resolveNames());
+    }
+
     // list of children (ExpNodes)
     private List<ExpNode> myExps;
 }
@@ -213,6 +233,11 @@ class FormalsListNode extends ASTnode {
         }
     }
 
+    @Override
+    public void resolveNames() {
+        myFormals.forEach(f -> f.resolveNames());
+    }
+
     // list of children (FormalDeclNodes)
     private List<FormalDeclNode> myFormals;
 }
@@ -226,6 +251,12 @@ class FctnBodyNode extends ASTnode {
     public void unparse(PrintWriter p, int indent) {
         myDeclList.unparse(p, indent);
         myStmtList.unparse(p, indent);
+    }
+
+    @Override
+    public void resolveNames() {
+        myDeclList.resolveNames();
+        myStmtList.resolveNames();
     }
 
     // 2 children
