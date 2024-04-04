@@ -373,9 +373,19 @@ class FctnDeclNode extends DeclNode {
     
     @Override
     public void resolveNames() throws EmptySymTableException{
-       
-        symTable.lookupGlobal(myId.getName());
+        String[] types= Arrays.stream(myFormalsList.getTypes()).map(f -> f.getType()).toArray(String[]::new);
+        try {
+            symTable.addDecl(myId.getName(), new SymFunctional(myType.getType(), types));
+        } catch (DuplicateSymNameException e) {
+            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(),
+                         MULTIPLY_DECLARED);
+        }
+
+        symTable.addScope();
         
+        myFormalsList.resolveNames();
+        myBody.resolveNames();
+        symTable.removeScope();
     }
 
     // 4 children
