@@ -377,6 +377,10 @@ class LogicalNode extends TypeNode {
     public void unparse(PrintWriter p, int indent) {
         p.print("logical");
     }
+    
+    public String getType(){
+        return("logical");
+    }
 }
 
 class IntegerNode extends TypeNode {
@@ -386,6 +390,10 @@ class IntegerNode extends TypeNode {
     public void unparse(PrintWriter p, int indent) {
         p.print("integer");
     }
+    
+    public String getType(){
+        return("integer");
+    }
 }
 
 class VoidNode extends TypeNode {
@@ -394,6 +402,10 @@ class VoidNode extends TypeNode {
 
     public void unparse(PrintWriter p, int indent) {
         p.print("void");
+    }
+    
+    public String getType(){
+        return("void");
     }
 }
 
@@ -657,6 +669,18 @@ class IdNode extends ExpNode {
 
     public void unparse(PrintWriter p, int indent) {
         p.print(myStrVal);
+    }
+
+    public String getName(){
+        return myStrVal;
+    }
+
+    public int getCharNum(){
+        return myCharNum;
+    }
+
+    public int getLineNum(){
+        return myLineNum;
     }
 
     private int myLineNum;
