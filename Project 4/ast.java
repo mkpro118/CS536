@@ -667,8 +667,8 @@ class ReturnStmtNode extends StmtNode {
 // **********************************************************************
 
 abstract class ExpNode extends ASTnode {
-    protected int myLineNum;
-    protected int myCharNum;
+    protected final int myLineNum;
+    protected final int myCharNum;
 
     ExpNode(int lineNum, int charNum) {
         myLineNum = lineNum;
@@ -696,22 +696,17 @@ class TrueNode extends ExpNode {
 
 class FalseNode extends ExpNode {
     public FalseNode(int lineNum, int charNum) {
-        myLineNum = lineNum;
-        myCharNum = charNum;
+        super(lineNum, charNum);
     }
 
     public void unparse(PrintWriter p, int indent) {
         p.print("False");
     }
-
-    private int myLineNum;
-    private int myCharNum;
 }
 
 class IdNode extends ExpNode {
     public IdNode(int lineNum, int charNum, String strVal) {
-        myLineNum = lineNum;
-        myCharNum = charNum;
+        super(lineNum, charNum);
         myStrVal = strVal;
     }
 
@@ -723,23 +718,12 @@ class IdNode extends ExpNode {
         return myStrVal;
     }
 
-    public int getCharNum(){
-        return myCharNum;
-    }
-
-    public int getLineNum(){
-        return myLineNum;
-    }
-
-    private int myLineNum;
-    private int myCharNum;
     private String myStrVal;
 }
 
 class IntLitNode extends ExpNode {
     public IntLitNode(int lineNum, int charNum, int intVal) {
-        myLineNum = lineNum;
-        myCharNum = charNum;
+        super(lineNum, charNum);
         myIntVal = intVal;
     }
 
@@ -747,15 +731,12 @@ class IntLitNode extends ExpNode {
         p.print(myIntVal);
     }
 
-    private int myLineNum;
-    private int myCharNum;
     private int myIntVal;
 }
 
 class StrLitNode extends ExpNode {
     public StrLitNode(int lineNum, int charNum, String strVal) {
-        myLineNum = lineNum;
-        myCharNum = charNum;
+        super(lineNum, charNum);
         myStrVal = strVal;
     }
 
@@ -763,8 +744,6 @@ class StrLitNode extends ExpNode {
         p.print(myStrVal);
     }
 
-    private int myLineNum;
-    private int myCharNum;
     private String myStrVal;
 }
 
