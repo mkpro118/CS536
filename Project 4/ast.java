@@ -340,6 +340,15 @@ class FctnDeclNode extends DeclNode {
         myBody.unparse(p, indent+4);
         p.println("]\n");
     }
+    
+    @Override
+    public void resolveNames() {
+        try {
+            symTable.addDecl(myId.getName(), new Sym(myType.getType()));
+        } catch (DuplicateSymNameException e) {
+            ErrMsg.fatal();
+        }
+    }
 
     // 4 children
     private TypeNode myType;
