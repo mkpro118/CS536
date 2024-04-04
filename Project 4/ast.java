@@ -151,7 +151,7 @@ class ProgramNode extends ASTnode {
     }
 
     @Override
-    public void resolveNames() {
+    public void resolveNames() throws EmptySymTableException {
         myDeclList.resolveNames();
     }
 
@@ -177,8 +177,11 @@ class DeclListNode extends ASTnode {
     }
 
     @Override
-    public void resolveNames() {
-        myDecls.forEach(d -> d.resolveNames());
+    public void resolveNames() throws EmptySymTableException {
+        for (DeclNode d: myDecls) {
+            d.resolveNames();
+        }
+        // myDecls.forEach(d -> d.resolveNames());
     }
 
     // list of children (DeclNodes)
@@ -245,6 +248,10 @@ class FormalsListNode extends ASTnode {
                 it.next().unparse(p, indent);
             }
         }
+    }
+
+    public TypeNode[] getTypes() {
+        return myFormals.stream().map(f -> f.getType()).toArray(TypeNode[]::new);
     }
 
     @Override
