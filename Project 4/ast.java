@@ -794,6 +794,7 @@ class StrLitNode extends ExpNode {
 
 class TupleAccessNode extends ExpNode {
     public TupleAccessNode(ExpNode loc, IdNode id) {
+        super(0, 0);
         myLoc = loc;
         myId = id;
     }
@@ -812,6 +813,7 @@ class TupleAccessNode extends ExpNode {
 
 class AssignExpNode extends ExpNode {
     public AssignExpNode(ExpNode lhs, ExpNode exp) {
+        super(0, 0);
         myLhs = lhs;
         myExp = exp;
     }
@@ -831,11 +833,13 @@ class AssignExpNode extends ExpNode {
 
 class CallExpNode extends ExpNode {
     public CallExpNode(IdNode name, ExpListNode elist) {
+        super(0, 0);
         myId = name;
         myExpList = elist;
     }
 
     public CallExpNode(IdNode name) {
+        super(0, 0);
         myId = name;
         myExpList = new ExpListNode(new LinkedList<ExpNode>());
     }
@@ -857,6 +861,7 @@ class CallExpNode extends ExpNode {
 
 abstract class UnaryExpNode extends ExpNode {
     public UnaryExpNode(ExpNode exp) {
+        super(0, 0);
         myExp = exp;
     }
 
@@ -866,6 +871,7 @@ abstract class UnaryExpNode extends ExpNode {
 
 abstract class BinaryExpNode extends ExpNode {
     public BinaryExpNode(ExpNode exp1, ExpNode exp2) {
+        super(0, 0);
         myExp1 = exp1;
         myExp2 = exp2;
     }
