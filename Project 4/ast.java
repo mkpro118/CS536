@@ -23,7 +23,7 @@ import java.util.*;
 //     ProgramNode           DeclListNode
 //     DeclListNode          linked list of DeclNode
 //     DeclNode:
-//       -VarDeclNode         TypeNode, IdNode, int
+//       VarDeclNode         TypeNode, IdNode, int
 //       -FctnDeclNode        TypeNode, IdNode, FormalsListNode, FctnBodyNode
 //       -FormalDeclNode      TypeNode, IdNode
 //       -TupleDeclNode       IdNode, DeclListNode
