@@ -303,10 +303,16 @@ class VarDeclNode extends DeclNode {
 
     @Override
     public void resolveNames() {
+        if (myType instanceof VoidNode) {
+            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(),
+                         BAD_VOID_DECLARED);
+        }
+
         try {
             symTable.addDecl(myId.getName(), new Sym(myType.getType()));
         } catch (DuplicateSymNameException e) {
-            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), );
+            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(),
+                         MULTIPLY_DECLARED);
         }
     }
 
