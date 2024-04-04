@@ -120,7 +120,7 @@ abstract class ASTnode {
         for (int k=0; k<indent; k++) p.print(" ");
     }
 
-    public void resolveNames() {}
+    public void resolveNames() throws EmptySymTableException {}
 }
 
 // **********************************************************************
@@ -217,6 +217,7 @@ class ExpListNode extends ASTnode {
     // list of children (ExpNodes)
     private List<ExpNode> myExps;
 }
+
 class FormalsListNode extends ASTnode {
     public FormalsListNode(List<FormalDeclNode> S) {
         myFormals = S;
@@ -285,6 +286,15 @@ class VarDeclNode extends DeclNode {
         p.print(" ");
         myId.unparse(p, 0);
         p.println(".");
+    }
+
+    @Override
+    public void resolveNames() {
+        try {
+            symTable.addDecl(id.getName(), new Sym(type.getType()));
+        } catch (DuplicateSymNameException e) {
+            ErrMsg.fatal();
+        }
     }
 
     // 3 children
