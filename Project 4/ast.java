@@ -108,8 +108,21 @@ import java.util.*;
 
 abstract class ASTnode {
     protected static final SymTable symTable;
+    protected static final String MULTIPLY_DECLARED;
+    protected static final String UNDECLARED;
+    protected static final String BAD_COLON_ACCESS;
+    protected static final String INVALID_TUPLE_FIELD;
+    protected static final String BAD_VOID_DECLARED;
+    protected static final String INVALID_TUPLE_NAME;
+
     static {
         symTable = new SymTable();
+        MULTIPLY_DECLARED = "Multiply-declared identifier";
+        UNDECLARED = "Undeclared identifier";
+        BAD_COLON_ACCESS = "Colon-access of non-tuple type";
+        INVALID_TUPLE_FIELD = "Invalid tuple field name";
+        BAD_VOID_DECLARED = "Non-function declared void";
+        INVALID_TUPLE_NAME = "Invalid name of tuple type";
     }
 
     // every subclass must provide an unparse operation
@@ -291,9 +304,9 @@ class VarDeclNode extends DeclNode {
     @Override
     public void resolveNames() {
         try {
-            symTable.addDecl(id.getName(), new Sym(type.getType()));
+            symTable.addDecl(myId.getName(), new Sym(myType.getType()));
         } catch (DuplicateSymNameException e) {
-            ErrMsg.fatal();
+            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(), );
         }
     }
 
@@ -378,6 +391,7 @@ class TupleDeclNode extends DeclNode {
 // **********************************************************************
 
 abstract class TypeNode extends ASTnode {
+    abstract String getType();
 }
 
 class LogicalNode extends TypeNode {
@@ -427,6 +441,10 @@ class TupleNode extends TypeNode {
     public void unparse(PrintWriter p, int indent) {
         p.print("tuple ");
         myId.unparse(p, 0);
+    }
+
+    public String getType(){
+        return("tuple");
     }
 
     // 1 child
@@ -640,20 +658,31 @@ class ReturnStmtNode extends StmtNode {
 // **********************************************************************
 
 abstract class ExpNode extends ASTnode {
+    protected int myLineNum;
+    protected int myCharNum;
+
+    ExpNode(int lineNum, int charNum) {
+        myLineNum = lineNum;
+        myCharNum = charNum;
+    }
+
+    public int getLineNum() {
+        return myLineNum;
+    }
+
+    public int getCharNum() {
+        return myCharNum;
+    }
 }
 
 class TrueNode extends ExpNode {
     public TrueNode(int lineNum, int charNum) {
-        myLineNum = lineNum;
-        myCharNum = charNum;
+        super(lineNum, charNum);
     }
 
     public void unparse(PrintWriter p, int indent) {
         p.print("True");
     }
-
-    private int myLineNum;
-    private int myCharNum;
 }
 
 class FalseNode extends ExpNode {
