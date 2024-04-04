@@ -24,7 +24,7 @@ import java.util.*;
 //     DeclListNode          linked list of DeclNode
 //     DeclNode:
 //       VarDeclNode         TypeNode, IdNode, int
-//       -FctnDeclNode        TypeNode, IdNode, FormalsListNode, FctnBodyNode
+//       FctnDeclNode        TypeNode, IdNode, FormalsListNode, FctnBodyNode
 //       -FormalDeclNode      TypeNode, IdNode
 //       -TupleDeclNode       IdNode, DeclListNode
 //
@@ -402,6 +402,21 @@ class FormalDeclNode extends DeclNode {
         myType.unparse(p, 0);
         p.print(" ");
         myId.unparse(p, 0);
+    }
+
+    @Override
+    public void resolveNames() throws EmptySymTableException {
+        if (myType instanceof VoidNode) {
+            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(),
+                         BAD_VOID_DECLARED);
+        }
+
+        try {
+            symTable.addDecl(myId.getName(), new Sym(myType.getType()));
+        } catch (DuplicateSymNameException e) {
+            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(),
+                         MULTIPLY_DECLARED);
+        }
     }
 }
 
