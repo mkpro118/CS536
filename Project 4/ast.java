@@ -366,8 +366,10 @@ class FctnDeclNode extends DeclNode {
     }
     
     @Override
-    public void resolveNames() {
-
+    public void resolveNames() throws EmptySymTableException{
+       
+        symTable.lookupGlobal(myId.getName());
+        
     }
 
     // 4 children
