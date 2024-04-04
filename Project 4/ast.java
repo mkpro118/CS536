@@ -134,6 +134,15 @@ abstract class ASTnode {
     }
 
     public void resolveNames() throws EmptySymTableException {}
+
+    public static <E extends ASTnode> void resolver(E e) {
+        try {
+            e.resolveNames();
+        } catch (EmptySymTableException este) {
+            este.printStackTrace();
+            System.exit(-1);
+        }
+    }
 }
 
 // **********************************************************************
@@ -178,10 +187,7 @@ class DeclListNode extends ASTnode {
 
     @Override
     public void resolveNames() throws EmptySymTableException {
-        for (DeclNode d: myDecls) {
-            d.resolveNames();
-        }
-        // myDecls.forEach(d -> d.resolveNames());
+        myDecls.forEach(ASTnode::resolver);
     }
 
     // list of children (DeclNodes)
@@ -202,7 +208,7 @@ class StmtListNode extends ASTnode {
 
     @Override
     public void resolveNames() {
-        myStmts.forEach(s -> s.resolveNames());
+        myStmts.forEach(ASTnode::resolver);
     }
 
     // list of children (StmtNodes)
@@ -227,7 +233,7 @@ class ExpListNode extends ASTnode {
 
     @Override
     public void resolveNames() {
-        myExps.forEach(e -> e.resolveNames());
+        myExps.forEach(ASTnode::resolver);
     }
 
     // list of children (ExpNodes)
@@ -256,7 +262,7 @@ class FormalsListNode extends ASTnode {
 
     @Override
     public void resolveNames() {
-        myFormals.forEach(f -> f.resolveNames());
+        myFormals.forEach(ASTnode::resolver);
     }
 
     // list of children (FormalDeclNodes)
@@ -275,7 +281,7 @@ class FctnBodyNode extends ASTnode {
     }
 
     @Override
-    public void resolveNames() {
+    public void resolveNames() throws EmptySymTableException {
         myDeclList.resolveNames();
         myStmtList.resolveNames();
     }
@@ -323,7 +329,7 @@ class VarDeclNode extends DeclNode {
     }
 
     @Override
-    public void resolveNames() {
+    public void resolveNames() throws EmptySymTableException {
         if (myType instanceof VoidNode) {
             ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(),
                          BAD_VOID_DECLARED);
