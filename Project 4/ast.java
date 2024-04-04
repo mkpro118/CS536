@@ -284,12 +284,26 @@ class FctnBodyNode extends ASTnode {
 // **********************************************************************
 
 abstract class DeclNode extends ASTnode {
+    protected TypeNode myType;
+    protected IdNode myId;
+
+    public DeclNode(TypeNode type, IdNode id) {
+        myType = type;
+        myId = id;
+    }
+
+    public TypeNode getType() {
+        return myType;
+    }
+
+    public IdNode getId() {
+        return myId;
+    }
 }
 
 class VarDeclNode extends DeclNode {
     public VarDeclNode(TypeNode type, IdNode id, int size) {
-        myType = type;
-        myId = id;
+        super(type, id);
         mySize = size;
     }
 
@@ -317,8 +331,6 @@ class VarDeclNode extends DeclNode {
     }
 
     // 3 children
-    private TypeNode myType;
-    private IdNode myId;
     private int mySize;  // use value NON_TUPLE if this is not a tuple type
 
     public static int NON_TUPLE = -1;
@@ -329,8 +341,7 @@ class FctnDeclNode extends DeclNode {
                       IdNode id,
                       FormalsListNode formalList,
                       FctnBodyNode body) {
-        myType = type;
-        myId = id;
+        super(type, id);
         myFormalsList = formalList;
         myBody = body;
     }
@@ -349,24 +360,17 @@ class FctnDeclNode extends DeclNode {
     
     @Override
     public void resolveNames() {
-        try {
-            symTable.addDecl(myId.getName(), new Sym(myType.getType()));
-        } catch (DuplicateSymNameException e) {
-            ErrMsg.fatal();
-        }
+
     }
 
     // 4 children
-    private TypeNode myType;
-    private IdNode myId;
     private FormalsListNode myFormalsList;
     private FctnBodyNode myBody;
 }
 
 class FormalDeclNode extends DeclNode {
     public FormalDeclNode(TypeNode type, IdNode id) {
-        myType = type;
-        myId = id;
+        super(type, id);
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -374,15 +378,11 @@ class FormalDeclNode extends DeclNode {
         p.print(" ");
         myId.unparse(p, 0);
     }
-
-    // 2 children
-    private TypeNode myType;
-    private IdNode myId;
 }
 
 class TupleDeclNode extends DeclNode {
     public TupleDeclNode(IdNode id, DeclListNode declList) {
-        myId = id;
+        super(null, id);
         myDeclList = declList;
     }
 
@@ -397,7 +397,6 @@ class TupleDeclNode extends DeclNode {
     }
 
     // 2 children
-    private IdNode myId;
     private DeclListNode myDeclList;
 }
 
