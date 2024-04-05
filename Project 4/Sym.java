@@ -1,3 +1,6 @@
+import java.util.List;
+import java.util.LinkedList;
+
 public class Sym {
     protected String type;
 
@@ -19,9 +22,19 @@ public class Sym {
     }
 }
 
+class SymTuple extends Sym {
+    public final SymTable symTable;
+
+    public SymTuple(String type) {
+        super(type);
+        symTable = new SymTable();
+    }
+}
+
 class SymFunctional extends Sym {
-    final String[] paramTypes;
-    final String repr;
+    public final String[] paramTypes;
+    private final String repr;
+
     SymFunctional(String returnType, String... paramTypes) {
         super(returnType);
         this.paramTypes = paramTypes;
