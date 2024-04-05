@@ -25,7 +25,7 @@ import java.util.*;
 //     DeclNode:
 //       VarDeclNode         TypeNode, IdNode, int
 //       FctnDeclNode        TypeNode, IdNode, FormalsListNode, FctnBodyNode
-//       -FormalDeclNode      TypeNode, IdNode
+//       FormalDeclNode      TypeNode, IdNode
 //       -TupleDeclNode       IdNode, DeclListNode
 //
 //     StmtListNode          linked list of StmtNode
@@ -107,7 +107,7 @@ import java.util.*;
 // **********************************************************************
 
 abstract class ASTnode {
-    protected static final SymTable symTable;
+    protected static SymTable symTable;
     protected static final String MULTIPLY_DECLARED;
     protected static final String UNDECLARED;
     protected static final String BAD_COLON_ACCESS;
@@ -257,7 +257,9 @@ class FormalsListNode extends ASTnode {
     }
 
     public TypeNode[] getTypes() {
-        return myFormals.stream().map(f -> f.getType()).toArray(TypeNode[]::new);
+        return myFormals.stream()
+                        .map(f -> f.getType())
+                        .toArray(TypeNode[]::new);
     }
 
     @Override
@@ -373,9 +375,12 @@ class FctnDeclNode extends DeclNode {
     
     @Override
     public void resolveNames() throws EmptySymTableException{
-        String[] types= Arrays.stream(myFormalsList.getTypes()).map(f -> f.getType()).toArray(String[]::new);
+        String[] types= Arrays.stream(myFormalsList.getTypes())
+                              .map(f -> f.getType())
+                              .toArray(String[]::new);
         try {
-            symTable.addDecl(myId.getName(), new SymFunctional(myType.getType(), types));
+            symTable.addDecl(myId.getName(),
+                             new SymFunctional(myType.getType(), types));
         } catch (DuplicateSymNameException e) {
             ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(),
                          MULTIPLY_DECLARED);
@@ -434,6 +439,19 @@ class TupleDeclNode extends DeclNode {
         myDeclList.unparse(p, indent+4);
         doIndent(p, indent);
         p.println("}.\n");
+    }
+
+    public void resolveNames() throws EmptySymTableException {
+        SymTuple symTuple = new SymTuple(myId.getName());
+
+        // Switch context
+        SymTable original = symTable;
+        symTable = symTuple.symTable;
+
+        // TODO: Do work
+
+        // Restore context
+        symTable = original;
     }
 
     // 2 children
@@ -837,16 +855,21 @@ class IdNode extends ExpNode {
     }
 
     public void resolveNames() throws EmptySymTableException {
-        if (symTable.lookupGlobal(getName()) == null) {
+        mySym = symTable.lookupGlobal(myStrVal);
+        if (mySym == null)
             ErrMsg.fatal(myLineNum, myCharNum, UNDECLARED);
-        }
     }
 
-    public String getName(){
+    public String getName() {
         return myStrVal;
     }
 
+    public Sym getSym() {
+        return mySym;
+    }
+
     private String myStrVal;
+    private Sym mySym;
 }
 
 class IntLitNode extends ExpNode {
