@@ -523,6 +523,10 @@ class AssignStmtNode extends StmtNode {
         p.println(".");
     }
 
+    public void resolveNames() throws EmptySymTableException {
+        myAssign.resolveNames();
+    }
+
     // 1 child
     private AssignExpNode myAssign;
 }
