@@ -836,6 +836,12 @@ class IdNode extends ExpNode {
         p.print(myStrVal);
     }
 
+    public void resolveNames() throws EmptySymTableException {
+        if (symTable.lookupGlobal(getName()) == null) {
+            ErrMsg.fatal(myLineNum, myCharNum, UNDECLARED);
+        }
+    }
+
     public String getName(){
         return myStrVal;
     }
