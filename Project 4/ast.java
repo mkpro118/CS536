@@ -942,6 +942,10 @@ abstract class UnaryExpNode extends ExpNode {
         myExp = exp;
     }
 
+    public void resolveNames() throws EmptySymTableException {
+        myExp.resolveNames();
+    }
+
     // 1 child
     protected ExpNode myExp;
 }
@@ -951,6 +955,11 @@ abstract class BinaryExpNode extends ExpNode {
         super(0, 0);
         myExp1 = exp1;
         myExp2 = exp2;
+    }
+
+    public void resolveNames() throws EmptySymTableException {
+        myExp1.resolveNames();
+        myExp2.resolveNames();
     }
 
     // 2 children
