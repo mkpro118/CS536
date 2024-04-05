@@ -47,14 +47,16 @@ public class P4 {
 
         try {
             ((ASTnode)root.value).resolveNames();
+
+            if (ErrMsg.hasFatalErrors())
+                System.exit(-1);
+
             System.out.println ("program completed name analysis correctly");
         } catch (Exception e){
             System.err.println("exception occurred during name analysis");
             System.exit(-1);
         }
 
-        if (ErrMsg.hasFatalErrors())
-            System.exit(-1);
 
         // open output file
         try (PrintWriter outFile = new PrintWriter(args[1])) {
