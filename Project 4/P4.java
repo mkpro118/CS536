@@ -54,7 +54,20 @@ public class P4 {
         }
 
             // ****** Add name analysis part here ******
-
+	
+	try {
+	    ((ASTnode)root.value).resolveNames();
+	    System.out.println ("program completed name analysis correctly");
+	} catch (Exception e){
+	    System.err.println("exception occurred during name analysis");
+	    System.exit(-1);
+	}
+	
+	if (ErrMsg.fatalMessage){
+		//outFile.close();
+		System.exit(-1);
+	}
+	
         ((ASTnode)root.value).unparse(outFile, 0);
         outFile.close();
 
