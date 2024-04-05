@@ -5,7 +5,7 @@
  */
 class ErrMsg {
     private static boolean fatalErrors = false;
-    public static boolean hasFatalErrors() {return fatalErrors}
+    public static boolean hasFatalErrors() { return fatalErrors; }
 
     /**
      * Generates a fatal error message.
