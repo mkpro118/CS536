@@ -53,10 +53,8 @@ public class P4 {
             System.exit(-1);
         }
 
-        if (ErrMsg.fatalMessage){
-            //outFile.close();
+        if (ErrMsg.hasFatalErrors())
             System.exit(-1);
-        }
 
         // open output file
         try (PrintWriter outFile = new PrintWriter(args[1])) {
