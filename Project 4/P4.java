@@ -29,16 +29,6 @@ public class P4 {
             System.exit(-1);
         }
 
-        // open output file
-        PrintWriter outFile = null;
-        try {
-            outFile = new PrintWriter(args[1]);
-        } catch (FileNotFoundException ex) {
-            System.err.println("file " + args[1] +
-                               " could not be opened for writing");
-            System.exit(-1);
-        }
-
         parser P = new parser(new Yylex(inFile));
 
         Symbol root = null; // parser returns a Symbol whose value field
@@ -54,23 +44,27 @@ public class P4 {
         }
 
             // ****** Add name analysis part here ******
-	
-	try {
-	    ((ASTnode)root.value).resolveNames();
-	    System.out.println ("program completed name analysis correctly");
-	} catch (Exception e){
-	    System.err.println("exception occurred during name analysis");
-	    System.exit(-1);
-	}
-	
-	if (ErrMsg.fatalMessage){
-		//outFile.close();
-		System.exit(-1);
-	}
-	
-        ((ASTnode)root.value).unparse(outFile, 0);
-        outFile.close();
 
-        return;
+        try {
+            ((ASTnode)root.value).resolveNames();
+            System.out.println ("program completed name analysis correctly");
+        } catch (Exception e){
+            System.err.println("exception occurred during name analysis");
+            System.exit(-1);
+        }
+
+        if (ErrMsg.fatalMessage){
+            //outFile.close();
+            System.exit(-1);
+        }
+
+        // open output file
+        try (PrintWriter outFile = new PrintWriter(args[1])) {
+            ((ASTnode)root.value).unparse(outFile, 0);
+        } catch (FileNotFoundException ex) {
+            System.err.println("file " + args[1] +
+                               " could not be opened for writing");
+            System.exit(-1);
+        }
     }
 }
