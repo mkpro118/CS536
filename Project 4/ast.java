@@ -40,17 +40,17 @@ import java.util.*;
 //       -TupleNode           IdNode
 //
 //     StmtNode:
-//       -AssignStmtNode      AssignExpNode
-//       -PostIncStmtNode     ExpNode
-//       -PostDecStmtNode     ExpNode
-//       -IfStmtNode          ExpNode, DeclListNode, StmtListNode
-//       -IfElseStmtNode      ExpNode, DeclListNode, StmtListNode,
+//       AssignStmtNode      AssignExpNode
+//       PostIncStmtNode     ExpNode
+//       PostDecStmtNode     ExpNode
+//       IfStmtNode          ExpNode, DeclListNode, StmtListNode
+//       IfElseStmtNode      ExpNode, DeclListNode, StmtListNode,
 //                                    DeclListNode, StmtListNode
-//       -WhileStmtNode       ExpNode, DeclListNode, StmtListNode
-//       -ReadStmtNode        ExpNode
-//       -WriteStmtNode       ExpNode
-//       -CallStmtNode        CallExpNode
-//       -ReturnStmtNode      ExpNode
+//       WhileStmtNode       ExpNode, DeclListNode, StmtListNode
+//       ReadStmtNode        ExpNode
+//       WriteStmtNode       ExpNode
+//       CallStmtNode        CallExpNode
+//       ReturnStmtNode      ExpNode
 //
 //     ExpNode:
 //       TrueNode            --- none ---
@@ -542,6 +542,10 @@ class PostIncStmtNode extends StmtNode {
         p.println("++.");
     }
 
+    public void resolveNames() throws EmptySymTableException {
+        myExp.resolveNames();
+    }
+
     // 1 child
     private ExpNode myExp;
 }
@@ -555,6 +559,10 @@ class PostDecStmtNode extends StmtNode {
         doIndent(p, indent);
         myExp.unparse(p, 0);
         p.println("--.");
+    }
+
+    public void resolveNames() throws EmptySymTableException {
+        myExp.resolveNames();
     }
 
     // 1 child
@@ -577,6 +585,19 @@ class IfStmtNode extends StmtNode {
         myStmtList.unparse(p, indent+4);
         doIndent(p, indent);
         p.println("]");
+    }
+
+    public void resolveNames() throws EmptySymTableException {
+        myExp.resolveNames();
+
+        { // If-then scope
+            symTable.addScope();
+
+            myDeclList.resolveNames();
+            myStmtList.resolveNames();
+
+            symTable.removeScope();
+        }
     }
 
     // 3 children
@@ -613,6 +634,28 @@ class IfElseStmtNode extends StmtNode {
         p.println("]");
     }
 
+    public void resolveNames() throws EmptySymTableException {
+        myExp.resolveNames();
+
+        { // If-then scope
+            symTable.addScope();
+
+            myThenDeclList.resolveNames();
+            myThenStmtList.resolveNames();
+
+            symTable.removeScope();
+        }
+
+        { // Else scope
+            symTable.addScope();
+
+            myElseStmtList.resolveNames();
+            myElseDeclList.resolveNames();
+
+            symTable.removeScope();
+        }
+    }
+
     // 5 children
     private ExpNode myExp;
     private DeclListNode myThenDeclList;
@@ -639,6 +682,19 @@ class WhileStmtNode extends StmtNode {
         p.println("]");
     }
 
+    public void resolveNames() throws EmptySymTableException {
+        myExp.resolveNames();
+
+        { // While scope
+            symTable.addScope();
+
+            myDeclList.resolveNames();
+            myStmtList.resolveNames();
+
+            symTable.removeScope();
+        }
+    }
+
     // 3 children
     private ExpNode myExp;
     private DeclListNode myDeclList;
@@ -657,6 +713,10 @@ class ReadStmtNode extends StmtNode {
         p.println(".");
     }
 
+    public void resolveNames() throws EmptySymTableException {
+        myExp.resolveNames();
+    }
+
     // 1 child (actually can only be an IdNode or a TupleAccessNode)
     private ExpNode myExp;
 }
@@ -673,6 +733,10 @@ class WriteStmtNode extends StmtNode {
         p.println(".");
     }
 
+    public void resolveNames() throws EmptySymTableException {
+        myExp.resolveNames();
+    }
+
     // 1 child
     private ExpNode myExp;
 }
@@ -686,6 +750,10 @@ class CallStmtNode extends StmtNode {
         doIndent(p, indent);
         myCall.unparse(p, indent);
         p.println(".");
+    }
+
+    public void resolveNames() throws EmptySymTableException {
+        myCall.resolveNames();
     }
 
     // 1 child
@@ -705,6 +773,11 @@ class ReturnStmtNode extends StmtNode {
             myExp.unparse(p, 0);
         }
         p.println(".");
+    }
+
+    public void resolveNames() throws EmptySymTableException {
+        if (myExp != null)
+            myExp.resolveNames();
     }
 
     // 1 child
