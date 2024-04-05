@@ -1,0 +1,3 @@
+integer double{void x} [
+  return x * 2.
+]
