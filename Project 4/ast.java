@@ -62,9 +62,9 @@ import java.util.*;
 //       -AssignExpNode       ExpNode, ExpNode
 //       -CallExpNode         IdNode, ExpListNode
 //       UnaryExpNode        ExpNode
-//         -UnaryMinusNode
-//         -NotNode
-//       -BinaryExpNode       ExpNode ExpNode
+//         UnaryMinusNode
+//         NotNode
+//       BinaryExpNode       ExpNode ExpNode
 //         PlusNode     
 //         MinusNode
 //         TimesNode
