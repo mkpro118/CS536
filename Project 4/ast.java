@@ -448,7 +448,7 @@ class TupleDeclNode extends DeclNode {
         SymTable original = symTable;
         symTable = symTuple.symTable;
 
-        // TODO: Do work
+        myDeclList.resolveNames();
 
         // Restore context
         symTable = original;
