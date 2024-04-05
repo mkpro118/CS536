@@ -60,7 +60,7 @@ import java.util.*;
 //       StrLitNode          --- none ---
 //       -TupleAccessNode     ExpNode, IdNode
 //       AssignExpNode       ExpNode, ExpNode
-//       -CallExpNode         IdNode, ExpListNode
+//       CallExpNode         IdNode, ExpListNode
 //       UnaryExpNode        ExpNode
 //         UnaryMinusNode
 //         NotNode
@@ -934,6 +934,13 @@ class CallExpNode extends ExpNode {
             myExpList.unparse(p, 0);
         }
         p.print(")");   
+    }
+
+    public void resolveNames() throws EmptySymTableException {
+        myId.resolveNames();
+
+        if (myExpList != null)
+            myExpList.resolveNames();
     }
 
     // 2 children
