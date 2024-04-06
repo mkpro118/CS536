@@ -16,22 +16,82 @@ tuple B {
 }.
 
 tuple A {
-  tuple G b.
+  tuple G b.  !! G undeclared, b is of invalid tuple type
 }.
 
 integer double{void x} [
   tuple B a.
   logical t.
   integer f.
-  y = a:c:d:e:f.
-  x = t:o.
-  y = f:q.
-  x = a:p.
+  y = a:c:d:e:f.  !! y undeclared
+  x = t:o. !! colon access of non-tuple type (t is logical)
+  y = f:q. !! y is undeclared, colon acces of non-tuple type (f is integer)
+  x = a:p. !! tuple B does not have a member named p
 
   return x * 2.
 ]
 
-integer double{integer x} [
-  y = a:c:d:e:f:q.
-  return x * 2.
+$ Okay, sequential testing now
+$ Lines where errors should occur have !!-style comments
+$ Multiple errors are separated by commas
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!                     Multiply-declared identifier                     !!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+void mdt_func{} [
+  integer test_var.
+  logical test_var.  !! variable
 ]
+
+void func{logical var} [
+  integer var. !! variable with formal
+]
+
+void func{}[] !! function
+
+tuple MDT {integer t.}.
+
+tuple MDT {logical t.}.  !! tuple decl
+
+tuple MDTv2 {
+  integer x. integer y. logical x.  !! tuple member
+}.
+
+void mdt_func_tuple{} [
+  tuple MDT test_var.
+  integer test_var.  !! variable
+]
+
+void mdt_func_tuple2{integer test_var} [
+  tuple MDT test_var.  !! variable with formal
+]
+
+integer MDT. !! variable with tuple-decl
+
+$ The following should not be an error
+void mdt_func_tuple3{integer MDT}[]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!                        Undeclared identifier                         !!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!                    Colon-access of non-tuple type                    !!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!                       Invalid tuple field name                       !!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!                      Non-function declared void                      !!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!                      Invalid name of tuple type                      !!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
