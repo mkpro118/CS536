@@ -5,3 +5,163 @@ integer double{integer x} [
 integer triple{integer x} [
     return double(x) + x.
 ]
+
+integer fib{integer x} [
+  if x <= 1 [
+    return 1.
+  ]
+  return fib(x - 1) + fib(x - 2).
+]
+
+integer factorial{integer x} [
+  if x <= 1 [ return 1. ]
+  else [ return x * factorial(x - 1). ]
+]
+
+integer max{integer x, integer y} [
+  if x >= y [return x.] else [return y.]
+]
+
+integer min{integer x, integer y} [
+  if x < y [return x.] else [return y.]
+]
+
+tuple Point {
+    integer x.
+    integer y.
+}.
+
+tuple Line {
+  integer slope.
+  integer intercept.
+}.
+
+tuple SwapperInteger {
+  integer a.
+  integer b.
+}.
+
+tuple SwapperInteger si.
+
+void swapInt{} [
+  integer temp.
+
+  temp = si:a.
+  si:a = si:b.
+  si:b = temp.
+]
+
+integer f{integer x, logical b} [
+  if b [
+    si:a = x.
+    si:b = x+1.
+    swapInt().
+  ] else [
+    si:a = 1 - x.
+    si:b = 2*x.
+    swapInt().
+    si:a = si:b + x.
+  ]
+  return si:a + si:b - x.
+]
+
+void g{} [
+    integer a.
+    logical b.
+    tuple Point p.
+    p:x = a.
+    b = a == 3.
+    f(a + p:y*2, b).
+    g().
+]
+tuple rev {integer x.}.
+$ https://leetcode.com/problems/palindrome-number/
+logical isPalindrome{integer x} [
+  integer rev.
+  integer rem.
+  integer y.
+  integer q.
+
+  if x < 0 [return False.]
+
+  y = x.
+
+  while y > 0 [
+    q = y / 10.
+    rem = y - 10 * q.
+    rev = rev * 10 + rem.
+    y = q.
+  ]
+  return x == rev.
+]
+
+integer sqr{integer x} [
+  return x * x.
+]
+
+integer sqrt{integer x} [
+  integer max_int_sqrt.
+  integer start.
+  integer end.
+  integer mid.
+  integer sq.
+
+  max_int_sqrt = 46341.
+  start = 0.
+  end = max_int_sqrt.
+
+  while (start <= end) [
+    if sq = sqr(mid = (start + end) / 2) == x [
+      return mid.
+    ] else [
+      if sq > x [
+        end = mid - 1.
+      ] else [
+        start = mid + 1.
+      ]
+    ]
+  ]
+  if sq > x [return mid - 1.]
+  else [return mid.]
+]
+
+tuple Point p.
+tuple Point q.
+tuple Point r.
+
+integer triangleArea{} [
+  integer a.
+  integer b.
+  integer c.
+  integer semi.
+
+  a = sqrt(sqr(p:x - q:x) + sqr(p:y - q:y)).
+  b = sqrt(sqr(p:x - r:x) + sqr(p:y - r:y)).
+  c = sqrt(sqr(q:x - r:x) + sqr(q:y - r:y)).
+
+  semi = (a + b + c) / 2.
+
+  return sqrt(semi * (semi-a)*(semi-b)*(semi-c)).
+]
+
+integer parity{integer x} [
+  integer q.
+  q = x / 2.  $ relying on integer division.
+  return x - 2 * q.
+]
+
+integer pow{integer base, integer exponent} [
+  integer sqr.
+  integer res.
+
+  if exponent == 0 [return 1.]
+  if exponent == 1 [return base.]
+
+  sqr = pow(base, exponent / 2).
+  res = sqr(sqr). $$ (*) Should this work?
+
+  if parity(exponent) == 1 [
+    res = res * base.
+  ]
+  return res.
+]
