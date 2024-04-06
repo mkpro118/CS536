@@ -19,7 +19,7 @@ tuple A {
   tuple G b.  !! G undeclared, b is of invalid tuple type
 }.
 
-integer double{void x} [
+integer double{void x} [  !! non-function is void
   tuple B a.
   logical t.
   integer f.
@@ -28,7 +28,7 @@ integer double{void x} [
   y = f:q. !! y is undeclared, colon acces of non-tuple type (f is integer)
   x = a:p. !! tuple B does not have a member named p
 
-  return x * 2.
+  return x + 2.
 ]
 
 $ Okay, sequential testing now
@@ -76,6 +76,75 @@ void mdt_func_tuple3{integer MDT}[]
 !!!!!                        Undeclared identifier                         !!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+void ui_func{} [
+  return UI. !! UI is undeclared
+]
+
+void ui_func2{} [
+  UI(). !! UI is undeclared
+]
+
+void ui_func3{} [
+  if cond []  !! cond is undeclared
+]
+
+void ui_func4{} [
+  logical cond.
+  if cond [
+    return UI. !! UI is undeclared
+  ]
+]
+
+void ui_func5{} [
+  logical cond.
+  if cond [
+    integer UI.
+  ] else [
+    return UI. !! UI is undeclared
+  ]
+]
+
+void ui_func6{} [
+  logical cond.
+  if cond [ integer UI. ]
+  return UI. !! UI is undeclared
+]
+
+void ui_func7{} [
+  logical cond.
+  if cond [] else [ integer UI. ]
+  return UI. !! UI is undeclared
+]
+
+void ui_func8{} [
+  logical cond.
+  if cond [ integer UI. ] else [ integer UI. ]
+  return UI. !! UI is undeclared
+]
+
+void ui_func9{} [
+  while cond []  !! cond is undeclared
+]
+
+void ui_func10{} [
+  logical cond.
+  while cond [
+    return UI. !! UI is undeclared
+  ]
+]
+
+void ui_func11{} [
+  logical cond.
+  while cond [
+    logical UI.
+  ]
+  return UI. !! UI is undeclared
+]
+
+void ui_func12{} [
+  read >> UI. !! UI is undeclared
+  write << UI. !! UI is undeclared
+]
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!                    Colon-access of non-tuple type                    !!!!!

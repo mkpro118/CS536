@@ -158,7 +158,7 @@ integer pow{integer base, integer exponent} [
   if exponent == 1 [return base.]
 
   sqr = pow(base, exponent / 2).
-  res = sqr(sqr). $$ (*) Should this work?
+  res = sqr(sqr). $ (*) Should this work?
 
   if parity(exponent) == 1 [
     res = res * base.
