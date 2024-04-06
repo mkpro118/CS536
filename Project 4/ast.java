@@ -26,7 +26,7 @@ import java.util.*;
 //       VarDeclNode         TypeNode, IdNode, int
 //       FctnDeclNode        TypeNode, IdNode, FormalsListNode, FctnBodyNode
 //       FormalDeclNode      TypeNode, IdNode
-//       -TupleDeclNode       IdNode, DeclListNode
+//       TupleDeclNode       IdNode, DeclListNode
 //
 //     StmtListNode          linked list of StmtNode
 //     ExpListNode           linked list of ExpNode
@@ -37,7 +37,7 @@ import java.util.*;
 //       LogicalNode         --- none ---
 //       IntegerNode         --- none ---
 //       VoidNode            --- none ---
-//       -TupleNode           IdNode
+//       TupleNode           IdNode
 //
 //     StmtNode:
 //       AssignStmtNode      AssignExpNode
@@ -108,6 +108,7 @@ import java.util.*;
 
 abstract class ASTnode {
     protected static SymTable symTable;
+    protected static final SymTable globalContext;
     protected static final String MULTIPLY_DECLARED;
     protected static final String UNDECLARED;
     protected static final String BAD_COLON_ACCESS;
@@ -117,6 +118,7 @@ abstract class ASTnode {
 
     static {
         symTable = new SymTable();
+        globalContext = symTable;
         MULTIPLY_DECLARED = "Multiply-declared identifier";
         UNDECLARED = "Undeclared identifier";
         BAD_COLON_ACCESS = "Colon-access of non-tuple type";
@@ -138,10 +140,20 @@ abstract class ASTnode {
     public static <E extends ASTnode> void resolver(E e) {
         try {
             e.resolveNames();
-        } catch (EmptySymTableException este) {
-            este.printStackTrace();
-            System.exit(-1);
+        } catch (EmptySymTableException | IllegalArgumentException ex) {
+            // ex.printStackTrace();
         }
+    }
+
+    protected static void switchContext(SymTable symTable) {
+        if (symTable == null)
+            throw new NullPointerException("Expect symTable to be non null");
+
+        ASTnode.symTable = symTable;
+    }
+
+    protected static void restoreContext() {
+        ASTnode.symTable = globalContext;
     }
 }
 
@@ -337,8 +349,16 @@ class VarDeclNode extends DeclNode {
                          BAD_VOID_DECLARED);
         }
 
+        myType.resolveNames();
+
         try {
-            symTable.addDecl(myId.getName(), new Sym(myType.getType()));
+            Sym sym;
+            if (myType instanceof TupleNode) {
+                sym = globalContext.lookupGlobal(myType.getType());
+            } else {
+                sym = new Sym(myType.getType());
+            }
+            symTable.addDecl(myId.getName(), sym);
         } catch (DuplicateSymNameException e) {
             ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(),
                          MULTIPLY_DECLARED);
@@ -443,15 +463,20 @@ class TupleDeclNode extends DeclNode {
 
     public void resolveNames() throws EmptySymTableException {
         SymTuple symTuple = new SymTuple(myId.getName());
+        try {
+            symTable.addDecl(myId.getName(), symTuple);
+        } catch (DuplicateSymNameException e) {
+            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(),
+                         MULTIPLY_DECLARED);
+        }
 
         // Switch context
-        SymTable original = symTable;
-        symTable = symTuple.symTable;
+        switchContext(symTuple.symTable);
 
         myDeclList.resolveNames();
 
         // Restore context
-        symTable = original;
+        restoreContext();
     }
 
     // 2 children
@@ -516,7 +541,16 @@ class TupleNode extends TypeNode {
     }
 
     public String getType(){
-        return("tuple");
+        return myId.getName();
+    }
+
+    public void resolveNames() throws EmptySymTableException {
+        myId.forceGlobalContext();
+        myId.resolveNames();
+        if (!(myId.getSym() instanceof SymTuple)) {
+            ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(),
+                         INVALID_TUPLE_NAME);
+        }
     }
 
     // 1 child
@@ -845,6 +879,13 @@ class FalseNode extends ExpNode {
 }
 
 class IdNode extends ExpNode {
+    private boolean tupleContext = false;
+    private boolean forcedGlobalContext = false;
+
+    public void enableTupleContext() { tupleContext = true; }
+    public void disableTupleContext() { tupleContext = false; }
+    public void forceGlobalContext() { forcedGlobalContext = true; }
+
     public IdNode(int lineNum, int charNum, String strVal) {
         super(lineNum, charNum);
         myStrVal = strVal;
@@ -855,9 +896,24 @@ class IdNode extends ExpNode {
     }
 
     public void resolveNames() throws EmptySymTableException {
-        mySym = symTable.lookupGlobal(myStrVal);
+        Sym sym;
+        if (forcedGlobalContext)
+            sym = globalContext.lookupGlobal(myStrVal);
+        else
+            sym = symTable.lookupGlobal(myStrVal);
+
+        // If sym was found in a previous call, we keep the link
         if (mySym == null)
-            ErrMsg.fatal(myLineNum, myCharNum, UNDECLARED);
+            mySym = sym;
+
+        if (sym == null) {
+            if (tupleContext) {
+                ErrMsg.fatal(myLineNum, myCharNum, INVALID_TUPLE_FIELD);
+            } else {
+                ErrMsg.fatal(myLineNum, myCharNum, UNDECLARED);
+            }
+        }
+        forcedGlobalContext = false;
     }
 
     public String getName() {
@@ -870,6 +926,10 @@ class IdNode extends ExpNode {
 
     private String myStrVal;
     private Sym mySym;
+
+    public String toString() {
+        return "ID(name='" + myStrVal + "', type=<" + mySym.getType() + ">)";
+    }
 }
 
 class IntLitNode extends ExpNode {
@@ -899,6 +959,13 @@ class StrLitNode extends ExpNode {
 }
 
 class TupleAccessNode extends ExpNode {
+    private SymTable nextContext = null;
+    private boolean track = false;
+
+    private void startTracking() { track = true; }
+    private void stopTracking() { track = false; }
+    private SymTable getContext() { return nextContext; }
+
     public TupleAccessNode(ExpNode loc, IdNode id) {
         super(0, 0);
         myLoc = loc;
@@ -910,6 +977,86 @@ class TupleAccessNode extends ExpNode {
         myLoc.unparse(p, 0);
         p.print("):");
         myId.unparse(p, 0);
+    }
+
+    public void resolveNames() throws EmptySymTableException {
+        if (track) {
+            if (myLoc instanceof TupleAccessNode)
+                ((TupleAccessNode)myLoc).startTracking();
+
+            myLoc.resolveNames();
+
+            if (myLoc instanceof TupleAccessNode) {
+                ((TupleAccessNode)myLoc).stopTracking();
+                SymTable context = ((TupleAccessNode)myLoc).getContext();
+                if (context == null) {
+                    ErrMsg.fatal(((IdNode)myLoc).getLineNum(),
+                                 ((IdNode)myLoc).getCharNum(),
+                                 BAD_COLON_ACCESS);
+                    return;
+                } else {
+                    switchContext(context);
+                }
+
+            } else if (myLoc instanceof IdNode) {
+                if (!(((IdNode)myLoc).getSym() instanceof SymTuple)) {
+                    ErrMsg.fatal(((IdNode)myLoc).getLineNum(),
+                                 ((IdNode)myLoc).getCharNum(),
+                                 BAD_COLON_ACCESS);
+                    return;
+                } else {
+                    switchContext(((SymTuple)((IdNode)myLoc).getSym()).symTable);
+                }
+            }
+            myId.enableTupleContext();
+            myId.resolveNames();
+            myId.disableTupleContext();
+
+            Sym idSym = symTable.lookupGlobal(myId.getName());
+
+            if (!(idSym instanceof SymTuple)) {
+                ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(),
+                             BAD_COLON_ACCESS);
+            }
+            else {
+                nextContext = ((SymTuple)idSym).symTable;
+            }
+            return;
+        } // End tracked
+
+        // Untracked
+        if (myLoc instanceof TupleAccessNode)
+            ((TupleAccessNode)myLoc).startTracking();
+
+        myLoc.resolveNames();
+
+        if (myLoc instanceof TupleAccessNode)
+            ((TupleAccessNode)myLoc).stopTracking();
+
+        if (myLoc instanceof TupleAccessNode) {
+            SymTable context = ((TupleAccessNode)myLoc).getContext();
+            if (context == null) {
+                ErrMsg.fatal(((TupleAccessNode)myLoc).myId.getLineNum(),
+                             ((TupleAccessNode)myLoc).myId.getCharNum(),
+                            BAD_COLON_ACCESS);
+            } else {
+                switchContext(context);
+            }
+        } else if (myLoc instanceof IdNode) {
+            if (!(((IdNode)myLoc).getSym() instanceof SymTuple)) {
+                ErrMsg.fatal(((IdNode)myLoc).getLineNum(),
+                             ((IdNode)myLoc).getCharNum(),
+                             BAD_COLON_ACCESS);
+            } else {
+                switchContext(((SymTuple)((IdNode)myLoc).getSym()).symTable);
+            }
+        }
+
+        myId.enableTupleContext();
+        myId.resolveNames();
+        myId.disableTupleContext();
+
+        restoreContext();
     }
 
     // 2 children

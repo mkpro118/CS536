@@ -54,6 +54,7 @@ public class P4 {
             System.out.println ("program completed name analysis correctly");
         } catch (Exception e){
             System.err.println("exception occurred during name analysis");
+            e.printStackTrace();
             System.exit(-1);
         }
 

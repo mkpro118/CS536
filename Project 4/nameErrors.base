@@ -1,3 +1,33 @@
+tuple E {
+  integer f.
+}.
+
+tuple D {
+  tuple E e.
+  integer p.
+}.
+
+tuple C {
+  tuple D d.
+}.
+
+tuple B {
+  tuple C c.
+}.
+
+tuple A {
+  tuple G b.
+}.
+
 integer double{void x} [
+  tuple B a.
+  y = a:c:d:e:f.
+  y = a:c:d:e:f:q.
+  x = a:p.
+  return x * 2.
+]
+
+integer double{integer x} [
+  y = a:c:d:e:f:q.
   return x * 2.
 ]
