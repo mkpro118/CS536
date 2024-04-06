@@ -454,7 +454,9 @@ class TupleDeclNode extends DeclNode {
     public void unparse(PrintWriter p, int indent) {
         doIndent(p, indent);
         p.print("tuple ");
+        myId.disableTypeInfo();
         myId.unparse(p, 0);
+        myId.enableTypeInfo();
         p.println(" {");
         myDeclList.unparse(p, indent+4);
         doIndent(p, indent);
@@ -881,9 +883,12 @@ class FalseNode extends ExpNode {
 class IdNode extends ExpNode {
     private boolean tupleContext = false;
     private boolean forcedGlobalContext = false;
+    private boolean typeInfo = true;
 
     public void enableTupleContext() { tupleContext = true; }
     public void disableTupleContext() { tupleContext = false; }
+    public void enableTypeInfo() { typeInfo = true; }
+    public void disableTypeInfo() { typeInfo = false; }
     public void forceGlobalContext() { forcedGlobalContext = true; }
 
     public IdNode(int lineNum, int charNum, String strVal) {
@@ -892,7 +897,7 @@ class IdNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-        if (mySym == null)
+        if (mySym == null || !typeInfo)
             p.print(myStrVal);
         else
             p.print(myStrVal + "<" + mySym + ">");
