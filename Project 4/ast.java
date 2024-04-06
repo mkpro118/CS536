@@ -960,10 +960,10 @@ class StrLitNode extends ExpNode {
 
 class TupleAccessNode extends ExpNode {
     private SymTable nextContext = null;
-    private boolean track = false;
+    private boolean tracked = false;
 
-    private void startTracking() { track = true; }
-    private void stopTracking() { track = false; }
+    private void startTracking() { tracked = true; }
+    private void stopTracking() { tracked = false; }
     private SymTable getContext() { return nextContext; }
 
     public TupleAccessNode(ExpNode loc, IdNode id) {
@@ -980,38 +980,40 @@ class TupleAccessNode extends ExpNode {
     }
 
     public void resolveNames() throws EmptySymTableException {
-        if (track) {
-            if (myLoc instanceof TupleAccessNode)
-                ((TupleAccessNode)myLoc).startTracking();
+        if (myLoc instanceof TupleAccessNode)
+            ((TupleAccessNode)myLoc).startTracking();
 
-            myLoc.resolveNames();
+        myLoc.resolveNames();
 
-            if (myLoc instanceof TupleAccessNode) {
-                ((TupleAccessNode)myLoc).stopTracking();
-                SymTable context = ((TupleAccessNode)myLoc).getContext();
-                if (context == null) {
-                    ErrMsg.fatal(((IdNode)myLoc).getLineNum(),
-                                 ((IdNode)myLoc).getCharNum(),
-                                 BAD_COLON_ACCESS);
-                    return;
-                } else {
-                    switchContext(context);
-                }
-
-            } else if (myLoc instanceof IdNode) {
-                if (!(((IdNode)myLoc).getSym() instanceof SymTuple)) {
-                    ErrMsg.fatal(((IdNode)myLoc).getLineNum(),
-                                 ((IdNode)myLoc).getCharNum(),
-                                 BAD_COLON_ACCESS);
-                    return;
-                } else {
-                    switchContext(((SymTuple)((IdNode)myLoc).getSym()).symTable);
-                }
+        if (myLoc instanceof TupleAccessNode) {
+            ((TupleAccessNode)myLoc).stopTracking();
+            SymTable context = ((TupleAccessNode)myLoc).getContext();
+            if (context == null) {
+                ErrMsg.fatal(((TupleAccessNode)myLoc).myId.getLineNum(),
+                             ((TupleAccessNode)myLoc).myId.getCharNum(),
+                            BAD_COLON_ACCESS);
+                if (!tracked)
+                    restoreContext();
+                return;
             }
-            myId.enableTupleContext();
-            myId.resolveNames();
-            myId.disableTupleContext();
+            switchContext(context);
+        } else if (myLoc instanceof IdNode) {
+            if (!(((IdNode)myLoc).getSym() instanceof SymTuple)) {
+                ErrMsg.fatal(((IdNode)myLoc).getLineNum(),
+                             ((IdNode)myLoc).getCharNum(),
+                             BAD_COLON_ACCESS);
+                if (!tracked)
+                    restoreContext();
+                return;
+            }
+            switchContext(((SymTuple)((IdNode)myLoc).getSym()).symTable);
+        }
 
+        myId.enableTupleContext();
+        myId.resolveNames();
+        myId.disableTupleContext();
+
+        if (tracked) {
             Sym idSym = symTable.lookupGlobal(myId.getName());
 
             if (!(idSym instanceof SymTuple)) {
@@ -1021,42 +1023,10 @@ class TupleAccessNode extends ExpNode {
             else {
                 nextContext = ((SymTuple)idSym).symTable;
             }
-            return;
-        } // End tracked
-
-        // Untracked
-        if (myLoc instanceof TupleAccessNode)
-            ((TupleAccessNode)myLoc).startTracking();
-
-        myLoc.resolveNames();
-
-        if (myLoc instanceof TupleAccessNode)
-            ((TupleAccessNode)myLoc).stopTracking();
-
-        if (myLoc instanceof TupleAccessNode) {
-            SymTable context = ((TupleAccessNode)myLoc).getContext();
-            if (context == null) {
-                ErrMsg.fatal(((TupleAccessNode)myLoc).myId.getLineNum(),
-                             ((TupleAccessNode)myLoc).myId.getCharNum(),
-                            BAD_COLON_ACCESS);
-            } else {
-                switchContext(context);
-            }
-        } else if (myLoc instanceof IdNode) {
-            if (!(((IdNode)myLoc).getSym() instanceof SymTuple)) {
-                ErrMsg.fatal(((IdNode)myLoc).getLineNum(),
-                             ((IdNode)myLoc).getCharNum(),
-                             BAD_COLON_ACCESS);
-            } else {
-                switchContext(((SymTuple)((IdNode)myLoc).getSym()).symTable);
-            }
         }
-
-        myId.enableTupleContext();
-        myId.resolveNames();
-        myId.disableTupleContext();
-
-        restoreContext();
+        else {
+            restoreContext();
+        }
     }
 
     // 2 children
