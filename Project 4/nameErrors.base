@@ -21,9 +21,13 @@ tuple A {
 
 integer double{void x} [
   tuple B a.
+  logical t.
+  integer f.
   y = a:c:d:e:f.
-  y = a:c:d:e:f:q.
+  x = t:o.
+  y = f:q.
   x = a:p.
+
   return x * 2.
 ]
 
