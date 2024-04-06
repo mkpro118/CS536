@@ -39,7 +39,7 @@ class SymFunctional extends Sym {
         super(returnType);
         this.paramTypes = paramTypes;
         String input = paramTypes.length != 0 ? String.join(",", paramTypes): " ";
-        repr = "<" + input + "->" + type + ">";
+        repr = input + "->" + type;
     }
 
     @Override
