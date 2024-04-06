@@ -61,9 +61,7 @@ EmptySymTableException.class: EmptySymTableException.java
 ##test
 test:
 	java -cp $(CP) P4 test.base test.out
-	-java -cp $(CP) P4 nameErrors.base nameErrors.out 2> nameErrors.errs
-	-py testErrors.py
-	rm -f nameErrors.errs
+	-java -cp $(CP) P4 nameErrors.base nameErrors.out 2>&1 | py testErrors.py
 
 ###
 # clean
