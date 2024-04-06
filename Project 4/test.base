@@ -1,3 +1,7 @@
 integer double{integer x} [
   return x * 2.
 ]
+
+integer triple{integer x} [
+    return double(x) + x.
+]
