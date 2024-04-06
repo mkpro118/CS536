@@ -55,10 +55,10 @@ import java.util.*;
 //     ExpNode:
 //       TrueNode            --- none ---
 //       FalseNode           --- none ---
-//       -IdNode              --- none ---
+//       IdNode              --- none ---
 //       IntLitNode          --- none ---
 //       StrLitNode          --- none ---
-//       -TupleAccessNode     ExpNode, IdNode
+//       TupleAccessNode     ExpNode, IdNode
 //       AssignExpNode       ExpNode, ExpNode
 //       CallExpNode         IdNode, ExpListNode
 //       UnaryExpNode        ExpNode
