@@ -892,7 +892,10 @@ class IdNode extends ExpNode {
     }
 
     public void unparse(PrintWriter p, int indent) {
-        p.print(myStrVal);
+        if (mySym == null)
+            p.print(myStrVal);
+        else
+            p.print(myStrVal + "<" + mySym + ">");
     }
 
     public void resolveNames() throws EmptySymTableException {
@@ -926,10 +929,6 @@ class IdNode extends ExpNode {
 
     private String myStrVal;
     private Sym mySym;
-
-    public String toString() {
-        return "ID(name='" + myStrVal + "', type=<" + mySym.getType() + ">)";
-    }
 }
 
 class IntLitNode extends ExpNode {
