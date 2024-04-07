@@ -15,8 +15,10 @@ FLAGS = -g -d $(TARGET_DIR)
 
 ifeq ($(OS),Windows_NT)
 	CP = $(DEPENDENCY_DIR);$(TARGET_DIR)
+	PY = py
 else
 	CP = ./$(DEPENDENCY_DIR):./$(TARGET_DIR)
+	PY = python3
 endif
 
 P4.class: P4.java parser.class Yylex.class ASTnode.class
@@ -61,7 +63,7 @@ EmptySymTableException.class: EmptySymTableException.java
 ##test
 test:
 	java -cp $(CP) P4 test.base test.out
-	java -cp $(CP) P4 nameErrors.base nameErrors.out 2>&1 | py testErrors.py
+	java -cp $(CP) P4 nameErrors.base nameErrors.out 2>&1 | $(PY) testErrors.py
 
 ###
 # clean
