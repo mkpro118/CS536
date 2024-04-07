@@ -16,17 +16,17 @@ tuple B {
 }.
 
 tuple A {
-  tuple G b.  !! G undeclared, b is of invalid tuple type
+  tuple G b.  !! 2,6| G undeclared, b is of invalid tuple type
 }.
 
-integer double{void x} [  !! non-function is void
+integer double{void x} [  !! 5| non-function is void
   tuple B a.
   logical t.
   integer f.
-  y = a:c:d:e:f.  !! y undeclared
-  x = t:o. !! colon access of non-tuple type (t is logical)
-  y = f:q. !! y is undeclared, colon acces of non-tuple type (f is integer)
-  x = a:p. !! tuple B does not have a member named p
+  y = a:c:d:e:f.  !! 2| y undeclared
+  x = t:o. !! 3| colon access of non-tuple type (t is logical)
+  y = f:q. !! 2,3| y is undeclared, colon acces of non-tuple type (f is integer)
+  x = a:p. !! 4| tuple B does not have a member named p
 
   return x + 2.
 ]
@@ -41,33 +41,33 @@ $ Multiple errors are separated by commas
 
 void mdt_func{} [
   integer test_var.
-  logical test_var.  !! variable
+  logical test_var.  !! 1| variable
 ]
 
 void func{logical var} [
-  integer var. !! variable with formal
+  integer var. !! 1| variable with formal
 ]
 
-void func{}[] !! function
+void func{}[] !! 1| function
 
 tuple MDT {integer t.}.
 
-tuple MDT {logical t.}.  !! tuple decl
+tuple MDT {logical t.}.  !! 1| tuple decl
 
 tuple MDTv2 {
-  integer x. integer y. logical x.  !! tuple member
+  integer x. integer y. logical x.  !! 1| tuple member
 }.
 
 void mdt_func_tuple{} [
   tuple MDT test_var.
-  integer test_var.  !! variable
+  integer test_var.  !! 1| variable
 ]
 
 void mdt_func_tuple2{integer test_var} [
-  tuple MDT test_var.  !! variable with formal
+  tuple MDT test_var.  !! 1| variable with formal
 ]
 
-integer MDT. !! variable with tuple-decl
+integer MDT. !! 1| variable with tuple-decl
 
 $ The following should not be an error
 void mdt_func_tuple3{integer MDT}[]
@@ -77,21 +77,21 @@ void mdt_func_tuple3{integer MDT}[]
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 void ui_func{} [
-  return UI. !! UI is undeclared
+  return UI. !! 2| UI is undeclared
 ]
 
 void ui_func2{} [
-  UI(). !! UI is undeclared
+  UI(). !! 2| UI is undeclared
 ]
 
 void ui_func3{} [
-  if cond []  !! cond is undeclared
+  if cond []  !! 2| cond is undeclared
 ]
 
 void ui_func4{} [
   logical cond.
   if cond [
-    return UI. !! UI is undeclared
+    return UI. !! 2| UI is undeclared
   ]
 ]
 
@@ -100,36 +100,36 @@ void ui_func5{} [
   if cond [
     integer UI.
   ] else [
-    return UI. !! UI is undeclared
+    return UI. !! 2| UI is undeclared
   ]
 ]
 
 void ui_func6{} [
   logical cond.
   if cond [ integer UI. ]
-  return UI. !! UI is undeclared
+  return UI. !! 2| UI is undeclared
 ]
 
 void ui_func7{} [
   logical cond.
   if cond [] else [ integer UI. ]
-  return UI. !! UI is undeclared
+  return UI. !! 2| UI is undeclared
 ]
 
 void ui_func8{} [
   logical cond.
   if cond [ integer UI. ] else [ integer UI. ]
-  return UI. !! UI is undeclared
+  return UI. !! 2| UI is undeclared
 ]
 
 void ui_func9{} [
-  while cond []  !! cond is undeclared
+  while cond []  !! 2| cond is undeclared
 ]
 
 void ui_func10{} [
   logical cond.
   while cond [
-    return UI. !! UI is undeclared
+    return UI. !! 2| UI is undeclared
   ]
 ]
 
@@ -138,18 +138,40 @@ void ui_func11{} [
   while cond [
     logical UI.
   ]
-  return UI. !! UI is undeclared
+  return UI. !! 2| UI is undeclared
 ]
 
 void ui_func12{} [
-  read >> UI. !! UI is undeclared
-  write << UI. !! UI is undeclared
+  read >> UI. !! 2| UI is undeclared
+  write << UI. !! 2| UI is undeclared
 ]
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!                    Colon-access of non-tuple type                    !!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+void caontt_func1{} [
+  integer i.
+  read >> i:p. !! 3| i is not a tuple
+]
+
+tuple CAONTT {
+  logical logic.
+}.
+
+void caontt_func2{} [
+  tuple CAONTT caontt.
+  write << caontt:logic:true. !! 3| logic is not a tuple
+]
+
+tuple CAONTT2 {
+  tuple CAONTT caontt.
+}.
+
+void caontt_func3{} [
+  tuple CAONTT2 caontt.
+  write << caontt:caontt:logic:false. !! 3| logic is not a tuple
+]
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!                       Invalid tuple field name                       !!!!!
