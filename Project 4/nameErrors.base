@@ -1,3 +1,15 @@
+$ Lines where errors should occur have !!-style comments
+$ Multiple errors are separated by commas
+$ Legend for errors:
+$ +---+----------------------------------+
+$ | 1 |   Multiply-declared identifier   |
+$ | 2 |       Undeclared identifier      |
+$ | 3 |  Colon-access of non-tuple type  |
+$ | 4 |     Invalid tuple field name     |
+$ | 5 |    Non-function declared void    |
+$ | 6 |    Invalid name of tuple type    |
+$ +---+----------------------------------+
+
 tuple E {
   integer f.
 }.
@@ -37,8 +49,6 @@ integer double{void x} [  !! 5| non-function is void
 ]
 
 $ Okay, sequential testing now
-$ Lines where errors should occur have !!-style comments
-$ Multiple errors are separated by commas
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!                     Multiply-declared identifier                     !!!!!
@@ -112,7 +122,7 @@ void ui_func5{} [
   if cond [
     integer UI.
   ] else [
-    return UI. !! 2| UI is undeclared
+    return ui_func4(UI). !! 2| UI is undeclared
   ]
 ]
 
@@ -125,13 +135,13 @@ void ui_func6{} [
 void ui_func7{} [
   logical cond.
   if cond [] else [ integer UI. ]
-  return UI. !! 2| UI is undeclared
+  write << UI. !! 2| UI is undeclared
 ]
 
 void ui_func8{} [
   logical cond.
   if cond [ integer UI. ] else [ integer UI. ]
-  return UI. !! 2| UI is undeclared
+  read >> UI. !! 2| UI is undeclared
 ]
 
 void ui_func9{} [
@@ -321,3 +331,60 @@ void nfdv_func12{void x} [ !! 5| non-function is void
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!                      Invalid name of tuple type                      !!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+tuple vector v.  !! 2,6| vector is not defined, bad tuple type
+
+integer nottuple.
+
+tuple newtuple {
+  tuple vector v.  !! 2,6| vector is not defined, bad tuple type
+  tuple nottuple nt. !! 6| nottuple is defined, bad tuple type
+}.
+
+void inott_func1{} [
+  tuple vector v. !! 2,6| vector is not defined, bad tuple type
+]
+
+void inott_func2{} [
+  while False [
+    tuple vector v. !! 2,6| vector is not defined, bad tuple type
+  ]
+]
+
+void inott_func3{} [
+  if False [
+    tuple vector v. !! 2,6| vector is not defined, bad tuple type
+  ]
+]
+
+void inott_func4{} [
+  if False [
+    tuple vector v. !! 2,6| vector is not defined, bad tuple type
+  ] else [
+    tuple vector v. !! 2,6| vector is not defined, bad tuple type
+  ]
+]
+
+void inott_func5{integer vector} [
+  tuple vector v. !! 6| vector is defined, bad tuple type
+]
+
+void inott_func6{integer vector} [
+  while False [
+    tuple vector v. !! 6| vector is defined, bad tuple type
+  ]
+]
+
+void inott_func7{integer vector} [
+  if False [
+    tuple vector v. !! 6| vector is defined, bad tuple type
+  ]
+]
+
+void inott_func8{integer vector} [
+  if False [
+    tuple vector v. !! 6| vector is defined, bad tuple type
+  ] else [
+    tuple vector v. !! 6| vector is defined, bad tuple type
+  ]
+]
