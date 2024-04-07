@@ -19,6 +19,11 @@ tuple A {
   tuple G b.  !! 2,6| G undeclared, b is of invalid tuple type
 }.
 
+tuple Point {
+  integer x.
+  integer y.
+}.
+
 integer double{void x} [  !! 5| non-function is void
   tuple B a.
   logical t.
@@ -71,6 +76,13 @@ integer MDT. !! 1| variable with tuple-decl
 
 $ The following should not be an error
 void mdt_func_tuple3{integer MDT}[]
+void mdt_func_ok{integer MDT}[
+  while False [
+    integer MDT.
+    if True [logical MDT.]
+    else [integer MDT.]
+  ]
+]
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!                        Undeclared identifier                         !!!!!
@@ -177,10 +189,133 @@ void caontt_func3{} [
 !!!!!                       Invalid tuple field name                       !!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+tuple ITFN {
+  integer int.
+  logical bool.
+  tuple Point point.
+}.
+
+void itfn_func1{} [
+  tuple ITFN itfn.
+  write << itfn:INT. !! 4| INT doesn't exist
+  write << itfn:BOOL. !! 4| BOOL doesn't exist
+  write << itfn:POINT. !! 4| POINT doesn't exist
+]
+
+void itfn_func2{} [
+  tuple ITFN itfn.
+  read >> itfn:point:X. !! 4| X doesn't exist
+  read >> itfn:point:Y. !! 4| Y doesn't exist
+]
+
+tuple L1 { integer x. }.
+tuple L2 { tuple L1 one. }.
+tuple L3 { tuple L2 two. }.
+
+void itfn_func3{} [
+  tuple L3 three.
+  tuple L2 two.
+  tuple L1 one.
+  read >> one:one. !! 4| one doesn't exist
+  read >> one:two. !! 4| two doesn't exist
+  read >> one:three. !! 4| three doesn't exist
+  read >> two:two. !! 4| two doesn't exist
+  read >> two:three. !! 4| three doesn't exist
+  read >> three:one. !! 4| one doesn't exist
+  read >> three:three. !! 4| three doesn't exist
+
+  write << two:one:y. !! 4| y doesn't exist
+  write << three:two:y. !! 4| y doesn't exist
+  return three:two:one:y. !! 4| y doesn't exist
+]
+
+void itfn_func4{} [
+  tuple ITFN itfn.
+  if True [
+    read >> itfn:point:X. !! 4| X doesn't exist
+    read >> itfn:point:Y. !! 4| Y doesn't exist
+  ]
+]
+
+void itfn_func5{} [
+  tuple ITFN itfn.
+  if True [
+    read >> itfn:point:X. !! 4| X doesn't exist
+    read >> itfn:point:Y. !! 4| Y doesn't exist
+  ] else [
+    write << itfn:point:Y. !! 4| Y doesn't exist
+    write << itfn:point:X. !! 4| X doesn't exist
+  ]
+]
+
+void itfn_func6{} [
+  tuple ITFN itfn.
+  while True [
+    read >> itfn:point:X. !! 4| X doesn't exist
+    read >> itfn:point:Y. !! 4| Y doesn't exist
+  ]
+]
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!                      Non-function declared void                      !!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+tuple anon {
+  void a. !! 5| non-function is void
+  void b. !! 5| non-function is void
+  void c. !! 5| non-function is void
+}.
+
+void nfdv_func1{void x} []  !! 5| non-function is void
+void nfdv_func2{void x, void y} []  !! 5| non-function is void
+void nfdv_func3{integer x, void y} []  !! 5| non-function is void
+void nfdv_func4{void x, integer y} []  !! 5| non-function is void
+void nfdv_func5{logical x, integer y, void z} []  !! 5| non-function is void
+
+void nfdv_func6{void x} [ !! 5| non-function is void
+  void a. !! 5| non-function is void
+  void b. !! 5| non-function is void
+]
+
+void nfdv_func7{void x} [ !! 5| non-function is void
+  while x [
+    logical x.  !! No error
+  ]
+]
+
+void nfdv_func8{void x} [ !! 5| non-function is void
+  while x [
+    void x.  !! 5| non-function is void
+  ]
+]
+
+void nfdv_func9{void x} [ !! 5| non-function is void
+  if x [
+    logical x.  !! No error
+  ]
+]
+
+void nfdv_func10{void x} [ !! 5| non-function is void
+  if x [
+    void x.  !! 5| non-function is void
+  ]
+]
+
+void nfdv_func11{void x} [ !! 5| non-function is void
+  if x [
+    logical x.  !! No error
+  ] else [
+    logical x. !! No error
+  ]
+]
+
+void nfdv_func12{void x} [ !! 5| non-function is void
+  if x [
+    void x.  !! 5| non-function is void
+  ] else [
+    void x. !! 5| non-function is void
+  ]
+]
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
