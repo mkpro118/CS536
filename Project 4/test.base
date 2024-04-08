@@ -165,3 +165,14 @@ integer pow{integer base, integer exponent} [
   ]
   return res.
 ]
+
+integer wow.
+tuple wow {
+  logical yes.
+}.
+
+void wow_func{} [
+  integer wow.
+  tuple wow w.
+  read >> w:yes.
+]

@@ -28,7 +28,7 @@ tuple B {
 }.
 
 tuple A {
-  tuple G b.  !! 2,6| G undeclared, b is of invalid tuple type
+  tuple G b.  !! 6| G undeclared, b is of invalid tuple type
 }.
 
 tuple Point {
@@ -82,7 +82,7 @@ void mdt_func_tuple2{integer test_var} [
   tuple MDT test_var.  !! 1| variable with formal
 ]
 
-integer MDT. !! 1| variable with tuple-decl
+integer MDT. !! "not error" variable with tuple-decl
 
 $ The following should not be an error
 void mdt_func_tuple3{integer MDT}[]
@@ -332,36 +332,36 @@ void nfdv_func12{void x} [ !! 5| non-function is void
 !!!!!                      Invalid name of tuple type                      !!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-tuple vector v.  !! 2,6| vector is not defined, bad tuple type
+tuple vector v.  !! 6| vector is not defined, bad tuple type
 
 integer nottuple.
 
 tuple newtuple {
-  tuple vector v.  !! 2,6| vector is not defined, bad tuple type
+  tuple vector v.  !! 6| vector is not defined, bad tuple type
   tuple nottuple nt. !! 6| nottuple is defined, bad tuple type
 }.
 
 void inott_func1{} [
-  tuple vector v. !! 2,6| vector is not defined, bad tuple type
+  tuple vector v. !! 6| vector is not defined, bad tuple type
 ]
 
 void inott_func2{} [
   while False [
-    tuple vector v. !! 2,6| vector is not defined, bad tuple type
+    tuple vector v. !! 6| vector is not defined, bad tuple type
   ]
 ]
 
 void inott_func3{} [
   if False [
-    tuple vector v. !! 2,6| vector is not defined, bad tuple type
+    tuple vector v. !! 6| vector is not defined, bad tuple type
   ]
 ]
 
 void inott_func4{} [
   if False [
-    tuple vector v. !! 2,6| vector is not defined, bad tuple type
+    tuple vector v. !! 6| vector is not defined, bad tuple type
   ] else [
-    tuple vector v. !! 2,6| vector is not defined, bad tuple type
+    tuple vector v. !! 6| vector is not defined, bad tuple type
   ]
 ]
 
