@@ -109,6 +109,7 @@ import java.util.*;
 abstract class ASTnode {
     protected static SymTable symTable;
     protected static final SymTable globalContext;
+    protected static final SymTable tuplesDeclContext;
     protected static final String MULTIPLY_DECLARED;
     protected static final String UNDECLARED;
     protected static final String BAD_COLON_ACCESS;
@@ -119,6 +120,7 @@ abstract class ASTnode {
     static {
         symTable = new SymTable();
         globalContext = symTable;
+        tuplesDeclContext= new SymTable();
         MULTIPLY_DECLARED = "Multiply-declared identifier";
         UNDECLARED = "Undeclared identifier";
         BAD_COLON_ACCESS = "Colon-access of non-tuple type";
@@ -354,7 +356,7 @@ class VarDeclNode extends DeclNode {
         try {
             Sym sym;
             if (myType instanceof TupleNode) {
-                sym = globalContext.lookupGlobal(myType.getType());
+                sym = tuplesDeclContext.lookupGlobal(myType.getType());
             } else {
                 sym = new Sym(myType.getType());
             }
@@ -466,7 +468,7 @@ class TupleDeclNode extends DeclNode {
     public void resolveNames() throws EmptySymTableException {
         SymTuple symTuple = new SymTuple(myId.getName());
         try {
-            symTable.addDecl(myId.getName(), symTuple);
+            tuplesDeclContext.addDecl(myId.getName(), symTuple);
         } catch (DuplicateSymNameException e) {
             ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(),
                          MULTIPLY_DECLARED);
@@ -547,7 +549,7 @@ class TupleNode extends TypeNode {
     }
 
     public void resolveNames() throws EmptySymTableException {
-        myId.forceGlobalContext();
+        myId.forceTupleDeclContext();
         myId.resolveNames();
         if (!(myId.getSym() instanceof SymTuple)) {
             ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(),
@@ -882,14 +884,14 @@ class FalseNode extends ExpNode {
 
 class IdNode extends ExpNode {
     private boolean tupleContext = false;
-    private boolean forcedGlobalContext = false;
+    private boolean forcedTupleDeclContext = false;
     private boolean typeInfo = true;
 
     public void enableTupleContext() { tupleContext = true; }
     public void disableTupleContext() { tupleContext = false; }
     public void enableTypeInfo() { typeInfo = true; }
     public void disableTypeInfo() { typeInfo = false; }
-    public void forceGlobalContext() { forcedGlobalContext = true; }
+    public void forceTupleDeclContext() { forcedTupleDeclContext = true; }
 
     public IdNode(int lineNum, int charNum, String strVal) {
         super(lineNum, charNum);
@@ -905,8 +907,8 @@ class IdNode extends ExpNode {
 
     public void resolveNames() throws EmptySymTableException {
         Sym sym;
-        if (forcedGlobalContext)
-            sym = globalContext.lookupGlobal(myStrVal);
+        if (forcedTupleDeclContext)
+            sym = tuplesDeclContext.lookupGlobal(myStrVal);
         else
             sym = symTable.lookupGlobal(myStrVal);
 
@@ -917,11 +919,13 @@ class IdNode extends ExpNode {
         if (sym == null) {
             if (tupleContext) {
                 ErrMsg.fatal(myLineNum, myCharNum, INVALID_TUPLE_FIELD);
+            } else if (forcedTupleDeclContext) {
+                ErrMsg.fatal(myLineNum, myCharNum, INVALID_TUPLE_NAME);
             } else {
                 ErrMsg.fatal(myLineNum, myCharNum, UNDECLARED);
             }
         }
-        forcedGlobalContext = false;
+        forcedTupleDeclContext = false;
     }
 
     public String getName() {
