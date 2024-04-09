@@ -468,6 +468,11 @@ class TupleDeclNode extends DeclNode {
     public void resolveNames() throws EmptySymTableException {
         SymTuple symTuple = new SymTuple(myId.getName());
         try {
+            if (symTable.lookupGlobal(myId.getName()) != null) {
+                ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(),
+                             MULTIPLY_DECLARED);
+                return;
+            }
             tuplesDeclContext.addDecl(myId.getName(), symTuple);
         } catch (DuplicateSymNameException e) {
             ErrMsg.fatal(myId.getLineNum(), myId.getCharNum(),
@@ -907,8 +912,12 @@ class IdNode extends ExpNode {
 
     public void resolveNames() throws EmptySymTableException {
         Sym sym;
-        if (forcedTupleDeclContext)
+        if (forcedTupleDeclContext) {
+            if (globalContext.lookupGlobal(myStrVal) != null) {
+
+            }
             sym = tuplesDeclContext.lookupGlobal(myStrVal);
+        }
         else
             sym = symTable.lookupGlobal(myStrVal);
 

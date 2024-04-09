@@ -166,7 +166,6 @@ integer pow{integer base, integer exponent} [
   return res.
 ]
 
-integer wow.
 tuple wow {
   logical yes.
 }.
