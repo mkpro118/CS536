@@ -114,6 +114,24 @@ abstract class ASTnode {
     protected void doIndent(PrintWriter p, int indent) {
         for (int k=0; k<indent; k++) p.print(" ");
     }
+
+    protected static final Type ERROR;
+    protected static final Type FCTN;
+    protected static final Type INT;
+    protected static final Type LOGICAL;
+    protected static final Type STR;
+    protected static final Type TUPLE_DEF;
+    protected static final Type VOID;
+
+    static {
+        ERROR = new ErrorType();
+        FCTN = new FctnType();
+        INT = new IntegerType();
+        LOGICAL = new LogicalType();
+        STR = new StringType();
+        TUPLE_DEF = new TupleDefType();
+        VOID = new VoidType();
+    }
 }
 
 // **********************************************************************
