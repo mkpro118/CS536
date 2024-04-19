@@ -69,14 +69,14 @@ import java.util.*;
 //         -MinusNode : IMPLEMENT ARITHMETIC_OP INTERFACE
 //         -TimesNode : IMPLEMENT ARITHMETIC_OP INTERFACE
 //         -DivideNode : IMPLEMENT ARITHMETIC_OP INTERFACE
-//         EqualsNode  : IMPLEMENT EQUALS_OP INTERFACE
-//         NotEqualsNode : IMPLEMENT EQUALS_OP INTERFACE
+//         -EqualsNode  : IMPLEMENT EQUALS_OP INTERFACE
+//         -NotEqualsNode : IMPLEMENT EQUALS_OP INTERFACE
 //         -LessNode  : IMPLEMENT ARITHMETIC_OP INTERFACE
 //         -LessEqNode  : IMPLEMENT ARITHMETIC_OP INTERFACE
 //         -GreaterNode  : IMPLEMENT ARITHMETIC_OP INTERFACE
 //         -GreaterEqNode  : IMPLEMENT ARITHMETIC_OP INTERFACE
-//         AndNode : IMPLEMENT LOGICAL_OP INTERFACE
-//         OrNode : IMPLEMENT LOGICAL_OP INTERFACE
+//         -AndNode : IMPLEMENT LOGICAL_OP INTERFACE
+//         -OrNode : IMPLEMENT LOGICAL_OP INTERFACE
 //
 // Here are the different kinds of AST nodes again, organized according to
 // whether they are leaves, internal nodes with linked lists of children, 
