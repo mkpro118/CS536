@@ -20,16 +20,16 @@ import java.util.*;
 //
 //     Subclass              Children
 //     --------              --------
-//     ProgramNode           DeclListNode
-//     DeclListNode          linked list of DeclNode
+//     -ProgramNode           DeclListNode
+//     -DeclListNode          linked list of DeclNode
 //     DeclNode:
 //       VarDeclNode         TypeNode, IdNode, int
 //       -FctnDeclNode        TypeNode, IdNode, FormalsListNode, FctnBodyNode
 //       FormalDeclNode      TypeNode, IdNode
 //       TupleDeclNode       IdNode, DeclListNode
 //
-//     StmtListNode          linked list of StmtNode
-//     ExpListNode           linked list of ExpNode
+//     -StmtListNode          linked list of StmtNode
+//     -ExpListNode           linked list of ExpNode
 //     FormalsListNode       linked list of FormalDeclNode
 //     -FctnBodyNode          DeclListNode, StmtListNode
 //
@@ -120,6 +120,7 @@ abstract class ASTnode {
     protected static final Type INT;
     protected static final Type LOGICAL;
     protected static final Type STR;
+    protected static final Type TUPLE;
     protected static final Type TUPLE_DEF;
     protected static final Type VOID;
 
@@ -129,6 +130,7 @@ abstract class ASTnode {
         INT = new IntegerType();
         LOGICAL = new LogicalType();
         STR = new StringType();
+        TUPLE = new TupleType(null);
         TUPLE_DEF = new TupleDefType();
         VOID = new VoidType();
     }
@@ -156,6 +158,10 @@ class ProgramNode extends ASTnode {
 
     public void unparse(PrintWriter p, int indent) {
         myDeclList.unparse(p, indent);
+    }
+
+    public Type resolveTypes() {
+        return myDeclList.resolveTypes();
     }
 
     // 1 child
@@ -191,6 +197,12 @@ class DeclListNode extends ASTnode {
         }
     }
 
+    public Type resolveTypes() {
+        return myDecls.stream()
+               .map(node -> node.resolveTypes())
+               .reduce(VOID, (acc, e) -> acc.equals(ERROR) ? acc : e);
+    }
+
     public void unparse(PrintWriter p, int indent) {
         Iterator it = myDecls.iterator();
         try {
@@ -220,7 +232,13 @@ class StmtListNode extends ASTnode {
         for (StmtNode node : myStmts) {
             node.nameAnalysis(symTab);
         }
-    } 
+    }
+
+    public Type resolveTypes() {
+        return myStmts.stream()
+               .map(node -> node.resolveTypes())
+               .reduce(VOID, (acc, e) -> acc.equals(ERROR) ? acc : e);
+    }
 
     public void unparse(PrintWriter p, int indent) {
         Iterator<StmtNode> it = myStmts.iterator();
@@ -248,6 +266,12 @@ class ExpListNode extends ASTnode {
         }
     }
 
+    public Type resolveTypes() {
+        return myExps.stream()
+               .map(node -> node.resolveTypes())
+               .reduce(VOID, (acc, e) -> acc.equals(ERROR) ? acc : e);
+    }
+
     public void unparse(PrintWriter p, int indent) {
         Iterator<ExpNode> it = myExps.iterator();
         if (it.hasNext()) {         // if there is at least one element
@@ -262,6 +286,7 @@ class ExpListNode extends ASTnode {
     // list of children (ExpNodes)
     private List<ExpNode> myExps;
 }
+
 class FormalsListNode extends ASTnode {
     public FormalsListNode(List<FormalDeclNode> S) {
         myFormals = S;
@@ -279,7 +304,7 @@ class FormalsListNode extends ASTnode {
         for (FormalDeclNode node : myFormals) {
             Sym sym = node.nameAnalysis(symTab);
             if (sym != null) {
-                typeList.add(sym.getType());
+                typeList.add(sym.resolveTypes());
             }
         }
         return typeList;
@@ -329,6 +354,10 @@ class FctnBodyNode extends ASTnode {
         myStmtList.unparse(p, indent);
     }
 
+    public Type resolveTypes() {
+        return myStmtList.resolveTypes();
+    }
+
     // 2 children
     private DeclListNode myDeclList;
     private StmtListNode myStmtList;
@@ -344,6 +373,9 @@ abstract class DeclNode extends ASTnode {
      * Note: a formal decl needs to return a sym
      ***/
     abstract public Sym nameAnalysis(SymTable symTab);
+
+    /* Not all Declarations need to be resolved */
+    public Type resolveTypes() {}
 }
 
 class VarDeclNode extends DeclNode {
@@ -543,6 +575,28 @@ class FctnDeclNode extends DeclNode {
         p.println("} [");
         myBody.unparse(p, indent+4);
         p.println("]\n");
+    }
+
+    public Type resolveTypes() {
+        Type expectedRet = myId.resolveTypes();
+        Type actualRet = myBody.resolveTypes();
+
+        if (expectedRet.equals(actualRet))
+            return expectedRet;
+
+        if (expectedRet.equals(VOID)) {
+            ErrMsg.fatal(myId.lineNum(), myId.charNum(),
+                         "Return with value in void function");
+            return ERROR;
+        } else if (!expectedRet.equals(VOID) && actualRet.equals(VOID)) {
+            ErrMsg.fatal(myId.lineNum(), myId.charNum(),
+                         "Return value missing");
+            return ERROR;
+        }
+
+        ErrMsg.fatal(myId.lineNum(), myId.charNum(),
+                     "Return value wrong type");
+        return ERROR;
     }
 
     // 4 children
@@ -1120,6 +1174,8 @@ abstract class ExpNode extends ASTnode {
      * Default version for nodes with no names
      ***/
     public void nameAnalysis(SymTable symTab) { }
+
+    public abstract Type resolveTypes();
 }
 
 class TrueNode extends ExpNode {
@@ -1130,6 +1186,10 @@ class TrueNode extends ExpNode {
 
     public void unparse(PrintWriter p, int indent) {
         p.print("True");
+    }
+
+    public Type resolveTypes() {
+        return LOGICAL;
     }
 
     private int myLineNum;
@@ -1145,6 +1205,11 @@ class FalseNode extends ExpNode {
     public void unparse(PrintWriter p, int indent) {
         p.print("False");
     }
+
+    public Type resolveTypes() {
+        return LOGICAL;
+    }
+
 
     private int myLineNum;
     private int myCharNum;
@@ -1220,6 +1285,10 @@ class IdNode extends ExpNode {
         }
     }
 
+    public Type resolveTypes() {
+        return mySym.getType();
+    }
+
     private int myLineNum;
     private int myCharNum;
     private String myStrVal;
@@ -1237,6 +1306,10 @@ class IntLitNode extends ExpNode {
         p.print(myIntVal);
     }
 
+    public Type resolveTypes() {
+        return INT;
+    }
+
     private int myLineNum;
     private int myCharNum;
     private int myIntVal;
@@ -1251,6 +1324,10 @@ class StrLitNode extends ExpNode {
 
     public void unparse(PrintWriter p, int indent) {
         p.print(myStrVal);
+    }
+
+    public Type resolveTypes() {
+        return STR;
     }
 
     private int myLineNum;
@@ -1394,6 +1471,10 @@ class TupleAccessNode extends ExpNode {
         myId.unparse(p, 0);
     }
 
+    public Type resolveTypes() {
+        return myId.resolveTypes();
+    }
+
     // 4 children
     private ExpNode myLoc;	
     private IdNode myId;
@@ -1423,6 +1504,38 @@ class AssignExpNode extends ExpNode {
         p.print(" = ");
         myExp.unparse(p, 0);
         if (indent != -1)  p.print(")");    
+    }
+
+    public Type resolveTypes() {
+        Type lhsType = myLhs.resolveTypes();
+        Type rhsType = myExp.resolveTypes();
+
+        if (lhsType.equals(ERROR) || rhsType.equals(ERROR))
+            return ERROR;
+
+        if (lhsType.equals(FCTN)) {
+            ErrMsg.fatal(((IdNode)myLhs).lineNum(), ((IdNode)myLhs).charNum(),
+                         "Assignment to function name");
+            return ERROR;
+        }
+        else if (lhsType.equals(TUPLE)) {
+            ErrMsg.fatal(((IdNode)myLhs).lineNum(), ((IdNode)myLhs).charNum(),
+                         "Assignment to tuple name");
+            return ERROR;
+        }
+        else if (lhsType.equals(TUPLE_DEF)) {
+            ErrMsg.fatal(((IdNode)myLhs).lineNum(), ((IdNode)myLhs).charNum(),
+                         "Assignment to tuple variable");
+            return ERROR;
+        }
+
+        // Either integer == integer or logical == logical
+        if (lhsType.equals(rhsType))
+            return lhsType;
+
+        ErrMsg.fatal(((IdNode)myLhs).lineNum(), ((IdNode)myLhs).charNum(),
+                     "Mismatched type");
+
     }
 
     // 2 children
