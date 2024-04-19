@@ -24,14 +24,14 @@ import java.util.*;
 //     DeclListNode          linked list of DeclNode
 //     DeclNode:
 //       VarDeclNode         TypeNode, IdNode, int
-//       FctnDeclNode        TypeNode, IdNode, FormalsListNode, FctnBodyNode
+//       -FctnDeclNode        TypeNode, IdNode, FormalsListNode, FctnBodyNode
 //       FormalDeclNode      TypeNode, IdNode
 //       TupleDeclNode       IdNode, DeclListNode
 //
 //     StmtListNode          linked list of StmtNode
 //     ExpListNode           linked list of ExpNode
 //     FormalsListNode       linked list of FormalDeclNode
-//     FctnBodyNode          DeclListNode, StmtListNode
+//     -FctnBodyNode          DeclListNode, StmtListNode
 //
 //     TypeNode:
 //       LogicalNode         --- none ---
@@ -40,43 +40,43 @@ import java.util.*;
 //       TupleNode           IdNode
 //
 //     StmtNode:
-//       AssignStmtNode      AssignExpNode
-//       PostIncStmtNode     ExpNode
-//       PostDecStmtNode     ExpNode
-//       IfStmtNode          ExpNode, DeclListNode, StmtListNode
-//       IfElseStmtNode      ExpNode, DeclListNode, StmtListNode,
+//       -AssignStmtNode      AssignExpNode
+//       -PostIncStmtNode     ExpNode
+//       -PostDecStmtNode     ExpNode
+//       -IfStmtNode          ExpNode, DeclListNode, StmtListNode
+//       -IfElseStmtNode      ExpNode, DeclListNode, StmtListNode,
 //                                    DeclListNode, StmtListNode
-//       WhileStmtNode       ExpNode, DeclListNode, StmtListNode
-//       ReadStmtNode        ExpNode
-//       WriteStmtNode       ExpNode
-//       CallStmtNode        CallExpNode
-//       ReturnStmtNode      ExpNode
+//       -WhileStmtNode       ExpNode, DeclListNode, StmtListNode
+//       -ReadStmtNode        ExpNode
+//       -WriteStmtNode       ExpNode
+//       -CallStmtNode        CallExpNode
+//       -ReturnStmtNode      ExpNode
 //
-//     ExpNode:
+//     -ExpNode:
 //       TrueNode            --- none ---
 //       FalseNode           --- none ---
 //       IdNode              --- none ---
 //       IntLitNode          --- none ---
 //       StrLitNode          --- none ---
 //       TupleAccessNode     ExpNode, IdNode
-//       AssignExpNode       ExpNode, ExpNode
-//       CallExpNode         IdNode, ExpListNode
+//       -AssignExpNode       ExpNode, ExpNode
+//       -CallExpNode         IdNode, ExpListNode
 //       UnaryExpNode        ExpNode
-//         UnaryMinusNode
-//         NotNode
+//         -UnaryMinusNode
+//         -NotNode
 //       BinaryExpNode       ExpNode ExpNode
-//         PlusNode     
-//         MinusNode
-//         TimesNode
-//         DivideNode
-//         EqualsNode
-//         NotEqualsNode
-//         LessNode
-//         LessEqNode
-//         GreaterNode
-//         GreaterEqNode
-//         AndNode
-//         OrNode
+//         -PlusNode : IMPLEMENT ARITHMETIC_OP INTERFACE
+//         -MinusNode : IMPLEMENT ARITHMETIC_OP INTERFACE
+//         -TimesNode : IMPLEMENT ARITHMETIC_OP INTERFACE
+//         -DivideNode : IMPLEMENT ARITHMETIC_OP INTERFACE
+//         EqualsNode  : IMPLEMENT EQUALS_OP INTERFACE
+//         NotEqualsNode : IMPLEMENT EQUALS_OP INTERFACE
+//         -LessNode  : IMPLEMENT ARITHMETIC_OP INTERFACE
+//         -LessEqNode  : IMPLEMENT ARITHMETIC_OP INTERFACE
+//         -GreaterNode  : IMPLEMENT ARITHMETIC_OP INTERFACE
+//         -GreaterEqNode  : IMPLEMENT ARITHMETIC_OP INTERFACE
+//         AndNode : IMPLEMENT LOGICAL_OP INTERFACE
+//         OrNode : IMPLEMENT LOGICAL_OP INTERFACE
 //
 // Here are the different kinds of AST nodes again, organized according to
 // whether they are leaves, internal nodes with linked lists of children, 
