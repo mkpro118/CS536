@@ -1900,6 +1900,8 @@ interface IIntegerOps extends IBinaryOps {
     default Type resolveTypes(ExpNode exp1, ExpNode exp2) {
         Type t1 = exp1.resolveTypes();
         Type t2 = exp1.resolveTypes();
+        boolean errT1 = false;
+        boolean errT2 = false;
 
         if (t1.equals(ASTnode.ERROR) || t2.equals(ASTnode.ERROR))
             return ASTnode.ERROR;
@@ -1912,15 +1914,15 @@ interface IIntegerOps extends IBinaryOps {
 
         if (!t1.equals(ASTnode.INT)) {
             ErrMsg.fatal(lineNum1, charNum1, errMsg());
-            return ASTnode.ERROR;
+            errT1 = true;
         }
 
         if (!t2.equals(ASTnode.INT)) {
+            errT2 = true;
             ErrMsg.fatal(lineNum1, charNum1, errMsg());
-            return ASTnode.ERROR;
         }
 
-        return ASTnode.INT;
+        return (errT1 || errT2) ? ASTnode.ERROR : ASTnode.INT;
     }
 
     String errMsg();
@@ -1945,6 +1947,8 @@ interface ILogicalOps extends IBinaryOps {
     default Type resolveTypes(ExpNode exp1, ExpNode exp2) {
         Type t1 = exp1.resolveTypes();
         Type t2 = exp1.resolveTypes();
+        boolean errT1 = false;
+        boolean errT2 = false;
 
         if (t1.equals(ASTnode.ERROR) || t2.equals(ASTnode.ERROR))
             return ASTnode.ERROR;
@@ -1956,18 +1960,18 @@ interface ILogicalOps extends IBinaryOps {
         int charNum2 = ((IPosition) exp1).charNum();
 
         if (!t1.equals(ASTnode.LOGICAL)) {
+            errT1 = true;
             ErrMsg.fatal(lineNum1, charNum1,
                          "Arithmetic operator used with non-integer operand");
-            return ASTnode.ERROR;
         }
 
         if (!t2.equals(ASTnode.LOGICAL)) {
+            errT2 = true;
             ErrMsg.fatal(lineNum1, charNum1,
                          "Arithmetic operator used with non-integer operand");
-            return ASTnode.ERROR;
         }
 
-        return ASTnode.LOGICAL;
+        return (errT1 || errT2) ? ASTnode.ERROR : ASTnode.LOGICAL;
     }
 }
 
