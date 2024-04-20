@@ -1630,10 +1630,18 @@ class TupleAccessNode extends ExpNode implements IPosition {
     private boolean badAccess;  // to prevent multiple, cascading errors
 }
 
-class AssignExpNode extends ExpNode {
+class AssignExpNode extends ExpNode implements IPosition {
     public AssignExpNode(ExpNode lhs, ExpNode exp) {
         myLhs = lhs;
         myExp = exp;
+    }
+
+    public int lineNum() {
+        return ((IPosition) myLhs).lineNum();
+    }
+
+    public int charNum() {
+        return ((IPosition) myLhs).charNum();
     }
 
     /***
@@ -1692,10 +1700,18 @@ class AssignExpNode extends ExpNode {
     private ExpNode myExp;
 }
 
-class CallExpNode extends ExpNode {
+class CallExpNode extends ExpNode implements IPosition {
     public CallExpNode(IdNode name, ExpListNode elist) {
         myId = name;
         myExpList = elist;
+    }
+
+    public int lineNum() {
+        return myId.lineNum();
+    }
+
+    public int charNum() {
+        return myId.charNum();
     }
 
     public CallExpNode(IdNode name) {
@@ -1788,7 +1804,7 @@ interface IBinaryOps {
     Type resolveTypes(ExpNode exp1, ExpNode exp2);
 }
 
-abstract class BinaryExpNode extends ExpNode implements IBinaryOps {
+abstract class BinaryExpNode extends ExpNode implements IBinaryOps, IPosition {
     public BinaryExpNode(ExpNode exp1, ExpNode exp2) {
         myExp1 = exp1;
         myExp2 = exp2;
@@ -1806,6 +1822,14 @@ abstract class BinaryExpNode extends ExpNode implements IBinaryOps {
 
     public Type resolveTypes() {
         return resolveTypes(myExp1, myExp2);
+    }
+
+    public int lineNum() {
+        return ((IPosition) myExp1).lineNum();
+    }
+
+    public int charNum() {
+        return ((IPosition) myExp1).charNum();
     }
     
     // 2 children
