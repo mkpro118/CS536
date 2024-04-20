@@ -1909,7 +1909,7 @@ interface IIntegerOps extends IBinaryOps {
     @Override
     default Type resolveTypes(ExpNode exp1, ExpNode exp2) {
         Type t1 = exp1.resolveTypes();
-        Type t2 = exp1.resolveTypes();
+        Type t2 = exp2.resolveTypes();
         boolean errT1 = false;
         boolean errT2 = false;
 
