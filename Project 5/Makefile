@@ -8,8 +8,18 @@
 ###
 
 JC = javac
-FLAGS = -g  
-CP = ./deps:.
+TARGET_DIR := bin
+DEPENDENCY_DIR := deps
+
+FLAGS = -g -d $(TARGET_DIR)
+
+ifeq ($(OS),Windows_NT)
+	CP = $(DEPENDENCY_DIR);$(TARGET_DIR)
+	PY = py
+else
+	CP = ./$(DEPENDENCY_DIR):./$(TARGET_DIR)
+	PY = python3
+endif
 
 P5.class: P5.java parser.class Yylex.class ASTnode.class
 	$(JC) $(FLAGS) -cp $(CP) P5.java
