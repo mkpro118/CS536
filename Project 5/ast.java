@@ -1909,8 +1909,8 @@ interface IIntegerOps extends IBinaryOps {
         int lineNum1 = ((IPosition) exp1).lineNum();
         int charNum1 = ((IPosition) exp1).charNum();
 
-        int lineNum2 = ((IPosition) exp1).lineNum();
-        int charNum2 = ((IPosition) exp1).charNum();
+        int lineNum2 = ((IPosition) exp2).lineNum();
+        int charNum2 = ((IPosition) exp2).charNum();
 
         if (!t1.equals(ASTnode.INT)) {
             ErrMsg.fatal(lineNum1, charNum1, errMsg());
@@ -1956,8 +1956,8 @@ interface ILogicalOps extends IBinaryOps {
         int lineNum1 = ((IPosition) exp1).lineNum();
         int charNum1 = ((IPosition) exp1).charNum();
 
-        int lineNum2 = ((IPosition) exp1).lineNum();
-        int charNum2 = ((IPosition) exp1).charNum();
+        int lineNum2 = ((IPosition) exp2).lineNum();
+        int charNum2 = ((IPosition) exp2).charNum();
 
         if (!t1.equals(ASTnode.LOGICAL)) {
             errT1 = true;
