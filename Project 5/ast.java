@@ -1101,21 +1101,21 @@ class ReadStmtNode extends StmtNode {
         if (readType.equals(INT) || readType.equals(LOGICAL))
             return readType;
 
+        int lineNum = ((IPosition) myExp).lineNum();
+        int charNum = ((IPosition) myExp).charNum();
+
         if (readType.equals(FCTN)) {
-            ErrMsg.fatal(((IdNode) myExp).lineNum(), ((IdNode) myExp).charNum(),
-                         "Read attempt of function name");
+            ErrMsg.fatal(lineNum, charNum, "Read attempt of function name");
             return ERROR;
         }
 
         if (readType.equals(TUPLE)) {
-            ErrMsg.fatal(((IdNode) myExp).lineNum(), ((IdNode) myExp).charNum(),
-                         "Read attempt of tuple variable");
+            ErrMsg.fatal(lineNum, charNum, "Read attempt of tuple variable");
             return ERROR;
         }
 
         if (readType.equals(TUPLE_DEF)) {
-            ErrMsg.fatal(((IdNode) myExp).lineNum(), ((IdNode) myExp).charNum(),
-                         "Read attempt of tuple name");
+            ErrMsg.fatal(lineNum, charNum, "Read attempt of tuple name");
             return ERROR;
         }
         return ERROR;
@@ -1150,27 +1150,26 @@ class WriteStmtNode extends StmtNode {
         if (writeType.equals(INT) || writeType.equals(LOGICAL))
             return writeType;
 
+        int lineNum = ((IPosition) myExp).lineNum();
+        int charNum = ((IPosition) myExp).charNum();
+
         if (writeType.equals(FCTN)) {
-            ErrMsg.fatal(((IdNode) myExp).lineNum(), ((IdNode) myExp).charNum(),
-                         "Write attempt of function name");
+            ErrMsg.fatal(lineNum, charNum, "Write attempt of function name");
             return ERROR;
         }
 
         if (writeType.equals(TUPLE)) {
-            ErrMsg.fatal(((IdNode) myExp).lineNum(), ((IdNode) myExp).charNum(),
-                         "Write attempt of tuple variable");
+            ErrMsg.fatal(lineNum, charNum, "Write attempt of tuple variable");
             return ERROR;
         }
 
         if (writeType.equals(TUPLE_DEF)) {
-            ErrMsg.fatal(((IdNode) myExp).lineNum(), ((IdNode) myExp).charNum(),
-                         "Write attempt of tuple name");
+            ErrMsg.fatal(lineNum, charNum, "Write attempt of tuple name");
             return ERROR;
         }
 
         if (writeType.equals(VOID)) {
-            ErrMsg.fatal(((IdNode) myExp).lineNum(), ((IdNode) myExp).charNum(),
-                         "Write attempt of void");
+            ErrMsg.fatal(lineNum, charNum, "Write attempt of void");
             return ERROR;
         }
         return ERROR;
@@ -1197,6 +1196,10 @@ class CallStmtNode extends StmtNode {
         doIndent(p, indent);
         myCall.unparse(p, indent);
         p.println(".");
+    }
+
+    public Type resolveTypes() {
+        return myCall.resolveTypes();
     }
 
     // 1 child
@@ -1597,19 +1600,19 @@ class AssignExpNode extends ExpNode {
         if (lhsType.equals(ERROR) || rhsType.equals(ERROR))
             return ERROR;
 
+        int lineNum = ((IPosition) myLhs).lineNum();
+        int charNum = ((IPosition) myLhs).charNum();
+
         if (lhsType.equals(FCTN)) {
-            ErrMsg.fatal(((IdNode)myLhs).lineNum(), ((IdNode)myLhs).charNum(),
-                         "Assignment to function name");
+            ErrMsg.fatal(lineNum, charNum, "Assignment to function name");
             return ERROR;
         }
         else if (lhsType.equals(TUPLE)) {
-            ErrMsg.fatal(((IdNode)myLhs).lineNum(), ((IdNode)myLhs).charNum(),
-                         "Assignment to tuple name");
+            ErrMsg.fatal(lineNum, charNum, "Assignment to tuple name");
             return ERROR;
         }
         else if (lhsType.equals(TUPLE_DEF)) {
-            ErrMsg.fatal(((IdNode)myLhs).lineNum(), ((IdNode)myLhs).charNum(),
-                         "Assignment to tuple variable");
+            ErrMsg.fatal(lineNum, charNum, "Assignment to tuple variable");
             return ERROR;
         }
 
@@ -1617,7 +1620,7 @@ class AssignExpNode extends ExpNode {
         if (lhsType.equals(rhsType))
             return lhsType;
 
-        ErrMsg.fatal(((IdNode)myLhs).lineNum(), ((IdNode)myLhs).charNum(),
+        ErrMsg.fatal(((IPosition)myLhs).lineNum(), ((IPosition)myLhs).charNum(),
                      "Mismatched type");
 
     }
