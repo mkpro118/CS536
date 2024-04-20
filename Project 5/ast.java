@@ -1669,6 +1669,15 @@ class AssignExpNode extends ExpNode implements IPosition {
         if (lhsType.equals(ERROR) || rhsType.equals(ERROR))
             return ERROR;
 
+        if (lhsType.equals(rhsType)) {
+            if (lhsType.equals(INT) || lhsType.equals(LOGICAL))
+                return lhsType;
+        } else {
+            ErrMsg.fatal(((IPosition)myLhs).lineNum(), ((IPosition)myLhs).charNum(),
+                     "Mismatched type");
+            return ERROR;
+        }
+
         int lineNum = ((IPosition) myLhs).lineNum();
         int charNum = ((IPosition) myLhs).charNum();
 
@@ -1684,13 +1693,6 @@ class AssignExpNode extends ExpNode implements IPosition {
             ErrMsg.fatal(lineNum, charNum, "Assignment to tuple variable");
             return ERROR;
         }
-
-        // Either integer == integer or logical == logical
-        if (lhsType.equals(rhsType))
-            return lhsType;
-
-        ErrMsg.fatal(((IPosition)myLhs).lineNum(), ((IPosition)myLhs).charNum(),
-                     "Mismatched type");
 
         return ERROR;
     }
