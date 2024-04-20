@@ -78,5 +78,6 @@ clean:
 cleantest:
 	rm -f *.out
 
-example:
-	java -cp $(CP) P5 example.base example.out 2> errs 
+example: example.base example.err
+	java -cp $(CP) P5 example.base example.out 2> errs
+	diff errs example.err 
