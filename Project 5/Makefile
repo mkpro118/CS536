@@ -79,4 +79,4 @@ cleantest:
 	rm -f *.out
 
 example:
-	java -cp $(CP) P5 example.base example.out > errs 
+	java -cp $(CP) P5 example.base example.out 2> errs 
