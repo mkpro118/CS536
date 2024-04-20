@@ -1686,11 +1686,11 @@ class AssignExpNode extends ExpNode implements IPosition {
             return ERROR;
         }
         else if (lhsType.equals(TUPLE)) {
-            ErrMsg.fatal(lineNum, charNum, "Assignment to tuple name");
+            ErrMsg.fatal(lineNum, charNum, "Assignment to tuple variable");
             return ERROR;
         }
         else if (lhsType.equals(TUPLE_DEF)) {
-            ErrMsg.fatal(lineNum, charNum, "Assignment to tuple variable");
+            ErrMsg.fatal(lineNum, charNum, "Assignment to tuple name");
             return ERROR;
         }
 
