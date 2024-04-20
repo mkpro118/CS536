@@ -1970,13 +1970,13 @@ interface ILogicalOps extends IBinaryOps {
         if (!t1.equals(ASTnode.LOGICAL)) {
             errT1 = true;
             ErrMsg.fatal(lineNum1, charNum1,
-                         "Arithmetic operator used with non-integer operand");
+                         "Logical operator used with non-logical operand");
         }
 
         if (!t2.equals(ASTnode.LOGICAL)) {
             errT2 = true;
             ErrMsg.fatal(lineNum2, charNum2,
-                         "Arithmetic operator used with non-integer operand");
+                         "Logical operator used with non-logical operand");
         }
 
         return (errT1 || errT2) ? ASTnode.ERROR : ASTnode.LOGICAL;
