@@ -1919,7 +1919,7 @@ interface IIntegerOps extends IBinaryOps {
 
         if (!t2.equals(ASTnode.INT)) {
             errT2 = true;
-            ErrMsg.fatal(lineNum1, charNum1, errMsg());
+            ErrMsg.fatal(lineNum2, charNum2, errMsg());
         }
 
         return (errT1 || errT2) ? ASTnode.ERROR : ASTnode.INT;
@@ -1967,7 +1967,7 @@ interface ILogicalOps extends IBinaryOps {
 
         if (!t2.equals(ASTnode.LOGICAL)) {
             errT2 = true;
-            ErrMsg.fatal(lineNum1, charNum1,
+            ErrMsg.fatal(lineNum2, charNum2,
                          "Arithmetic operator used with non-integer operand");
         }
 
