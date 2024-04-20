@@ -286,6 +286,14 @@ class ExpListNode extends ASTnode {
         } 
     }
 
+    public Iterator<ExpNode> getExps() {
+        return myExps.iterator();
+    }
+
+    public int nExps() {
+        return myExps.size();
+    }
+
     // list of children (ExpNodes)
     private List<ExpNode> myExps;
 }
@@ -1229,6 +1237,11 @@ class ReturnStmtNode extends StmtNode {
 // ****  ExpNode and its subclasses
 // **********************************************************************
 
+interface IPosition {
+    int lineNum();
+    int charNum();
+}
+
 abstract class ExpNode extends ASTnode {
     /***
      * Default version for nodes with no names
@@ -1238,7 +1251,7 @@ abstract class ExpNode extends ASTnode {
     public abstract Type resolveTypes();
 }
 
-class TrueNode extends ExpNode {
+class TrueNode extends ExpNode implements IPosition {
     public TrueNode(int lineNum, int charNum) {
         myLineNum = lineNum;
         myCharNum = charNum;
@@ -1252,11 +1265,14 @@ class TrueNode extends ExpNode {
         return LOGICAL;
     }
 
+    int lineNum() { return myLineNum; }
+    int charNum() { return myLineNum; }
+
     private int myLineNum;
     private int myCharNum;
 }
 
-class FalseNode extends ExpNode {
+class FalseNode extends ExpNode implements IPosition {
     public FalseNode(int lineNum, int charNum) {
         myLineNum = lineNum;
         myCharNum = charNum;
@@ -1270,12 +1286,14 @@ class FalseNode extends ExpNode {
         return LOGICAL;
     }
 
+    int lineNum() { return myLineNum; }
+    int charNum() { return myLineNum; }
 
     private int myLineNum;
     private int myCharNum;
 }
 
-class IdNode extends ExpNode {
+class IdNode extends ExpNode implements IPosition {
     public IdNode(int lineNum, int charNum, String strVal) {
         myLineNum = lineNum;
         myCharNum = charNum;
@@ -1355,7 +1373,7 @@ class IdNode extends ExpNode {
     private Sym mySym;
 }
 
-class IntLitNode extends ExpNode {
+class IntLitNode extends ExpNode implements IPosition {
     public IntLitNode(int lineNum, int charNum, int intVal) {
         myLineNum = lineNum;
         myCharNum = charNum;
@@ -1370,12 +1388,15 @@ class IntLitNode extends ExpNode {
         return INT;
     }
 
+    int lineNum() { return myLineNum; }
+    int charNum() { return myLineNum; }
+
     private int myLineNum;
     private int myCharNum;
     private int myIntVal;
 }
 
-class StrLitNode extends ExpNode {
+class StrLitNode extends ExpNode implements IPosition {
     public StrLitNode(int lineNum, int charNum, String strVal) {
         myLineNum = lineNum;
         myCharNum = charNum;
@@ -1390,12 +1411,15 @@ class StrLitNode extends ExpNode {
         return STR;
     }
 
+    int lineNum() { return myLineNum; }
+    int charNum() { return myLineNum; }
+
     private int myLineNum;
     private int myCharNum;
     private String myStrVal;
 }
 
-class TupleAccessNode extends ExpNode {
+class TupleAccessNode extends ExpNode implements IPosition {
     public TupleAccessNode(ExpNode loc, IdNode id) {
         myLoc = loc;	
         myId = id;
@@ -1632,6 +1656,45 @@ class CallExpNode extends ExpNode {
             myExpList.unparse(p, 0);
         }
         p.print(")");   
+    }
+
+    public Type resolveTypes() {
+        Type idType = myId.resolveTypes();
+
+        if (!idType.equals(FCTN)) {
+            ErrMsg.fatal(myId.lineNum(), myId.charNum(),
+                         "Call attempt on non-function");
+            return ERROR;
+        }
+
+        FctnSym funcSym = (FctnSym) myId.sym();
+
+        int expArgCount = funcSym.getNumParams();
+        int actArgCount = myExpList.nExps();
+
+        if (expArgCount != actArgCount) {
+            ErrMsg.fatal(myId.lineNum(), myId.charNum(),
+                         "Function call with wrong # of args");
+            return ERROR;
+        }
+
+        List<Type> params = funcSym.getParamTypes();
+        Iterator<ExpNode> args = myExpList.getExps();
+
+        for (Type paramType: params) {
+            ExpNode arg = args.next();
+            Type argType = arg.resolveTypes();
+
+            if (paramType.equals(argType))
+                continue;
+
+            int lineNum = ((IPosition) arg).lineNum();
+            int charNum = ((IPosition) arg).charNum();
+
+            ErrMsg.fatal(lineNum, charNum,
+                         "Actual type does not match formal type");
+        }
+        return ERROR;
     }
 
     // 2 children
