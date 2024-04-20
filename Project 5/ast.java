@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.*;
+import java.util.function.*;
 
 // **********************************************************************
 // The ASTnode class defines the nodes of the abstract-syntax tree that
@@ -234,13 +235,16 @@ class StmtListNode extends ASTnode {
         }
     }
 
-    public Type resolveTypes(Type expectedRet) {
-        Type ret = myStmts.stream()
-                          .map(node -> node.resolveTypes())
-                          .reduce(VOID, (acc, e) -> acc.equals(ERROR) ? acc : e);
+    public Type resolveTypes(final Type expectedRet) {
+        Function<StmtNode, Type> resolver = (node) -> {
+            if (node instanceof IReturnable)
+                return ((IReturnable) node).resolveTypes(expectedRet);
 
-        if (expectedRet.equals(ret))
-            return expectedRet;
+            return node.resolveTypes();
+        };
+        return myStmts.stream()
+                      .map(resolver)
+                      .reduce(VOID, (acc, e) -> acc.equals(ERROR) ? acc : e);
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -315,7 +319,7 @@ class FormalsListNode extends ASTnode {
         for (FormalDeclNode node : myFormals) {
             Sym sym = node.nameAnalysis(symTab);
             if (sym != null) {
-                typeList.add(sym.resolveTypes());
+                typeList.add(sym.getType());
             }
         }
         return typeList;
@@ -365,8 +369,8 @@ class FctnBodyNode extends ASTnode {
         myStmtList.unparse(p, indent);
     }
 
-    public Type resolveTypes() {
-        return myStmtList.resolveTypes();
+    public Type resolveTypes(Type returnType) {
+        return myStmtList.resolveTypes(returnType);
     }
 
     // 2 children
@@ -386,7 +390,7 @@ abstract class DeclNode extends ASTnode {
     abstract public Sym nameAnalysis(SymTable symTab);
 
     /* Not all Declarations need to be resolved */
-    public Type resolveTypes() {}
+    public Type resolveTypes() {return VOID;}
 }
 
 class VarDeclNode extends DeclNode {
@@ -590,23 +594,7 @@ class FctnDeclNode extends DeclNode {
 
     public Type resolveTypes() {
         Type expectedRet = ((FctnSym)myId.sym()).getReturnType();
-        Type actualRet = myBody.resolveTypes();
-
-        if (expectedRet.equals(actualRet))
-            return expectedRet;
-
-        if (expectedRet.equals(VOID)) {
-            ErrMsg.fatal(myId.lineNum(), myId.charNum(),
-                         "Return with value in void function");
-            return ERROR;
-        } else if (!expectedRet.equals(VOID) && actualRet.equals(VOID)) {
-            ErrMsg.fatal(0, 0, "Return value missing");
-            return ERROR;
-        }
-
-        ErrMsg.fatal(myId.lineNum(), myId.charNum(),
-                     "Return value wrong type");
-        return ERROR;
+        return myBody.resolveTypes(expectedRet);
     }
 
     // 4 children
@@ -838,6 +826,10 @@ class TupleNode extends TypeNode {
 // ****  StmtNode and its subclasses
 // **********************************************************************
 
+interface IReturnable {
+    public Type resolveTypes(Type expectedRet);
+}
+
 abstract class StmtNode extends ASTnode {
     abstract public void nameAnalysis(SymTable symTab);
 
@@ -917,7 +909,7 @@ class PostDecStmtNode extends StmtNode {
     private ExpNode myExp;
 }
 
-class IfStmtNode extends StmtNode {
+class IfStmtNode extends StmtNode implements IReturnable {
     public IfStmtNode(ExpNode exp, DeclListNode dlist, StmtListNode slist) {
         myDeclList = dlist;
         myExp = exp;
@@ -957,13 +949,25 @@ class IfStmtNode extends StmtNode {
         p.println("]");  
     }
 
+    public Type resolveTypes(Type expectedRet) {
+        Type condType = myExp.resolveTypes();
+        if (!condType.equals(LOGICAL)) {
+            int lineNum = ((IPosition) myExp).lineNum();
+            int charNum = ((IPosition) myExp).charNum();
+            ErrMsg.fatal(lineNum, charNum,
+                         "Non-logical expression used in if condition");
+        }
+
+        return myStmtList.resolveTypes(expectedRet);
+    }
+
     // 3 children
     private ExpNode myExp;
     private DeclListNode myDeclList;
     private StmtListNode myStmtList;
 }
 
-class IfElseStmtNode extends StmtNode {
+class IfElseStmtNode extends StmtNode implements IReturnable {
     public IfElseStmtNode(ExpNode exp, DeclListNode dlist1,
                           StmtListNode slist1, DeclListNode dlist2,
                           StmtListNode slist2) {
@@ -1026,6 +1030,24 @@ class IfElseStmtNode extends StmtNode {
         p.println("]"); 
     }
 
+    public Type resolveTypes(Type expectedRet) {
+        Type condType = myExp.resolveTypes();
+        if (!condType.equals(LOGICAL)) {
+            int lineNum = ((IPosition) myExp).lineNum();
+            int charNum = ((IPosition) myExp).charNum();
+            ErrMsg.fatal(lineNum, charNum,
+                         "Non-logical expression used in if condition");
+        }
+
+        Type thenType = myThenStmtList.resolveTypes(expectedRet);
+        Type elseType = myElseStmtList.resolveTypes(expectedRet);
+
+        if (thenType.equals(ERROR) || elseType.equals(ERROR))
+            return ERROR;
+
+        return thenType;
+    }
+
     // 5 children
     private ExpNode myExp;
     private DeclListNode myThenDeclList;
@@ -1034,7 +1056,7 @@ class IfElseStmtNode extends StmtNode {
     private DeclListNode myElseDeclList;
 }
 
-class WhileStmtNode extends StmtNode {
+class WhileStmtNode extends StmtNode implements IReturnable {
     public WhileStmtNode(ExpNode exp, DeclListNode dlist, StmtListNode slist) {
         myExp = exp;
         myDeclList = dlist;
@@ -1072,6 +1094,18 @@ class WhileStmtNode extends StmtNode {
         myStmtList.unparse(p, indent+4);
         doIndent(p, indent);
         p.println("]");
+    }
+
+    public Type resolveTypes(Type expectedRet) {
+        Type condType = myExp.resolveTypes();
+        if (!condType.equals(LOGICAL)) {
+            int lineNum = ((IPosition) myExp).lineNum();
+            int charNum = ((IPosition) myExp).charNum();
+            ErrMsg.fatal(lineNum, charNum,
+                         "Non-logical expression used in while condition");
+        }
+
+        return myStmtList.resolveTypes(expectedRet);
     }
 
     // 3 children
@@ -1210,7 +1244,7 @@ class CallStmtNode extends StmtNode {
     private CallExpNode myCall;
 }
 
-class ReturnStmtNode extends StmtNode {
+class ReturnStmtNode extends StmtNode implements IReturnable {
     public ReturnStmtNode(ExpNode exp) {
         myExp = exp;
     }
@@ -1234,6 +1268,27 @@ class ReturnStmtNode extends StmtNode {
             myExp.unparse(p, 0);
         }
         p.println(".");
+    }
+
+    public Type resolveTypes(Type expectedRet) {
+        Type actualRet = myExp.resolveTypes();
+
+        if (expectedRet.equals(actualRet))
+            return expectedRet;
+
+        int lineNum = ((IPosition) myExp).lineNum();
+        int charNum = ((IPosition) myExp).charNum();
+
+        if (expectedRet.equals(VOID)) {
+            ErrMsg.fatal(lineNum, charNum, "Return with value in void function");
+            return ERROR;
+        } else if (!expectedRet.equals(VOID) && actualRet.equals(VOID)) {
+            ErrMsg.fatal(0, 0, "Return value missing");
+            return ERROR;
+        }
+
+        ErrMsg.fatal(lineNum, charNum, "Return value wrong type");
+        return ERROR;
     }
 
     // 1 child
@@ -1274,8 +1329,8 @@ class TrueNode extends ExpNode implements IPosition {
         return LOGICAL;
     }
 
-    int lineNum() { return myLineNum; }
-    int charNum() { return myLineNum; }
+    public int lineNum() { return myLineNum; }
+    public int charNum() { return myLineNum; }
 
     private int myLineNum;
     private int myCharNum;
@@ -1295,8 +1350,8 @@ class FalseNode extends ExpNode implements IPosition {
         return LOGICAL;
     }
 
-    int lineNum() { return myLineNum; }
-    int charNum() { return myLineNum; }
+    public int lineNum() { return myLineNum; }
+    public int charNum() { return myLineNum; }
 
     private int myLineNum;
     private int myCharNum;
@@ -1397,8 +1452,8 @@ class IntLitNode extends ExpNode implements IPosition {
         return INT;
     }
 
-    int lineNum() { return myLineNum; }
-    int charNum() { return myLineNum; }
+    public int lineNum() { return myLineNum; }
+    public int charNum() { return myLineNum; }
 
     private int myLineNum;
     private int myCharNum;
@@ -1420,8 +1475,8 @@ class StrLitNode extends ExpNode implements IPosition {
         return STR;
     }
 
-    int lineNum() { return myLineNum; }
-    int charNum() { return myLineNum; }
+    public int lineNum() { return myLineNum; }
+    public int charNum() { return myLineNum; }
 
     private int myLineNum;
     private int myCharNum;
@@ -1629,6 +1684,7 @@ class AssignExpNode extends ExpNode {
         ErrMsg.fatal(((IPosition)myLhs).lineNum(), ((IPosition)myLhs).charNum(),
                      "Mismatched type");
 
+        return ERROR;
     }
 
     // 2 children
@@ -1749,7 +1805,7 @@ abstract class BinaryExpNode extends ExpNode implements IBinaryOps {
     }
 
     public Type resolveTypes() {
-        resolveTypes(myExp1, myExp2);
+        return resolveTypes(myExp1, myExp2);
     }
     
     // 2 children

@@ -54,7 +54,7 @@ public class P5 {
         }
 
         ((ProgramNode)root.value).nameAnalysis();  // perform name analysis
-        ((ProgramNode)root.value).resolveType();  // perform type checking
+        ((ProgramNode)root.value).resolveTypes();  // perform type checking
 
         if (!ErrMsg.getErr()) {  // if no errors, unparse
             ((ASTnode)root.value).unparse(outFile, 0);
