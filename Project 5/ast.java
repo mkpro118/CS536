@@ -1330,7 +1330,7 @@ class TrueNode extends ExpNode implements IPosition {
     }
 
     public int lineNum() { return myLineNum; }
-    public int charNum() { return myLineNum; }
+    public int charNum() { return myCharNum; }
 
     private int myLineNum;
     private int myCharNum;
@@ -1351,7 +1351,7 @@ class FalseNode extends ExpNode implements IPosition {
     }
 
     public int lineNum() { return myLineNum; }
-    public int charNum() { return myLineNum; }
+    public int charNum() { return myCharNum; }
 
     private int myLineNum;
     private int myCharNum;
@@ -1453,7 +1453,7 @@ class IntLitNode extends ExpNode implements IPosition {
     }
 
     public int lineNum() { return myLineNum; }
-    public int charNum() { return myLineNum; }
+    public int charNum() { return myCharNum; }
 
     private int myLineNum;
     private int myCharNum;
@@ -1476,7 +1476,7 @@ class StrLitNode extends ExpNode implements IPosition {
     }
 
     public int lineNum() { return myLineNum; }
-    public int charNum() { return myLineNum; }
+    public int charNum() { return myCharNum; }
 
     private int myLineNum;
     private int myCharNum;
