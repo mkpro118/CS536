@@ -20,16 +20,16 @@ import java.util.*;
 //
 //     Subclass              Children
 //     --------              --------
-//     -ProgramNode           DeclListNode
-//     -DeclListNode          linked list of DeclNode
+//     ProgramNode           DeclListNode
+//     DeclListNode          linked list of DeclNode
 //     DeclNode:
 //       VarDeclNode         TypeNode, IdNode, int
-//       -FctnDeclNode        TypeNode, IdNode, FormalsListNode, FctnBodyNode
+//       FctnDeclNode        TypeNode, IdNode, FormalsListNode, FctnBodyNode
 //       FormalDeclNode      TypeNode, IdNode
 //       TupleDeclNode       IdNode, DeclListNode
 //
-//     -StmtListNode          linked list of StmtNode
-//     -ExpListNode           linked list of ExpNode
+//     StmtListNode          linked list of StmtNode
+//     ExpListNode           linked list of ExpNode
 //     FormalsListNode       linked list of FormalDeclNode
 //     -FctnBodyNode          DeclListNode, StmtListNode
 //
@@ -53,11 +53,11 @@ import java.util.*;
 //       -ReturnStmtNode      ExpNode
 //
 //     -ExpNode:
-//       -TrueNode            --- none ---
-//       -FalseNode           --- none ---
+//       TrueNode            --- none ---
+//       FalseNode           --- none ---
 //       -IdNode              --- none ---
-//       -IntLitNode          --- none ---
-//       -StrLitNode          --- none ---
+//       IntLitNode          --- none ---
+//       StrLitNode          --- none ---
 //       -TupleAccessNode     ExpNode, IdNode
 //       -AssignExpNode       ExpNode, ExpNode
 //       -CallExpNode         IdNode, ExpListNode
@@ -234,10 +234,13 @@ class StmtListNode extends ASTnode {
         }
     }
 
-    public Type resolveTypes() {
-        return myStmts.stream()
-               .map(node -> node.resolveTypes())
-               .reduce(VOID, (acc, e) -> acc.equals(ERROR) ? acc : e);
+    public Type resolveTypes(Type expectedRet) {
+        Type ret = myStmts.stream()
+                          .map(node -> node.resolveTypes())
+                          .reduce(VOID, (acc, e) -> acc.equals(ERROR) ? acc : e);
+
+        if (expectedRet.equals(ret))
+            return expectedRet;
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -578,7 +581,7 @@ class FctnDeclNode extends DeclNode {
     }
 
     public Type resolveTypes() {
-        Type expectedRet = myId.resolveTypes();
+        Type expectedRet = ((FctnSym)myId.sym()).getReturnType();
         Type actualRet = myBody.resolveTypes();
 
         if (expectedRet.equals(actualRet))
@@ -589,8 +592,7 @@ class FctnDeclNode extends DeclNode {
                          "Return with value in void function");
             return ERROR;
         } else if (!expectedRet.equals(VOID) && actualRet.equals(VOID)) {
-            ErrMsg.fatal(myId.lineNum(), myId.charNum(),
-                         "Return value missing");
+            ErrMsg.fatal(0, 0, "Return value missing");
             return ERROR;
         }
 
@@ -830,6 +832,8 @@ class TupleNode extends TypeNode {
 
 abstract class StmtNode extends ASTnode {
     abstract public void nameAnalysis(SymTable symTab);
+
+    public Type resolveTypes() { return ASTnode.VOID; }
 }
 
 class AssignStmtNode extends StmtNode {
@@ -1084,6 +1088,31 @@ class ReadStmtNode extends StmtNode {
         p.println(".");
     }
 
+    public Type resolveTypes() {
+        Type readType = myExp.resolveTypes();
+        if (readType.equals(INT) || readType.equals(LOGICAL))
+            return readType;
+
+        if (readType.equals(FCTN)) {
+            ErrMsg.fatal(((IdNode) myExp).lineNum(), ((IdNode) myExp).charNum(),
+                         "Read attempt of function name");
+            return ERROR;
+        }
+
+        if (readType.equals(TUPLE)) {
+            ErrMsg.fatal(((IdNode) myExp).lineNum(), ((IdNode) myExp).charNum(),
+                         "Read attempt of tuple variable");
+            return ERROR;
+        }
+
+        if (readType.equals(TUPLE_DEF)) {
+            ErrMsg.fatal(((IdNode) myExp).lineNum(), ((IdNode) myExp).charNum(),
+                         "Read attempt of tuple name");
+            return ERROR;
+        }
+        return ERROR;
+    }
+
     // 1 child (actually can only be an IdNode or a TupleAccessNode)
     private ExpNode myExp;
 }
@@ -1106,6 +1135,37 @@ class WriteStmtNode extends StmtNode {
         p.print("write << ");
         myExp.unparse(p, 0);
         p.println(".");
+    }
+
+    public Type resolveTypes() {
+        Type writeType = myExp.resolveTypes();
+        if (writeType.equals(INT) || writeType.equals(LOGICAL))
+            return writeType;
+
+        if (writeType.equals(FCTN)) {
+            ErrMsg.fatal(((IdNode) myExp).lineNum(), ((IdNode) myExp).charNum(),
+                         "Write attempt of function name");
+            return ERROR;
+        }
+
+        if (writeType.equals(TUPLE)) {
+            ErrMsg.fatal(((IdNode) myExp).lineNum(), ((IdNode) myExp).charNum(),
+                         "Write attempt of tuple variable");
+            return ERROR;
+        }
+
+        if (writeType.equals(TUPLE_DEF)) {
+            ErrMsg.fatal(((IdNode) myExp).lineNum(), ((IdNode) myExp).charNum(),
+                         "Write attempt of tuple name");
+            return ERROR;
+        }
+
+        if (writeType.equals(VOID)) {
+            ErrMsg.fatal(((IdNode) myExp).lineNum(), ((IdNode) myExp).charNum(),
+                         "Write attempt of void");
+            return ERROR;
+        }
+        return ERROR;
     }
 
     // 1 child
