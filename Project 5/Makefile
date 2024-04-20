@@ -77,3 +77,6 @@ clean:
 ## cleantest (delete test artifacts)
 cleantest:
 	rm -f *.out
+
+example:
+	java -cp $(CP) P5 example.base example.out 
