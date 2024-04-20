@@ -1987,7 +1987,7 @@ interface IEqualityOps extends IBinaryOps {
     @Override
     default Type resolveTypes(ExpNode exp1, ExpNode exp2) {
         Type t1 = exp1.resolveTypes();
-        Type t2 = exp1.resolveTypes();
+        Type t2 = exp2.resolveTypes();
         boolean err = false;
         int lineNum1 = ((IPosition) exp1).lineNum();
         int charNum1 = ((IPosition) exp1).charNum();
