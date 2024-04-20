@@ -1783,7 +1783,7 @@ class CallExpNode extends ExpNode implements IPosition {
     private ExpListNode myExpList;  // possibly null
 }
 
-abstract class UnaryExpNode extends ExpNode {
+abstract class UnaryExpNode extends ExpNode implements IPosition {
     public UnaryExpNode(ExpNode exp) {
         myExp = exp;
     }
@@ -1794,6 +1794,14 @@ abstract class UnaryExpNode extends ExpNode {
      ***/
     public void nameAnalysis(SymTable symTab) {
         myExp.nameAnalysis(symTab);
+    }
+
+    public int lineNum() {
+        return ((IPosition) myExp).lineNum();
+    }
+
+    public int charNum() {
+        return ((IPosition) myExp).charNum();
     }
     
     // 1 child
