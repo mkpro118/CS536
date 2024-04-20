@@ -863,6 +863,10 @@ class AssignStmtNode extends StmtNode {
         p.println(".");
     }
 
+    public Type resolveTypes() {
+        return myAssign.resolveTypes();
+    }
+
     // 1 child
     private AssignExpNode myAssign;
 }
@@ -1245,13 +1249,15 @@ interface IPosition {
     int charNum();
 }
 
-abstract class ExpNode extends ASTnode {
+interface ExpType {
+    Type resolveTypes();
+}
+
+abstract class ExpNode extends ASTnode implements ExpType {
     /***
      * Default version for nodes with no names
      ***/
     public void nameAnalysis(SymTable symTab) { }
-
-    public abstract Type resolveTypes();
 }
 
 class TrueNode extends ExpNode implements IPosition {
@@ -1722,7 +1728,11 @@ abstract class UnaryExpNode extends ExpNode {
     protected ExpNode myExp;
 }
 
-abstract class BinaryExpNode extends ExpNode {
+interface IBinaryOps {
+    Type resolveTypes(ExpNode exp1, ExpNode exp2);
+}
+
+abstract class BinaryExpNode extends ExpNode implements IBinaryOps {
     public BinaryExpNode(ExpNode exp1, ExpNode exp2) {
         myExp1 = exp1;
         myExp2 = exp2;
@@ -1736,6 +1746,10 @@ abstract class BinaryExpNode extends ExpNode {
     public void nameAnalysis(SymTable symTab) {
         myExp1.nameAnalysis(symTab);
         myExp2.nameAnalysis(symTab);
+    }
+
+    public Type resolveTypes() {
+        resolveTypes(myExp1, myExp2);
     }
     
     // 2 children
@@ -1757,6 +1771,19 @@ class NotNode extends UnaryExpNode {
         myExp.unparse(p, 0);
         p.print(")");
     }
+
+    public Type resolveTypes() {
+        Type expType = myExp.resolveTypes();
+
+        if (expType.equals(LOGICAL))
+            return expType;
+
+        int lineNum = ((IPosition) myExp).lineNum();
+        int charNum = ((IPosition) myExp).charNum();
+        ErrMsg.fatal(lineNum, charNum,
+                     "Logical operator used with non-logical operand");
+        return ERROR;
+    }
 }
 
 class UnaryMinusNode extends UnaryExpNode {
@@ -1769,13 +1796,161 @@ class UnaryMinusNode extends UnaryExpNode {
         myExp.unparse(p, 0);
         p.print(")");
     }
+
+    public Type resolveTypes() {
+        Type expType = myExp.resolveTypes();
+
+        if (expType.equals(INT))
+            return expType;
+
+        int lineNum = ((IPosition) myExp).lineNum();
+        int charNum = ((IPosition) myExp).charNum();
+        ErrMsg.fatal(lineNum, charNum,
+                     "Arithmetic operator used with non-integer operand");
+        return ERROR;
+    }
 }
 
 // **********************************************************************
 // ****  Subclasses of BinaryExpNode
 // **********************************************************************
 
-class PlusNode extends BinaryExpNode {
+interface IIntegerOps extends IBinaryOps {
+    @Override
+    default Type resolveTypes(ExpNode exp1, ExpNode exp2) {
+        Type t1 = exp1.resolveTypes();
+        Type t2 = exp1.resolveTypes();
+        boolean errT1 = false;
+        boolean errT2 = false;
+
+        if (t1.equals(ASTnode.ERROR) || t2.equals(ASTnode.ERROR))
+            return ASTnode.ERROR;
+
+        int lineNum1 = ((IPosition) exp1).lineNum();
+        int charNum1 = ((IPosition) exp1).charNum();
+
+        int lineNum2 = ((IPosition) exp1).lineNum();
+        int charNum2 = ((IPosition) exp1).charNum();
+
+        if (!t1.equals(ASTnode.INT)) {
+            errT1 = true;
+            ErrMsg.fatal(lineNum1, charNum1, errMsg());
+        }
+
+        if (!t2.equals(ASTnode.INT)) {
+            errT2 = true;
+            ErrMsg.fatal(lineNum1, charNum1, errMsg());
+        }
+
+        return (errT1 || errT2) ? ASTnode.ERROR : ASTnode.INT;
+    }
+
+    String errMsg();
+}
+
+interface IArithmeticOps extends IIntegerOps {
+    @Override
+    default String errMsg() {
+        return "Arithmetic operator used with non-integer operand";
+    }
+}
+
+interface IRelationalOps extends IIntegerOps {
+    @Override
+    default String errMsg() {
+        return "Relational operator used with non-integer operand";
+    }
+}
+
+interface ILogicalOps extends IBinaryOps {
+    @Override
+    default Type resolveTypes(ExpNode exp1, ExpNode exp2) {
+        Type t1 = exp1.resolveTypes();
+        Type t2 = exp1.resolveTypes();
+        boolean errT1 = false;
+        boolean errT2 = false;
+
+        if (t1.equals(ASTnode.ERROR) || t2.equals(ASTnode.ERROR))
+            return ASTnode.ERROR;
+
+        int lineNum1 = ((IPosition) exp1).lineNum();
+        int charNum1 = ((IPosition) exp1).charNum();
+
+        int lineNum2 = ((IPosition) exp1).lineNum();
+        int charNum2 = ((IPosition) exp1).charNum();
+
+        if (!t1.equals(ASTnode.LOGICAL)) {
+            errT1 = true;
+            ErrMsg.fatal(lineNum1, charNum1,
+                         "Arithmetic operator used with non-integer operand");
+        }
+
+        if (!t2.equals(ASTnode.LOGICAL)) {
+            errT2 = true;
+            ErrMsg.fatal(lineNum1, charNum1,
+                         "Arithmetic operator used with non-integer operand");
+        }
+
+        return (errT1 || errT2) ? ASTnode.ERROR : ASTnode.LOGICAL;
+    }
+}
+
+interface IEqualityOps extends IBinaryOps {
+    @Override
+    default Type resolveTypes(ExpNode exp1, ExpNode exp2) {
+        Type t1 = exp1.resolveTypes();
+        Type t2 = exp1.resolveTypes();
+        boolean err = false;
+        int lineNum1 = ((IPosition) exp1).lineNum();
+        int charNum1 = ((IPosition) exp1).charNum();
+
+        int lineNum2 = ((IPosition) exp1).lineNum();
+        int charNum2 = ((IPosition) exp1).charNum();
+
+        if (t1.equals(ASTnode.ERROR) || t2.equals(ASTnode.ERROR))
+            return ASTnode.ERROR;
+
+        if (t1.equals(t2)) {
+            if (t1.equals(ASTnode.INT) || t1.equals(ASTnode.LOGICAL))
+                return t1;
+        } else {
+            ErrMsg.fatal(lineNum1, charNum1, "Mismatched type");
+            return ASTnode.ERROR;
+        }
+
+        // T1 == T2 at this point
+        if (t1.equals(ASTnode.VOID)) {
+            err = true;
+            ErrMsg.fatal(lineNum1, charNum1,
+                         "Equality operator used with void function calls");
+        }
+
+        if (t1.equals(ASTnode.FCTN)) {
+            err = true;
+            ErrMsg.fatal(lineNum1, charNum1,
+                         "Equality operator used with function names");
+        }
+
+        if (t1.equals(ASTnode.TUPLE_DEF)) {
+            err = true;
+            ErrMsg.fatal(lineNum1, charNum1,
+                         "Equality operator used with tuple names");
+        }
+
+        if (t1.equals(ASTnode.TUPLE)) {
+            err = true;
+            ErrMsg.fatal(lineNum1, charNum1,
+                         "Equality operator used with tuple variables");
+        }
+
+        if (err)
+            return ASTnode.ERROR;
+
+        return t1;
+    }
+}
+
+class PlusNode extends BinaryExpNode implements IArithmeticOps {
     public PlusNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
     }
@@ -1789,7 +1964,7 @@ class PlusNode extends BinaryExpNode {
     }
 }
 
-class MinusNode extends BinaryExpNode {
+class MinusNode extends BinaryExpNode implements IArithmeticOps {
     public MinusNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
     }
@@ -1803,7 +1978,7 @@ class MinusNode extends BinaryExpNode {
     }
 }
 
-class TimesNode extends BinaryExpNode {
+class TimesNode extends BinaryExpNode implements IArithmeticOps {
     public TimesNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
     }
@@ -1817,7 +1992,7 @@ class TimesNode extends BinaryExpNode {
     }
 }
 
-class DivideNode extends BinaryExpNode {
+class DivideNode extends BinaryExpNode implements IArithmeticOps {
     public DivideNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
     }
@@ -1831,7 +2006,7 @@ class DivideNode extends BinaryExpNode {
     }
 }
 
-class EqualsNode extends BinaryExpNode {
+class EqualsNode extends BinaryExpNode implements IEqualityOps {
     public EqualsNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
     }
@@ -1845,7 +2020,7 @@ class EqualsNode extends BinaryExpNode {
     }
 }
 
-class NotEqualsNode extends BinaryExpNode {
+class NotEqualsNode extends BinaryExpNode implements IEqualityOps {
     public NotEqualsNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
     }
@@ -1859,7 +2034,7 @@ class NotEqualsNode extends BinaryExpNode {
     }
 }
 
-class GreaterNode extends BinaryExpNode {
+class GreaterNode extends BinaryExpNode implements IRelationalOps {
     public GreaterNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
     }
@@ -1873,7 +2048,7 @@ class GreaterNode extends BinaryExpNode {
     }
 }
 
-class GreaterEqNode extends BinaryExpNode {
+class GreaterEqNode extends BinaryExpNode implements IRelationalOps {
     public GreaterEqNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
     }
@@ -1887,7 +2062,7 @@ class GreaterEqNode extends BinaryExpNode {
     }
 }
 
-class LessNode extends BinaryExpNode {
+class LessNode extends BinaryExpNode implements IRelationalOps {
     public LessNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
     }
@@ -1901,7 +2076,7 @@ class LessNode extends BinaryExpNode {
     }
 }
 
-class LessEqNode extends BinaryExpNode {
+class LessEqNode extends BinaryExpNode implements IRelationalOps {
     public LessEqNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
     }
@@ -1915,8 +2090,7 @@ class LessEqNode extends BinaryExpNode {
     }
 }
 
-
-class AndNode extends BinaryExpNode {
+class AndNode extends BinaryExpNode implements ILogicalOps {
     public AndNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
     }
@@ -1930,7 +2104,7 @@ class AndNode extends BinaryExpNode {
     }
 }
 
-class OrNode extends BinaryExpNode {
+class OrNode extends BinaryExpNode implements ILogicalOps {
     public OrNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
     }
