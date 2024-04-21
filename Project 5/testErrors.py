@@ -68,7 +68,10 @@ with open('tests/typeErrors.base') as f:
         if match := exp_pattern.match(line):
             errs = map(int, match.group(1).split(','))
             for err in errs:
-                expected[linenum].append(errs_map[err])
+                if err == 11:
+                    expected[0].append(errs_map[err])
+                else:
+                    expected[linenum].append(errs_map[err])
 
 inp = dict(inp)
 expected = dict(expected)

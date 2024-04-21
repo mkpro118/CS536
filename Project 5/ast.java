@@ -1271,19 +1271,19 @@ class ReturnStmtNode extends StmtNode implements IReturnable {
     }
 
     public Type resolveTypes(Type expectedRet) {
-        Type actualRet = myExp.resolveTypes();
+        Type actualRet = myExp != null ? myExp.resolveTypes() : VOID;
 
         if (expectedRet.equals(actualRet))
             return expectedRet;
 
-        int lineNum = ((IPosition) myExp).lineNum();
-        int charNum = ((IPosition) myExp).charNum();
+        int lineNum = myExp != null ? ((IPosition) myExp).lineNum() : 0;
+        int charNum = myExp != null ? ((IPosition) myExp).charNum() : 0;
 
         if (expectedRet.equals(VOID)) {
             ErrMsg.fatal(lineNum, charNum, "Return with value in void function");
             return ERROR;
         } else if (!expectedRet.equals(VOID) && actualRet.equals(VOID)) {
-            ErrMsg.fatal(0, 0, "Return value missing");
+            ErrMsg.fatal(lineNum, charNum, "Return value missing");
             return ERROR;
         }
 
