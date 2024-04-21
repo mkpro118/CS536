@@ -10,6 +10,7 @@
 JC = javac
 TARGET_DIR := bin
 DEPENDENCY_DIR := deps
+TESTS_DIR := tests
 
 FLAGS = -g -d $(TARGET_DIR)
 
@@ -77,8 +78,9 @@ all:
 
 ##test
 test:
-	java -cp $(CP) P5 typeErrors.base typeErrors.out
-	java -cp $(CP) P5 test.base test.out
+	#java -cp $(CP) P5 typeErrors.base typeErrors.out
+	java -cp $(CP) P5 $(TESTS_DIR)/typeErrors.base $(TESTS_DIR)/typeErrors.out 2>&1 | $(PY) testErrors.py
+	java -cp $(CP) P5 $(TESTS_DIR)/test.base test.out
 
 ###
 # clean
@@ -91,5 +93,5 @@ cleantest:
 	rm -f *.out
 
 example: example.base example.err
-	java -cp $(CP) P5 example.base example.out 2> errs
-	diff errs example.err 
+	java -cp $(CP) P5 $(TESTS_DIR)/example.base $(TESTS_DIR)/example.out 2> $(TESTS_DIR)/errs
+	diff $(TESTS_DIR)/errs $(TESTS_DIR)/example.err 
