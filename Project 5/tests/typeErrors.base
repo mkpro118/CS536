@@ -1,0 +1,89 @@
+$ Lines where errors should occur have !!-style comments
+$ Multiple errors are separated by commas
+$ Legend for errors:
+$ +----+---------------------------------------------------+
+$ |  1 |           Write attempt of function name          |
+$ |  2 |            Write attempt of tuple name            |
+$ |  3 |          Write attempt of tuple variable          |
+$ |  4 |               Write attempt of void               |
+$ |  5 |           Read attempt of function name           |
+$ |  6 |             Read attempt of tuple name            |
+$ |  7 |           Read attempt of tuple variable          |
+$ |  8 |            Call attempt on non-function           |
+$ |  9 |         Function call with wrong # of args        |
+$ | 10 |       Actual type does not match formal type      |
+$ | 11 |                Return value missing               |
+$ | 12 |         Return with value in void function        |
+$ | 13 |              Return value wrong type              |
+$ | 14 | Arithmetic operator used with non-integer operand |
+$ | 15 | Relational operator used with non-integer operand |
+$ | 16 |   Logical operator used with non-logical operand  |
+$ | 17 |    Non-logical expression used in if condition    |
+$ | 18 |   Non-logical expression used in while condition  |
+$ | 19 |                  Mismatched type                  |
+$ | 20 |  Equality operator used with void function calls  |
+$ | 21 |     Equality operator used with function names    |
+$ | 22 |      Equality operator used with tuple names      |
+$ | 23 |    Equality operator used with tuple variables    |
+$ | 24 |            Assignment to function name            |
+$ | 25 |              Assignment to tuple name             |
+$ | 26 |            Assignment to tuple variable           |
+$ +----+---------------------------------------------------+
+
+
+integer double{integer x} [
+  return x * False. !! 14| Cannot multiply with False
+]
+
+tuple User {
+    integer age.
+    logical student.
+}.
+
+tuple User user.
+
+void set_user_age{logical age} [
+    return (user:age = age). !! 12,19|
+]
+
+integer get_user_age{} [
+    return user:student. !! 13|
+]
+
+logical is_user_a_student{} [
+    return user:age. !! 13|
+]
+
+!! Okay, now we do sequential testing
+
+!!!!!!!!!!!!!!!!!!!!!!!  Write attempt of function name  !!!!!!!!!!!!!!!!!!!!!!!
+void WAOFN{} [
+    $ Function level
+    write << double.
+
+    $ in IF stmt
+    if False [ write << WAOFN. ]
+
+    $ in IF-ELSE stmt
+    if True [ write << set_user_age. ]
+    else [ write << get_user_age. ]
+
+    $ in WHILE stmt
+    while False [ write << is_user_a_student. ]
+]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!  Write attempt of tuple name  !!!!!!!!!!!!!!!!!!!!!!!!
+void WAOTN{} [
+    $ Function level
+    write << User.
+
+    $ in IF stmt
+    if False [ write << User. ]
+
+    $ in IF-ELSE stmt
+    if True [ write << User. ]
+    else [ write << User. ]
+
+    $ in WHILE stmt
+    while False [ write << User. ]
+]

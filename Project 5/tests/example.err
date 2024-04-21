@@ -1,0 +1,26 @@
+12:11 ****ERROR**** Arithmetic operator used with non-integer operand
+12:15 ****ERROR**** Arithmetic operator used with non-integer operand
+13:11 ****ERROR**** Mismatched type
+14:11 ****ERROR**** Relational operator used with non-integer operand
+14:15 ****ERROR**** Relational operator used with non-integer operand
+15:11 ****ERROR**** Equality operator used with function names
+18:5 ****ERROR**** Call attempt on non-function
+19:5 ****ERROR**** Function call with wrong # of args
+20:5 ****ERROR**** Function call with wrong # of args
+21:12 ****ERROR**** Actual type does not match formal type
+22:7 ****ERROR**** Actual type does not match formal type
+22:12 ****ERROR**** Actual type does not match formal type
+23:5 ****ERROR**** Call attempt on non-function
+26:5 ****ERROR**** Mismatched type
+27:5 ****ERROR**** Assignment to tuple variable
+28:13 ****ERROR**** Read attempt of tuple name
+29:16 ****ERROR**** Logical operator used with non-logical operand
+30:11 ****ERROR**** Logical operator used with non-logical operand
+30:17 ****ERROR**** Logical operator used with non-logical operand
+33:12 ****ERROR**** Return with value in void function
+36:19 ****ERROR**** Arithmetic operator used with non-integer operand
+37:17 ****ERROR**** Arithmetic operator used with non-integer operand
+38:5 ****ERROR**** Mismatched type
+41:18 ****ERROR**** Arithmetic operator used with non-integer operand
+41:27 ****ERROR**** Relational operator used with non-integer operand
+41:33 ****ERROR**** Relational operator used with non-integer operand
