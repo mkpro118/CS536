@@ -1932,10 +1932,11 @@ interface IIntegerOps extends IBinaryOps {
             ErrMsg.fatal(lineNum2, charNum2, errMsg());
         }
 
-        return (errT1 || errT2) ? ASTnode.ERROR : t1;
+        return (errT1 || errT2) ? ASTnode.ERROR : resType();
     }
 
     String errMsg();
+    Type resType();
 }
 
 interface IArithmeticOps extends IIntegerOps {
@@ -1943,12 +1944,22 @@ interface IArithmeticOps extends IIntegerOps {
     default String errMsg() {
         return "Arithmetic operator used with non-integer operand";
     }
+
+    @Override
+    default Type resType() {
+        return ASTnode.INT;
+    }
 }
 
 interface IRelationalOps extends IIntegerOps {
     @Override
     default String errMsg() {
         return "Relational operator used with non-integer operand";
+    }
+
+    @Override
+    default Type resType() {
+        return ASTnode.LOGICAL;
     }
 }
 
