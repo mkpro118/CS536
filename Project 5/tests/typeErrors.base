@@ -32,7 +32,7 @@ $ +----+---------------------------------------------------+
 
 
 integer double{integer x} [
-  return x * False. !! 13,14| Cannot multiply with False
+  return x * False. !! 13,14| Cannot multiply with False ---
 ]
 
 tuple User {
@@ -43,10 +43,13 @@ tuple User {
 tuple User user.
 
 void set_user_age{logical age} [
-    return (user:age = age). !! 12,19|
+    return (user:age = age). !! 12,19| ---
 ]
 
 integer get_user_age{} [
+    $ Apparently multiple returns is not a problem
+    return user:student. !! 13|
+    return user:student. !! 13|
     return user:student. !! 13|
 ]
 
@@ -166,4 +169,125 @@ void RAOTV{} [
 
     $ in WHILE stmt
     while False [ read >> user. ] !! 7|
+]
+
+!!!!!!!!!!!!!!!!!!!!!!!!  Call attempt on non-function  !!!!!!!!!!!!!!!!!!!!!!!!
+void CAONF{} [
+    integer caonf.
+    $ Function level
+    caonf(). !! 8|
+
+    $ in IF stmt
+    if False [ caonf(). ] !! 8|
+
+    $ in IF-ELSE stmt
+    if True [ caonf(). ] !! 8|
+    else [ caonf(). ] !! 8|
+
+    $ in WHILE stmt
+    while False [ caonf(). ] !! 8|
+
+    $ in ASSIGN stmt
+    caonf = caonf(). !! 8|
+    user:age = caonf(). !! 8|
+
+    $ in IF condition stmt
+    if caonf() [] !! 8,17| ---
+
+    $ in IF-ELSE condition stmt
+    if caonf() [] !! 8,17| ---
+    else []
+
+    $ in WHILE condition stmt
+    while caonf() [] !! 8,18| ---
+
+    $ in RETURN stmt
+    return caonf(). !! 8,12|  ---
+]
+
+!!!!!!!!!!!!!!!!!!!!!  Function call with wrong # of args  !!!!!!!!!!!!!!!!!!!!!
+logical FCWWNOA_func{integer a, integer b, logical c} []
+
+logical FCWWNOA{} [
+    integer fcwwnoa.
+    $ Function level
+    double(). !! 9|
+
+    $ in IF stmt
+    if False [ FCWWNOA_func(1, 2). ] !! 9|
+
+    $ in IF-ELSE stmt
+    if True [ double(False, user:age). ] !! 9|
+    else [ FCWWNOA_func(True, fcwwnoa). ] !! 9|
+
+    $ in WHILE stmt
+    while False [ double(12, False). ] !! 9|
+
+    $ in ASSIGN stmt
+    fcwwnoa = FCWWNOA_func(True, 42). !! 9|
+    user:age = double(100, fcwwnoa, 100). !! 9|
+
+    $ in IF condition stmt
+    if FCWWNOA_func("what", user:student) [] !! 9,17| ---
+
+    $ in IF-ELSE condition stmt
+    if FCWWNOA_func() [] !! 9,17| ---
+    else []
+
+    $ in WHILE condition stmt
+    while double(600, True, fcwwnoa) [] !! 9,18| ---
+
+    $ in RETURN stmt
+    return FCWWNOA_func(0). !! 9,13|
+]
+
+!!!!!!!!!!!!!!!!!!!  Actual type does not match formal type  !!!!!!!!!!!!!!!!!!!
+logical ATDNMFT_func{logical a, integer b, logical c} []
+logical ATDNMFT{} [
+    logical atdnmft.
+    $ Function level
+    double(True). !! 10|
+
+    $ in IF stmt
+    if False [ double(False). ] !! 10|
+
+    $ in IF-ELSE stmt
+    if True [ double(user:student). ] !! 10|
+    else [ double("atdnmft"). ] !! 10|
+
+    $ in WHILE stmt
+    while False [ ATDNMFT_func(1, False, 2). ] !! 10|
+
+    $ in ASSIGN stmt
+    atdnmft = ATDNMFT_func(True, True, True). !! 10|
+    user:student = ATDNMFT_func(0, 1, 2). !! 10|
+
+    $ in IF condition stmt
+    if double("str") [] !! 10,17| ---
+
+    $ in IF-ELSE condition stmt
+    if ATDNMFT_func("logical", "False", "1") [] !! 10| ---
+    else []
+
+    $ in WHILE condition stmt
+    while ATDNMFT_func(1, True, 0) [] !! 10| ---
+
+    $ in RETURN stmt
+    return ATDNMFT_func(0, 0, 0). !! 10|
+]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!  Return value missing  !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+integer RVM{} [
+    $ Function level
+    return. !! 11|
+
+    $ in IF stmt
+    if False [ return. ] !! 11|
+
+    $ in IF-ELSE stmt
+    if True [ return. ] !! 11|
+    else [ return. ] !! 11|
+
+    $ in WHILE stmt
+    while False [ return. ] !! 11|
 ]
