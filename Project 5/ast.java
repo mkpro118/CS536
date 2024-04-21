@@ -1768,7 +1768,7 @@ class CallExpNode extends ExpNode implements IPosition {
             ExpNode arg = args.next();
             Type argType = arg.resolveTypes();
 
-            if (paramType.equals(argType) || paramType.equals(ERROR))
+            if (paramType.equals(argType) || argType.equals(ERROR))
                 continue;
 
             int lineNum = ((IPosition) arg).lineNum();
