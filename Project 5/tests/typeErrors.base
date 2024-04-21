@@ -283,14 +283,14 @@ void CAONF{} [
     user:age = caonf(). !! 8|
 
     $ in IF condition stmt
-    if caonf() [] !! 8,17| ---
+    if caonf() [] !! 8| ---
 
     $ in IF-ELSE condition stmt
-    if caonf() [] !! 8,17| ---
+    if caonf() [] !! 8| ---
     else []
 
     $ in WHILE condition stmt
-    while caonf() [] !! 8,18| ---
+    while caonf() [] !! 8| ---
 
     $ in nested context
     if (True) [
@@ -332,14 +332,14 @@ logical FCWWNOA{} [
     user:age = double(100, fcwwnoa, 100). !! 9|
 
     $ in IF condition stmt
-    if FCWWNOA_func("what", user:student) [] !! 9,17| ---
+    if FCWWNOA_func("what", user:student) [] !! 9| ---
 
     $ in IF-ELSE condition stmt
-    if FCWWNOA_func() [] !! 9,17| ---
+    if FCWWNOA_func() [] !! 9| ---
     else []
 
     $ in WHILE condition stmt
-    while double(double(600), True, fcwwnoa) [] !! 9,18| ---
+    while double(double(600), True, fcwwnoa) [] !! 9| ---
 
     $ in nested context
     if (True) [
@@ -529,7 +529,7 @@ integer AOUWNIO{integer x, logical y} [
     z = x + y. !! 14|
 
     $ in CALL stmt
-    double(x + y). !! 14,10|
+    double(x + y). !! 14|
 
     $ in IF stmt
     if (True) [z = x + y.] !! 14|
@@ -614,27 +614,27 @@ logical ROUWNIO{integer x, logical y} [
     z = x < y. !! 15|
 
     $ in CALL stmt
-    set_user_age(x < y). !! 15,10|
+    set_user_age(x < y). !! 15|
 
     $ in IF stmt
     if (True) [z = x >= y.] !! 15|
 
     $ in IF condition
-    if x >= y [] !! 15,17|
+    if x >= y [] !! 15|
 
     $ in IF-ELSE stmt
     if (True) [z = x <= y.] !! 15|
     else [z = x > y.] !! 15|
 
     $ in IF-ELSE condition
-    if (x > y) [] !! 15,17|
+    if (x > y) [] !! 15|
     else [z = x < y.] !! 15|
 
     $ in WHILE stmt
     while False [z = x >= y.] !! 15|
 
     $ in WHILE condition
-    while z > y [] !! 15,18|
+    while z > y [] !! 15|
 
     $ in expression
     x = (2 + 5) < True. !! 15|
@@ -708,27 +708,27 @@ logical LOUWNLO{integer x, logical y} [
     z = x & y. !! 16|
 
     $ in CALL stmt
-    set_user_age(x | y). !! 16,10|
+    set_user_age(x | y). !! 16|
 
     $ in IF stmt
     if (True) [z = ~x & y.] !! 16|
 
     $ in IF condition
-    if x | y [] !! 16,17|
+    if x | y [] !! 16|
 
     $ in IF-ELSE stmt
     if (True) [z = x & y | x.] !! 16|
     else [z = x | y & x.] !! 16|
 
     $ in IF-ELSE condition
-    if (x | y) [] !! 16,17|
+    if (x | y) [] !! 16|
     else [z = x | ~y.] !! 16|
 
     $ in WHILE stmt
     while False [z = x & ~~y.] !! 16|
 
     $ in WHILE condition
-    while ~z | x [] !! 16,18|
+    while ~z | x [] !! 16|
 
     $ in expression
     x = (2 + 5) & True. !! 16|
@@ -808,4 +808,123 @@ void NLEUIIC{} [
             ]
         ]
     ]
+]
+
+!!!!!!!!!!!!!!!  Non-logical expression used in while condition  !!!!!!!!!!!!!!!
+void NLEUIWC{} [
+    while 1 []  !! 18|
+
+    if True [
+        while User [] !! 18|
+    ]
+    else [
+        if True [
+            while user [ !! 18|
+                if True []
+                else [
+                    while user:age [] !! 18|
+                ]
+            ]
+        ]
+    ]
+
+    while 2 - 1 [  !! 18|
+        while 0 * 2 [] !! 18|
+    ]
+    while True [
+        while double(0) []  !! 18|
+
+        while True [
+            while (double(double(double(1)))) []  !! 18|
+
+            if True [
+                while get_user_age() []  !! 18|
+            ]
+        ]
+    ]
+]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  Mismatched type  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+logical MT{integer a, logical b} [
+    integer x.
+    logical y.
+
+    $ Assignment operator
+    x = b. !! 19|
+    x = True. !! 19|
+    x = False. !! 19|
+    x = MT(0, False). !! 19|
+
+    y = a. !! 19|
+    y = 0. !! 19|
+    y = -1. !! 19|
+    y = double(x). !! 19|
+
+    y = a + x.  !! 19|
+    y = a - x.  !! 19|
+    y = a * x.  !! 19|
+    y = a / x.  !! 19|
+
+    x = b & y.  !! 19|
+    x = b | y.  !! 19|
+    x = ~b.     !! 19|
+
+    x = a < x.  !! 19|
+    x = a <= x. !! 19|
+    x = a > x.  !! 19|
+
+    x = a >= x. !! 19|
+    a = x == a. !! 19|
+    x = a ~= x. !! 19|
+    x = b == y. !! 19|
+    x = y ~= b. !! 19|
+
+    $ Equality Operators
+    y = x == b. !! 19|
+    y = b == x. !! 19|
+    y = x ~= b. !! 19|
+    y = b ~= x. !! 19|
+
+    $ in IF condition
+    if (True ~= 0) [ !! 19|
+        while (x ~= False) [ !! 19|
+            y = a + 1. !! 19|
+        ]
+    ] else [
+        x = ~b. !! 19|
+    ]
+
+    $ in RETURN stmt
+    return True == 1. !! 19,13|
+    return False == 0. !! 19,13|
+    return True ~= 0. !! 19,13|
+    return False ~= 1. !! 19,13|
+    return (x = False ~= True). !! 19,13|
+]
+
+!!!!!!!!!!!!!!!  Equality operator used with void function calls  !!!!!!!!!!!!!!
+void EQUWVFC{} [
+    logical x.
+    x = set_user_age(False) == set_user_age(True). !! 20|
+
+    x = WAOFN() ~= WAOTN(). !! 20|
+
+    if WAOTV() == WAOV() [  !! 20||
+        while RAOFN() ~= RAOTN() []  !! 20||
+    ] else [
+        x = RWVIVF() == CAONF().  !! 20||
+    ]
+
+    x = set_user_age(False) ~= set_user_age(True). !! 20|
+
+    x = WAOFN() == WAOTN(). !! 20|
+
+    if WAOTV() ~= WAOV() [  !! 20||
+        while RAOFN() == RAOTN() []  !! 20||
+    ] else [
+        x = RWVIVF() ~= CAONF().  !! 20||
+    ]
+
+    return EQUWVFC() == EQUWVFC(). !! 20,12||
+    return EQUWVFC() ~= EQUWVFC(). !! 20,12||
 ]
