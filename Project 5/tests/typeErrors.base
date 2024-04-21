@@ -909,22 +909,174 @@ void EQUWVFC{} [
 
     x = WAOFN() ~= WAOTN(). !! 20|
 
-    if WAOTV() == WAOV() [  !! 20||
-        while RAOFN() ~= RAOTN() []  !! 20||
+    if WAOTV() == WAOV() [  !! 20|
+        while RAOFN() ~= RAOTN() []  !! 20|
     ] else [
-        x = RWVIVF() == CAONF().  !! 20||
+        x = RWVIVF() == CAONF().  !! 20|
     ]
 
     x = set_user_age(False) ~= set_user_age(True). !! 20|
 
     x = WAOFN() == WAOTN(). !! 20|
 
-    if WAOTV() ~= WAOV() [  !! 20||
-        while RAOFN() == RAOTN() []  !! 20||
+    if WAOTV() ~= WAOV() [  !! 20|
+        while RAOFN() == RAOTN() []  !! 20|
     ] else [
-        x = RWVIVF() ~= CAONF().  !! 20||
+        x = RWVIVF() ~= CAONF().  !! 20|
     ]
 
-    return EQUWVFC() == EQUWVFC(). !! 20,12||
-    return EQUWVFC() ~= EQUWVFC(). !! 20,12||
+    return EQUWVFC() == EQUWVFC(). !! 20,12|
+    return EQUWVFC() ~= EQUWVFC(). !! 20,12|
+]
+
+!!!!!!!!!!!!!!!!!  Equality operator used with function names  !!!!!!!!!!!!!!!!!
+void EQUWFN{} [
+    logical x.
+    x = set_user_age == set_user_age. !! 21|
+
+    x = WAOFN ~= WAOTN. !! 21|
+
+    if WAOTV == WAOV [  !! 21|
+        while RAOFN ~= RAOTN []  !! 21|
+    ] else [
+        x = RWVIVF == CAONF.  !! 21|
+    ]
+
+    x = set_user_age ~= set_user_age. !! 21|
+
+    x = WAOFN == WAOTN. !! 21|
+
+    if WAOTV ~= WAOV [  !! 21|
+        while RAOFN == RAOTN []  !! 21|
+    ] else [
+        x = RWVIVF ~= CAONF.  !! 21|
+    ]
+
+    return EQUWVFC == EQUWVFC. !! 21,12|
+    return EQUWVFC ~= EQUWVFC. !! 21,12|
+]
+
+!!!!!!!!!!!!!!!!!!  Equality operator used with tuple names  !!!!!!!!!!!!!!!!!!!
+tuple EQUWTN_1 {integer x.}.
+tuple EQUWTN_2 {logical x.}.
+tuple EQUWTN_3 {logical y.}.
+tuple EQUWTN_4 {integer y.}.
+
+void EQUWTN{} [
+    logical x.
+    x = EQUWTN_1 == EQUWTN_1. !! 22|
+
+    x = EQUWTN_2 ~= EQUWTN_3. !! 22|
+
+    if EQUWTN_2 == EQUWTN_4 [  !! 22|
+        while EQUWTN_1 ~= EQUWTN_3 []  !! 22|
+    ] else [
+        x = EQUWTN_1 == EQUWTN_4.  !! 22|
+    ]
+
+    x = EQUWTN_1 ~= User. !! 22|
+
+    x = User == EQUWTN_1. !! 22|
+
+    if EQUWTN_2 ~= EQUWTN_1 [  !! 22|
+        while User == EQUWTN_3 []  !! 22|
+    ] else [
+        x = EQUWTN_2 ~= User.  !! 22|
+    ]
+
+    return EQUWTN_4 == EQUWTN_2. !! 22,12|
+    return EQUWTN_3 ~= EQUWTN_1. !! 22,12|
+]
+
+!!!!!!!!!!!!!!!!  Equality operator used with tuple variables  !!!!!!!!!!!!!!!!!
+void EQUWTV{} [
+    logical x.
+
+    tuple EQUWTN_1 equwtn_1.
+    tuple EQUWTN_2 equwtn_2.
+    tuple EQUWTN_3 equwtn_3.
+    tuple EQUWTN_4 equwtn_4.
+
+    x = equwtn_1 == equwtn_1. !! 23|
+
+    x = equwtn_2 ~= equwtn_3. !! 23|
+
+    if equwtn_2 == equwtn_4 [  !! 23|
+        while equwtn_1 ~= equwtn_3 []  !! 23|
+    ] else [
+        x = equwtn_1 == equwtn_4.  !! 23|
+    ]
+
+    x = equwtn_1 ~= user. !! 23|
+
+    x = user == equwtn_1. !! 23|
+
+    if equwtn_2 ~= equwtn_1 [  !! 23|
+        while user == equwtn_3 []  !! 23|
+    ] else [
+        x = equwtn_2 ~= user.  !! 23|
+    ]
+
+    return equwtn_4 == equwtn_2. !! 23,12|
+    return equwtn_3 ~= equwtn_1. !! 23,12|
+]
+
+!!!!!!!!!!!!!!!!!!!!!!!!  Assignment to function name  !!!!!!!!!!!!!!!!!!!!!!!!!
+void ATFN{} [
+    ATFN = double. !! 24|
+    double = ATFN. !! 24|
+
+    if (True) [
+        ATFN = EQUWVFC. !! 24|
+        while False [
+            double = EQUWTV. !! 24|
+        ]
+    ] else [
+        EQUWTV = EQUWFN. !! 24|
+        if False [
+            set_user_age = get_user_age = double. !! 24|
+        ]
+    ]
+]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!  Assignment to tuple name  !!!!!!!!!!!!!!!!!!!!!!!!!!
+void ATTN{} [
+    User = EQUWTN_1. !! 25|
+    EQUWTN_1 = EQUWTN_2. !! 25|
+
+    if (True) [
+        EQUWTN_2 = EQUWTN_3. !! 25|
+        while False [
+            EQUWTN_2 = EQUWTN_3 = EQUWTN_4. !! 25|
+        ]
+    ] else [
+        EQUWTN_4 = User. !! 25|
+        if False [
+            EQUWTN_2 = EQUWTN_1. !! 25|
+        ]
+    ]
+]
+
+!!!!!!!!!!!!!!!!!!!!!!!!  Assignment to tuple variable  !!!!!!!!!!!!!!!!!!!!!!!!
+void ATTV{} [
+    tuple User user.
+    tuple EQUWTN_1 equwtn_1.
+    tuple EQUWTN_2 equwtn_2.
+    tuple EQUWTN_3 equwtn_3.
+    tuple EQUWTN_4 equwtn_4.
+
+    user = equwtn_1. !! 26|
+    equwtn_1 = equwtn_2. !! 26|
+
+    if (True) [
+        equwtn_2 = equwtn_3. !! 26|
+        while False [
+            equwtn_2 = (equwtn_3 = equwtn_4). !! 26|
+        ]
+    ] else [
+        equwtn_4 = user. !! 26|
+        if False [
+            equwtn_2 = equwtn_1. !! 26|
+        ]
+    ]
 ]
