@@ -78,9 +78,12 @@ all:
 
 ##test
 test:
-	#java -cp $(CP) P5 typeErrors.base typeErrors.out
-	java -cp $(CP) P5 $(TESTS_DIR)/typeErrors.base $(TESTS_DIR)/typeErrors.out 2>&1 | $(PY) testErrors.py
-	java -cp $(CP) P5 $(TESTS_DIR)/test.base test.out
+	@echo Compiling $(TESTS_DIR)/typeErrors.base...
+	@java -cp $(CP) P5 $(TESTS_DIR)/typeErrors.base $(TESTS_DIR)/typeErrors.out 2>&1 | $(PY) testErrors.py
+
+	@echo "\n"
+	@echo Compiling $(TESTS_DIR)/test.base...
+	@java -cp $(CP) P5 $(TESTS_DIR)/test.base test.out
 
 ###
 # clean
