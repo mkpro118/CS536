@@ -2047,7 +2047,7 @@ interface IEqualityOps extends IBinaryOps {
         if (err)
             return ASTnode.ERROR;
 
-        return t1;
+        return ASTnode.LOGICAL;
     }
 }
 
