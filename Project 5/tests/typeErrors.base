@@ -32,7 +32,7 @@ $ +----+---------------------------------------------------+
 
 
 integer double{integer x} [
-  return x * False. !! 14| Cannot multiply with False
+  return x * False. !! 13,14| Cannot multiply with False
 ]
 
 tuple User {
@@ -59,31 +59,111 @@ logical is_user_a_student{} [
 !!!!!!!!!!!!!!!!!!!!!!!  Write attempt of function name  !!!!!!!!!!!!!!!!!!!!!!!
 void WAOFN{} [
     $ Function level
-    write << double.
+    write << double. !! 1|
 
     $ in IF stmt
-    if False [ write << WAOFN. ]
+    if False [ write << WAOFN. ] !! 1|
 
     $ in IF-ELSE stmt
-    if True [ write << set_user_age. ]
-    else [ write << get_user_age. ]
+    if True [ write << set_user_age. ] !! 1|
+    else [ write << get_user_age. ] !! 1|
 
     $ in WHILE stmt
-    while False [ write << is_user_a_student. ]
+    while False [ write << is_user_a_student. ] !! 1|
 ]
 
 !!!!!!!!!!!!!!!!!!!!!!!!!  Write attempt of tuple name  !!!!!!!!!!!!!!!!!!!!!!!!
 void WAOTN{} [
     $ Function level
-    write << User.
+    write << User. !! 2|
 
     $ in IF stmt
-    if False [ write << User. ]
+    if False [ write << User. ] !! 2|
 
     $ in IF-ELSE stmt
-    if True [ write << User. ]
-    else [ write << User. ]
+    if True [ write << User. ] !! 2|
+    else [ write << User. ] !! 2|
 
     $ in WHILE stmt
-    while False [ write << User. ]
+    while False [ write << User. ] !! 2|
+]
+
+!!!!!!!!!!!!!!!!!!!!!!!  Write attempt of tuple variable  !!!!!!!!!!!!!!!!!!!!!!
+void WAOTV{} [
+    $ Function level
+    write << user. !! 3|
+
+    $ in IF stmt
+    if False [ write << user. ] !! 3|
+
+    $ in IF-ELSE stmt
+    if True [ write << user. ] !! 3|
+    else [ write << user. ] !! 3|
+
+    $ in WHILE stmt
+    while False [ write << user. ] !! 3|
+]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!  Write attempt of void  !!!!!!!!!!!!!!!!!!!!!!!!!!!
+void WAOV{} [
+    $ Function level
+    write << set_user_age(False). !! 4|
+
+    $ in IF stmt
+    if False [ write << WAOFN(). ] !! 4|
+
+    $ in IF-ELSE stmt
+    if True [ write << WAOTN(). ] !! 4|
+    else [ write << WAOTV(). ] !! 4|
+
+    $ in WHILE stmt
+    while False [ write << WAOV(). ] !! 4|
+]
+
+!!!!!!!!!!!!!!!!!!!!!!!  Read attempt of function name  !!!!!!!!!!!!!!!!!!!!!!!!
+void RAOFN{} [
+    $ Function level
+    read >> double. !! 5|
+
+    $ in IF stmt
+    if False [ read >> RAOFN. ] !! 5|
+
+    $ in IF-ELSE stmt
+    if True [ read >> set_user_age. ] !! 5|
+    else [ read >> get_user_age. ] !! 5|
+
+    $ in WHILE stmt
+    while False [ read >> is_user_a_student. ] !! 5|
+]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!  Read attempt of tuple name  !!!!!!!!!!!!!!!!!!!!!!!!!
+void RAOTN{} [
+    $ Function level
+    read >> User. !! 6|
+
+    $ in IF stmt
+    if False [ read >> User. ] !! 6|
+
+    $ in IF-ELSE stmt
+    if True [ read >> User. ] !! 6|
+    else [ read >> User. ] !! 6|
+
+    $ in WHILE stmt
+    while False [ read >> User. ] !! 6|
+]
+
+!!!!!!!!!!!!!!!!!!!!!!!  Read attempt of tuple variable  !!!!!!!!!!!!!!!!!!!!!!!
+void RAOTV{} [
+    $ Function level
+    read >> user. !! 7|
+
+    $ in IF stmt
+    if False [ read >> user. ] !! 7|
+
+    $ in IF-ELSE stmt
+    if True [ read >> user. ] !! 7|
+    else [ read >> user. ] !! 7|
+
+    $ in WHILE stmt
+    while False [ read >> user. ] !! 7|
 ]
