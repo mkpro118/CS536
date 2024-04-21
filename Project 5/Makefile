@@ -63,6 +63,18 @@ DuplicateSymNameException.class: DuplicateSymNameException.java
 EmptySymTableException.class: EmptySymTableException.java
 	$(JC) $(FLAGS) -cp $(CP) EmptySymTableException.java
 
+all:
+	$(JC) $(FLAGS) -cp $(CP) DuplicateSymNameException.java
+	$(JC) $(FLAGS) -cp $(CP) EmptySymTableException.java
+	$(JC) $(FLAGS) -cp $(CP) ErrMsg.java
+	java -cp $(CP) java_cup.Main < base.cup
+	$(JC) $(FLAGS) -cp $(CP) sym.java
+	java -cp $(CP) JLex.Main base.jlex
+	$(JC) $(FLAGS) -cp $(CP) base.jlex.java
+	$(JC) $(FLAGS) -cp $(CP) ast.java Sym.java SymTable.java Type.java
+	$(JC) $(FLAGS) -cp $(CP) parser.java
+	$(JC) $(FLAGS) -cp $(CP) P5.java
+
 ##test
 test:
 	java -cp $(CP) P5 typeErrors.base typeErrors.out
