@@ -951,7 +951,7 @@ class IfStmtNode extends StmtNode implements IReturnable {
 
     public Type resolveTypes(Type expectedRet) {
         Type condType = myExp.resolveTypes();
-        if (!condType.equals(LOGICAL)) {
+        if (!(condType.equals(ERROR) || condType.equals(LOGICAL))) {
             int lineNum = ((IPosition) myExp).lineNum();
             int charNum = ((IPosition) myExp).charNum();
             ErrMsg.fatal(lineNum, charNum,
@@ -1032,7 +1032,7 @@ class IfElseStmtNode extends StmtNode implements IReturnable {
 
     public Type resolveTypes(Type expectedRet) {
         Type condType = myExp.resolveTypes();
-        if (!condType.equals(LOGICAL)) {
+        if (!(condType.equals(ERROR) || condType.equals(LOGICAL))) {
             int lineNum = ((IPosition) myExp).lineNum();
             int charNum = ((IPosition) myExp).charNum();
             ErrMsg.fatal(lineNum, charNum,
@@ -1098,7 +1098,7 @@ class WhileStmtNode extends StmtNode implements IReturnable {
 
     public Type resolveTypes(Type expectedRet) {
         Type condType = myExp.resolveTypes();
-        if (!condType.equals(LOGICAL)) {
+        if (!(condType.equals(ERROR) || condType.equals(LOGICAL))) {
             int lineNum = ((IPosition) myExp).lineNum();
             int charNum = ((IPosition) myExp).charNum();
             ErrMsg.fatal(lineNum, charNum,
@@ -2013,7 +2013,7 @@ interface IEqualityOps extends IBinaryOps {
 
         if (t1.equals(t2)) {
             if (t1.equals(ASTnode.INT) || t1.equals(ASTnode.LOGICAL))
-                return t1;
+                return ASTnode.LOGICAL;
         } else {
             ErrMsg.fatal(lineNum1, charNum1, "Mismatched type");
             return ASTnode.ERROR;
