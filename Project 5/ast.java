@@ -1777,7 +1777,7 @@ class CallExpNode extends ExpNode implements IPosition {
             ErrMsg.fatal(lineNum, charNum,
                          "Actual type does not match formal type");
         }
-        return ERROR;
+        return funcSym.getReturnType();
     }
 
     // 2 children
