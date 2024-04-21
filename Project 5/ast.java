@@ -1932,7 +1932,7 @@ interface IIntegerOps extends IBinaryOps {
             ErrMsg.fatal(lineNum2, charNum2, errMsg());
         }
 
-        return (errT1 || errT2) ? ASTnode.ERROR : ASTnode.INT;
+        return (errT1 || errT2) ? ASTnode.ERROR : t1;
     }
 
     String errMsg();
