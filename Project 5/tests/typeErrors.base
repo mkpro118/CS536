@@ -73,6 +73,19 @@ void WAOFN{} [
 
     $ in WHILE stmt
     while False [ write << is_user_a_student. ] !! 1|
+
+    $ in nested context
+    if (True) [
+        while False [
+            write << get_user_age. !! 1|
+        ]
+    ] else [
+        while False [
+            if True [
+                write << set_user_age. !! 1|
+            ]
+        ]
+    ]
 ]
 
 !!!!!!!!!!!!!!!!!!!!!!!!!  Write attempt of tuple name  !!!!!!!!!!!!!!!!!!!!!!!!
@@ -89,6 +102,19 @@ void WAOTN{} [
 
     $ in WHILE stmt
     while False [ write << User. ] !! 2|
+
+    $ in nested context
+    if (True) [
+        while False [
+            write << User. !! 2|
+        ]
+    ] else [
+        while False [
+            if True [
+                write << User. !! 2|
+            ]
+        ]
+    ]
 ]
 
 !!!!!!!!!!!!!!!!!!!!!!!  Write attempt of tuple variable  !!!!!!!!!!!!!!!!!!!!!!
@@ -105,6 +131,19 @@ void WAOTV{} [
 
     $ in WHILE stmt
     while False [ write << user. ] !! 3|
+
+    $ in nested context
+    if (True) [
+        while False [
+            write << user. !! 3|
+        ]
+    ] else [
+        while False [
+            if True [
+                write << user. !! 3|
+            ]
+        ]
+    ]
 ]
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!  Write attempt of void  !!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -121,6 +160,19 @@ void WAOV{} [
 
     $ in WHILE stmt
     while False [ write << WAOV(). ] !! 4|
+
+    $ in nested context
+    if (True) [
+        while False [
+            write << WAOTN(). !! 4|
+        ]
+    ] else [
+        while False [
+            if True [
+                write << WAOFN(). !! 4|
+            ]
+        ]
+    ]
 ]
 
 !!!!!!!!!!!!!!!!!!!!!!!  Read attempt of function name  !!!!!!!!!!!!!!!!!!!!!!!!
@@ -137,6 +189,19 @@ void RAOFN{} [
 
     $ in WHILE stmt
     while False [ read >> is_user_a_student. ] !! 5|
+
+    $ in nested context
+    if (True) [
+        while False [
+            read >> is_user_a_student. !! 5|
+        ]
+    ] else [
+        while False [
+            if True [
+                read >> get_user_age. !! 5|
+            ]
+        ]
+    ]
 ]
 
 !!!!!!!!!!!!!!!!!!!!!!!!!  Read attempt of tuple name  !!!!!!!!!!!!!!!!!!!!!!!!!
@@ -153,6 +218,19 @@ void RAOTN{} [
 
     $ in WHILE stmt
     while False [ read >> User. ] !! 6|
+
+    $ in nested context
+    if (True) [
+        while False [
+            read >> User. !! 6|
+        ]
+    ] else [
+        while False [
+            if True [
+                read >> User. !! 6|
+            ]
+        ]
+    ]
 ]
 
 !!!!!!!!!!!!!!!!!!!!!!!  Read attempt of tuple variable  !!!!!!!!!!!!!!!!!!!!!!!
@@ -169,6 +247,19 @@ void RAOTV{} [
 
     $ in WHILE stmt
     while False [ read >> user. ] !! 7|
+
+    $ in nested context
+    if (True) [
+        while False [
+            read >> user. !! 7|
+        ]
+    ] else [
+        while False [
+            if True [
+                read >> user. !! 7|
+            ]
+        ]
+    ]
 ]
 
 !!!!!!!!!!!!!!!!!!!!!!!!  Call attempt on non-function  !!!!!!!!!!!!!!!!!!!!!!!!
@@ -200,6 +291,19 @@ void CAONF{} [
 
     $ in WHILE condition stmt
     while caonf() [] !! 8,18| ---
+
+    $ in nested context
+    if (True) [
+        while False [
+            caonf(). !! 8|
+        ]
+    ] else [
+        while False [
+            if True [
+                return caonf(). !! 8,12|
+            ]
+        ]
+    ]
 
     $ in RETURN stmt
     return caonf(). !! 8,12|  ---
@@ -235,7 +339,20 @@ logical FCWWNOA{} [
     else []
 
     $ in WHILE condition stmt
-    while double(600, True, fcwwnoa) [] !! 9,18| ---
+    while double(double(600), True, fcwwnoa) [] !! 9,18| ---
+
+    $ in nested context
+    if (True) [
+        while False [
+            FCWWNOA_func(). !! 9|
+        ]
+    ] else [
+        while False [
+            if True [
+                double(double(600), True). !! 9|
+            ]
+        ]
+    ]
 
     $ in RETURN stmt
     return FCWWNOA_func(0). !! 9,13|
@@ -270,7 +387,20 @@ logical ATDNMFT{} [
     else []
 
     $ in WHILE condition stmt
-    while ATDNMFT_func(1, True, 0) [] !! 10| ---
+    while ATDNMFT_func(double(2), True, 0) [] !! 10| ---
+
+    $ in nested context
+    if (True) [
+        while False [
+            ATDNMFT_func(double(2), True, 0). !! 10|
+        ]
+    ] else [
+        while False [
+            if True [
+                double("str"). !! 10|
+            ]
+        ]
+    ]
 
     $ in RETURN stmt
     return ATDNMFT_func(0, 0, 0). !! 10|
@@ -290,4 +420,392 @@ integer RVM{} [
 
     $ in WHILE stmt
     while False [ return. ] !! 11|
+
+    $ in nested context
+    if (True) [
+        while False [
+            return. !! 11|
+        ]
+    ] else [
+        while False [
+            if True [
+                return. !! 11|
+            ]
+        ]
+    ]
+]
+
+!!!!!!!!!!!!!!!!!!!!!  Return with value in void function  !!!!!!!!!!!!!!!!!!!!!
+void RWVIVF{} [
+    $ Function level
+    return 12. !! 12|
+
+    $ in IF stmt
+    if False [ return True. ] !! 12|
+
+    $ in IF-ELSE stmt
+    if True [ return "String". ] !! 12|
+    else [ return 0. ] !! 12|
+
+    $ in WHILE stmt
+    while False [ return "ret". ] !! 12|
+
+    $ in nested context
+    if (True) [
+        while False [
+            return False. !! 12|
+        ]
+    ] else [
+        while False [
+            if True [
+                return True. !! 12|
+            ]
+        ]
+    ]
+]
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!  Return value wrong type  !!!!!!!!!!!!!!!!!!!!!!!!!!!
+integer RWVIVF_I{} [
+    $ Function level
+    return True. !! 13|
+
+    $ in IF stmt
+    if False [ return user:student. ] !! 13|
+
+    $ in IF-ELSE stmt
+    if True [ return "String". ] !! 13|
+    else [ return is_user_a_student(). ] !! 13|
+
+    $ in WHILE stmt
+    while False [ return "ret". ] !! 13|
+
+    $ in nested context
+    if (True) [
+        while False [
+            return False. !! 13|
+        ]
+    ] else [
+        while False [
+            if True [
+                return True. !! 13|
+            ]
+        ]
+    ]
+]
+
+logical RWVIVF_L{} [
+    $ Function level
+    return 0. !! 13|
+
+    $ in IF stmt
+    if False [ return user:age. ] !! 13|
+
+    $ in IF-ELSE stmt
+    if True [ return "String". ] !! 13|
+    else [ return RWVIVF_I(). ] !! 13|
+
+    $ in WHILE stmt
+    while False [ return "ret". ] !! 13|
+
+    $ in nested context
+    if (True) [
+        while False [
+            return 12. !! 13|
+        ]
+    ] else [
+        while False [
+            if True [
+                return 12. !! 13|
+            ]
+        ]
+    ]
+]
+
+!!!!!!!!!!!!!!  Arithmetic operator used with non-integer operand  !!!!!!!!!!!!!
+integer AOUWNIO{integer x, logical y} [
+    integer z.
+
+    $ in ASSIGN stmt
+    z = x + y. !! 14|
+
+    $ in CALL stmt
+    double(x + y). !! 14,10|
+
+    $ in IF stmt
+    if (True) [z = x + y.] !! 14|
+
+    $ in IF-ELSE stmt
+    if (True) [z = x + y.] !! 14|
+    else [z = x + y.] !! 14|
+
+    $ in WHILE stmt
+    while False [z = x + y.] !! 14|
+
+    $ in complex expression
+    x = (x * user:age) / (2 * (user:age - 5) - ATDNMFT()).  !! 14|
+
+    $ in nested context
+    if (True) [
+        while False [
+            x = (x+x*2-x*4/2)/(x+(2*is_user_a_student()/4)). !! 14|
+        ]
+    ] else [
+        while False [
+            if True [
+                x = (x+x*2-x*4/2)/(x+(2*is_user_a_student()/4)). !! 14|
+            ]
+        ]
+    ]
+
+    $ with + operator
+    z = user:age + True.         !! 14|
+    z = True + RWVIVF_L.         !! 14|
+    z = True + RWVIVF_L().       !! 14|
+    z = True + False.            !! 14|
+    z = True + User.             !! 14|
+    z = True + user:age.         !! 14|
+    z = user:student + user:age. !! 14|
+    z = x + True.                !! 14|
+    z = False + x.               !! 14|
+
+    $ with - operator
+    z = user:age - True.         !! 14|
+    z = True - RWVIVF_L.         !! 14|
+    z = True - RWVIVF_L().       !! 14|
+    z = True - False.            !! 14|
+    z = True - User.             !! 14|
+    z = True - user:age.         !! 14|
+    z = user:student - user:age. !! 14|
+    z = x - True.                !! 14|
+    z = False - x.               !! 14|
+    z = -False.                  !! 14|
+
+    $ with * operator
+    z = user:age * True.         !! 14|
+    z = True * RWVIVF_L.         !! 14|
+    z = True * RWVIVF_L().       !! 14|
+    z = True * False.            !! 14|
+    z = True * User.             !! 14|
+    z = True * user:age.         !! 14|
+    z = user:student * user:age. !! 14|
+    z = x * True.                !! 14|
+    z = False * x.               !! 14|
+
+    $ with / operator
+    z = user:age / True.         !! 14|
+    z = True / RWVIVF_L.         !! 14|
+    z = True / RWVIVF_L().       !! 14|
+    z = True / False.            !! 14|
+    z = True / User.             !! 14|
+    z = True / user:age.         !! 14|
+    z = user:student / user:age. !! 14|
+    z = x / True.                !! 14|
+    z = False / x.               !! 14|
+
+    $ in RETURN stmt
+    return x + y. !! 14,13|
+]
+
+!!!!!!!!!!!!!!  Relational operator used with non-integer operand  !!!!!!!!!!!!!
+logical ROUWNIO{integer x, logical y} [
+    logical z.
+
+    $ in ASSIGN stmt
+    z = x < y. !! 15|
+
+    $ in CALL stmt
+    set_user_age(x < y). !! 15,10|
+
+    $ in IF stmt
+    if (True) [z = x >= y.] !! 15|
+
+    $ in IF condition
+    if x >= y [] !! 15,17|
+
+    $ in IF-ELSE stmt
+    if (True) [z = x <= y.] !! 15|
+    else [z = x > y.] !! 15|
+
+    $ in IF-ELSE condition
+    if (x > y) [] !! 15,17|
+    else [z = x < y.] !! 15|
+
+    $ in WHILE stmt
+    while False [z = x >= y.] !! 15|
+
+    $ in WHILE condition
+    while z > y [] !! 15,18|
+
+    $ in expression
+    x = (2 + 5) < True. !! 15|
+
+    $ in nested context
+    if (True) [
+        while False [
+            x = (x * user:age) / (2 * (user:age - 5)) < ATDNMFT().  !! 15|
+        ]
+    ] else [
+        while False [
+            if True [
+                x = (x * user:age) / (2 * (user:age - 5)) < ATDNMFT().  !! 15|
+            ]
+        ]
+    ]
+
+    $ with < operator
+    z = user:age < True.          !! 15|
+    z = True < RWVIVF_L.          !! 15|
+    z = True < RWVIVF_L().        !! 15|
+    z = True < False.             !! 15|
+    z = True < User.              !! 15|
+    z = True < user:age.          !! 15|
+    z = user:student < user:age.  !! 15|
+    z = x < True.                 !! 15|
+    z = False < x.                !! 15|
+
+    $ with <= operator
+    z = user:age <= True.         !! 15|
+    z = True <= RWVIVF_L.         !! 15|
+    z = True <= RWVIVF_L().       !! 15|
+    z = True <= False.            !! 15|
+    z = True <= User.             !! 15|
+    z = True <= user:age.         !! 15|
+    z = user:student <= user:age. !! 15|
+    z = x <= True.                !! 15|
+    z = False <= x.               !! 15|
+
+    $ with > operator
+    z = user:age > True.          !! 15|
+    z = True > RWVIVF_L.          !! 15|
+    z = True > RWVIVF_L().        !! 15|
+    z = True > False.             !! 15|
+    z = True > User.              !! 15|
+    z = True > user:age.          !! 15|
+    z = user:student > user:age.  !! 15|
+    z = x > True.                 !! 15|
+    z = False > x.                !! 15|
+
+    $ with >= operator
+    z = user:age >= True.         !! 15|
+    z = True >= RWVIVF_L.         !! 15|
+    z = True >= RWVIVF_L().       !! 15|
+    z = True >= False.            !! 15|
+    z = True >= User.             !! 15|
+    z = True >= user:age.         !! 15|
+    z = user:student >= user:age. !! 15|
+    z = x >= True.                !! 15|
+    z = False >= x.               !! 15|
+
+    $ in RETURN stmt
+    return x < y. !! 15,13|
+]
+
+!!!!!!!!!!!!!!!  Logical operator used with non-logical operand  !!!!!!!!!!!!!!!
+logical LOUWNLO{integer x, logical y} [
+    logical z.
+
+    $ in ASSIGN stmt
+    z = x & y. !! 16|
+
+    $ in CALL stmt
+    set_user_age(x | y). !! 16,10|
+
+    $ in IF stmt
+    if (True) [z = ~x & y.] !! 16|
+
+    $ in IF condition
+    if x | y [] !! 16,17|
+
+    $ in IF-ELSE stmt
+    if (True) [z = x & y | x.] !! 16|
+    else [z = x | y & x.] !! 16|
+
+    $ in IF-ELSE condition
+    if (x | y) [] !! 16,17|
+    else [z = x | ~y.] !! 16|
+
+    $ in WHILE stmt
+    while False [z = x & ~~y.] !! 16|
+
+    $ in WHILE condition
+    while ~z | x [] !! 16,18|
+
+    $ in expression
+    x = (2 + 5) & True. !! 16|
+
+    $ in nested context
+    if (True) [
+        while False [
+            x = (x * user:age) / (2 * (user:age - 5)) | ATDNMFT().  !! 16|
+        ]
+    ] else [
+        while False [
+            if True [
+                x = (x * user:age) / (2 * (user:age - 5)) | ATDNMFT().  !! 16|
+            ]
+        ]
+    ]
+
+    $ with & operator
+    z = user:age & True.         !! 16|
+    z = True & RWVIVF_L.         !! 16|
+    z = True & double(0).        !! 16|
+    z = True & User.             !! 16|
+    z = True & user:age.         !! 16|
+    z = user:student & user:age. !! 16|
+    z = x & True.                !! 16|
+    z = False & x.               !! 16|
+
+    $ with | operator
+    z = user:age | True.         !! 16|
+    z = True | RWVIVF_L.         !! 16|
+    z = True | double(0).        !! 16|
+    z = True | User.             !! 16|
+    z = True | user:age.         !! 16|
+    z = user:student | user:age. !! 16|
+    z = x | True.                !! 16|
+    z = False | x.               !! 16|
+
+    $ with ~ operator
+    z = ~user:age.         !! 16|
+    z = ~RWVIVF_L.         !! 16|
+    z = ~double(0).       !! 16|
+    z = ~User.             !! 16|
+    z = ~x.         !! 16|
+    z = ~RWVIVF(). !! 16|
+
+    $ in RETURN stmt
+    return ~x. !! 16,13|
+    return x | y. !! 16,13|
+    return x & y. !! 16,13|
+]
+
+!!!!!!!!!!!!!!!!  Non-logical expression used in if condition  !!!!!!!!!!!!!!!!!
+void NLEUIIC{} [
+    if 1 []  !! 17|
+
+    if 1 / 2 [] !! 17|
+    else [
+        if User [] !! 17|
+        else [
+            while True [
+                if user [] !! 17|
+                else [
+                    if user:age [] !! 17|
+                ]
+            ]
+        ]
+    ]
+
+    if 2 - 1 [  !! 17|
+        if 0 * 2 [] else []  !! 17|
+    ] else [
+        if double(0) []  !! 17|
+        else [
+            if (double(double(double(1)))) []  !! 17|
+            else [
+                if get_user_age() []  !! 17|
+            ]
+        ]
+    ]
 ]
