@@ -1,0 +1,387 @@
+$ NOTE: The code in this file is intentionally poor.
+$ We would never seriously write code like this.
+
+tuple Input {
+    integer int.
+    logical log.
+}.
+
+tuple Output {
+    integer int.
+    logical log.
+}.
+
+tuple SwapperInt {
+    integer a.
+    integer b.
+}.
+
+tuple SwapperLog {
+    logical a.
+    logical b.
+}.
+
+tuple Input input.
+tuple Output output.
+tuple SwapperInt swapper_int.
+tuple SwapperLog swapper_log.
+
+void swapInt{} [
+    integer temp.
+    temp = swapper_int:a.
+    swapper_int:a = swapper_int:b.
+    swapper_int:b = temp.
+]
+
+void swapLog{} [
+    logical temp.
+    temp = swapper_log:a.
+    swapper_log:a = swapper_log:b.
+    swapper_log:b = temp.
+]
+
+void readInt{} [
+    read >> input:int.
+]
+
+integer getInt{} [
+    integer temp.
+    read >> temp.
+    return temp.
+]
+
+void readLog{} [
+    read >> input:log.
+]
+
+logical getLog{} [
+    logical temp.
+    read >> temp.
+    return temp.
+]
+
+void putInt{integer x} [
+    write << x.
+]
+
+void writeInt{} [
+    write << output:int.
+]
+
+void putLog{logical x} [
+    write << x.
+]
+
+void writeLog{} [
+    write << output:log.
+]
+
+void endl{} [
+    write << "\n".
+    return.
+]
+
+tuple Triplet {
+    integer a.
+    integer b.
+    integer c.
+}.
+
+tuple Triplet triplet.
+
+void writeTriplet{} [
+    putInt(triplet:a).
+    putInt(triplet:b).
+    putInt(triplet:c).
+]
+
+!! From: https://www.geeksforgeeks.org/generate-pythagorean-triplets/
+void pythagoreanTriplets{integer limit} [
+    integer m.
+
+    triplet:c = 0.
+    m = 2.
+    while triplet:c < limit [
+        logical done.
+        integer n.
+
+        done = False.
+        n = 1.
+
+        while n < m & ~done [
+            triplet:a = m * m - n * n.
+            triplet:b = 2 * m * n.
+            triplet:c = m * m + n * n.
+
+            if triplet:c > limit [
+                done = True.
+            ] else [
+                writeTriplet().
+            ]
+        ]
+    ]
+]
+
+integer mod{integer x, integer y} [
+    integer z.
+    z = x / y.
+    return x - y * z.
+]
+
+integer sqr{integer x} [
+  return x * x.
+]
+
+integer sqrt{integer x} [
+  integer max_int_sqrt.
+  integer start.
+  integer end.
+  integer mid.
+  integer sq.
+
+  max_int_sqrt = 46341.
+  start = 0.
+  end = max_int_sqrt.
+
+  while (start <= end) [
+    if (sq = sqr(mid = (start + end) / 2)) == x [
+      return mid.
+    ] else [
+      if sq > x [
+        end = mid - 1.
+      ] else [
+        start = mid + 1.
+      ]
+    ]
+  ]
+  if sq > x [return mid - 1.]
+  else [return mid.]
+]
+
+integer parity{integer x} [
+  integer q.
+  q = x / 2.  $ relying on integer division.
+  return x - 2 * q.
+]
+
+integer pow{integer base, integer exponent} [
+  integer sqr_.
+  integer res.
+
+  if exponent == 0 [return 1.]
+  if exponent == 1 [return base.]
+
+  sqr_ = pow(base, exponent / 2).
+  res = sqr(sqr_).
+
+  if parity(exponent) == 1 [
+    res = res * base.
+  ]
+
+  return res.
+]
+
+!! From: https://www.geeksforgeeks.org/prime-numbers/
+logical isPrime{integer n} [
+    integer i.
+    integer x.
+    $ Corner case
+    if (n <= 1) [
+        return False.
+    ]
+
+    $ Check from 2 to sqrt(n)
+    i = 2.
+    x = sqrt(n).
+    x++.
+    while i < x [
+        if mod(n, i) == 0 [
+            return False.
+        ]
+        i++.
+    ]
+
+    return True.
+]
+
+void greeting{} [
+    write << "Hello World!".
+]
+
+integer toLower{integer char} [
+    if char >= 65 & char <= 90 [
+        char = char + 97 - 65.
+    ]
+
+    return char.
+]
+
+integer toUpper{integer char} [
+    if char >= 97 & char <= 127 [
+        char = char - 97 + 65.
+    ]
+
+    return char.
+]
+
+logical xor{logical x, logical y} [
+    return x ~= y.
+]
+
+logical xor3{logical x, logical y, logical z} [
+    return xor(xor(x, y), z).
+]
+
+logical xor4{logical a, logical b, logical c, logical d} [
+    return xor(xor(a, b), xor(c, d)).
+]
+
+tuple LCG {
+    integer inc.
+    integer mod.
+    integer mul.
+    integer seed.
+}.
+
+tuple LCG lcg.
+
+void init_lcg{} [
+    lcg:inc = 51235249.
+    lcg:mod = 2147483647.
+    lcg:mul = 98486523.
+    lcg:seed = 69879265.
+]
+
+integer seed{integer seed} [
+    return lcg:seed = seed.
+]
+
+integer randint{} [
+    return lcg:seed = mod(lcg:seed * lcg:mul + lcg:inc, lcg:mod).
+]
+
+integer randrange{integer low, integer high} [
+    if high < low [
+        swapper_int:a = low.
+        swapper_int:b = high.
+        swapInt().
+        low = swapper_int:a.
+        high = swapper_int:b.
+    ]
+
+    return mod(randint(), high - low) + low.
+]
+
+integer randbit{} [
+    return mod(randint(), 2).
+]
+
+!! From: https://www.geeksforgeeks.org/k-th-digit-raised-power-b/
+!! To compute k-th digit in a^b
+integer kthdigit{integer a, integer b, integer k} [
+    integer count.
+    integer p.
+
+    $ computing a^b
+    p = pow(a, b).
+    count = 0.
+
+    while p > 0 & count < k [
+        $ getting last digit
+        integer rem.
+        rem = mod(p, 10).
+
+        $ increasing count by 1
+        count++.
+
+        $ if current number is required digit
+        if (count == k) [
+            return rem.
+        ]
+
+        $ remove last digit
+        p = p / 10.
+    ]
+
+    return 0.
+]
+
+integer main{} [
+    integer getInt_.
+    logical getLog_.
+    logical done.
+    done = False.
+    while ~done [
+        readInt().
+        getInt_ = getInt().
+        readLog().
+        getLog_ = getLog().
+        putInt(0).
+        writeInt().
+        putLog(False).
+        writeLog().
+
+        if (getLog_) [
+            integer h.
+            h = 104.
+            toUpper(h).
+        ] else [
+            integer W.
+            W = 87.
+            toLower(W).
+        ]
+
+        init_lcg().
+
+        if getLog_ [ seed(getInt_). ]
+        else [
+            if input:log [
+                seed(input:int).
+            ] else [
+                seed(randint()).
+            ]
+        ]
+
+        if randbit() == 1 [
+            integer k.
+            integer n.
+            integer a.
+            integer b.
+
+            k = 0.
+            n = randrange(10, 20).
+            a = sqrt(randint()).
+            b = sqr(randrange(0, 15)).
+
+            output:log = False.
+            while k < n [
+                output:int = kthdigit(a, b, k).
+                writeInt().
+                write << "done: ".
+                writeLog().
+                endl().
+                k++.
+            ]
+        ] else [
+            integer count.
+            integer i.
+            count = randrange(100, 120).
+
+            i = count.
+
+            while i > 0 [
+                output:int = i.
+                write << "i = ".
+                putInt(output:int).
+
+                write << " is prime: ".
+                if isPrime(i) [
+                    putLog(True).
+                ] else [
+                    putLog(False).
+                ]
+                endl().
+            ]
+        ]
+    ]
+]
