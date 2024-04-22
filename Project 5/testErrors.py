@@ -86,10 +86,13 @@ for key, value in expected.items():
 
     act = inp[key]
 
-    for v in value:
+    for v in value.copy():
         if v not in act:
             print(f'Expected error {v} on line {key}')
             success = False
+        else:
+            value.remove(v)
+            act.remove(v)
 
 for key, value in inp.items():
     if key not in expected:
@@ -100,10 +103,13 @@ for key, value in inp.items():
 
     act = expected[key]
 
-    for v in value:
+    for v in value.copy():
         if v not in act:
             print(f'Unexpected error {v} on line {key}')
             success = False
+        else:
+            value.remove(v)
+            act.remove(v)
 
 if success:
     print('All good!')
