@@ -532,14 +532,14 @@ integer AOUWNIO{integer x, logical y} [
     double(x + y). !! 14|
 
     $ in IF stmt
-    if (True) [z = x + y.] !! 14|
+    if (True) [y++.] !! 14|
 
     $ in IF-ELSE stmt
-    if (True) [z = x + y.] !! 14|
-    else [z = x + y.] !! 14|
+    if (True) [y--.] !! 14|
+    else [user:student++.] !! 14|
 
     $ in WHILE stmt
-    while False [z = x + y.] !! 14|
+    while False [user:student--.] !! 14|
 
     $ in complex expression
     x = (x * user:age) / (2 * (user:age - 5) - ATDNMFT()).  !! 14|
@@ -584,7 +584,7 @@ integer AOUWNIO{integer x, logical y} [
     z = user:age * True.         !! 14|
     z = True * RWVIVF_L.         !! 14|
     z = True * RWVIVF_L().       !! 14|
-    z = True * False.            !! 14|
+    z = True * False.            !! 14,14|
     z = True * User.             !! 14|
     z = True * user:age.         !! 14|
     z = user:student * user:age. !! 14|
