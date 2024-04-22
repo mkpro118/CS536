@@ -373,26 +373,26 @@ logical ATDNMFT{} [
     else [ double("atdnmft"). ] !! 10|
 
     $ in WHILE stmt
-    while False [ ATDNMFT_func(1, False, 2). ] !! 10|
+    while False [ ATDNMFT_func(1, False, 2). ] !! 10,10,10|
 
     $ in ASSIGN stmt
     atdnmft = ATDNMFT_func(True, True, True). !! 10|
-    user:student = ATDNMFT_func(0, 1, 2). !! 10|
+    user:student = ATDNMFT_func(0, 1, 2). !! 10,10|
 
     $ in IF condition stmt
     if double("str") [] !! 10,17| ---
 
     $ in IF-ELSE condition stmt
-    if ATDNMFT_func("logical", "False", "1") [] !! 10| ---
+    if ATDNMFT_func("logical", "False", "1") [] !! 10,10,10| ---
     else []
 
     $ in WHILE condition stmt
-    while ATDNMFT_func(double(2), True, 0) [] !! 10| ---
+    while ATDNMFT_func(double(2), True, 0) [] !! 10,10,10| ---
 
     $ in nested context
     if (True) [
         while False [
-            ATDNMFT_func(double(2), True, 0). !! 10|
+            ATDNMFT_func(double(2), True, 0). !! 10,10,10|
         ]
     ] else [
         while False [
@@ -403,7 +403,7 @@ logical ATDNMFT{} [
     ]
 
     $ in RETURN stmt
-    return ATDNMFT_func(0, 0, 0). !! 10|
+    return ATDNMFT_func(0, 0, 0). !! 10,10|
 ]
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!  Return value missing  !!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -559,10 +559,10 @@ integer AOUWNIO{integer x, logical y} [
 
     $ with + operator
     z = user:age + True.         !! 14|
-    z = True + RWVIVF_L.         !! 14|
-    z = True + RWVIVF_L().       !! 14|
-    z = True + False.            !! 14|
-    z = True + User.             !! 14|
+    z = True + RWVIVF_L.         !! 14,14|
+    z = True + RWVIVF_L().       !! 14,14|
+    z = True + False.            !! 14,14|
+    z = True + User.             !! 14,14|
     z = True + user:age.         !! 14|
     z = user:student + user:age. !! 14|
     z = x + True.                !! 14|
@@ -570,10 +570,10 @@ integer AOUWNIO{integer x, logical y} [
 
     $ with - operator
     z = user:age - True.         !! 14|
-    z = True - RWVIVF_L.         !! 14|
-    z = True - RWVIVF_L().       !! 14|
-    z = True - False.            !! 14|
-    z = True - User.             !! 14|
+    z = True - RWVIVF_L.         !! 14,14|
+    z = True - RWVIVF_L().       !! 14,14|
+    z = True - False.            !! 14,14|
+    z = True - User.             !! 14,14|
     z = True - user:age.         !! 14|
     z = user:student - user:age. !! 14|
     z = x - True.                !! 14|
@@ -582,10 +582,10 @@ integer AOUWNIO{integer x, logical y} [
 
     $ with * operator
     z = user:age * True.         !! 14|
-    z = True * RWVIVF_L.         !! 14|
-    z = True * RWVIVF_L().       !! 14|
+    z = True * RWVIVF_L.         !! 14,14|
+    z = True * RWVIVF_L().       !! 14,14|
     z = True * False.            !! 14,14|
-    z = True * User.             !! 14|
+    z = True * User.             !! 14,14|
     z = True * user:age.         !! 14|
     z = user:student * user:age. !! 14|
     z = x * True.                !! 14|
@@ -593,10 +593,10 @@ integer AOUWNIO{integer x, logical y} [
 
     $ with / operator
     z = user:age / True.         !! 14|
-    z = True / RWVIVF_L.         !! 14|
-    z = True / RWVIVF_L().       !! 14|
-    z = True / False.            !! 14|
-    z = True / User.             !! 14|
+    z = True / RWVIVF_L.         !! 14,14|
+    z = True / RWVIVF_L().       !! 14,14|
+    z = True / False.            !! 14,14|
+    z = True / User.             !! 14,14|
     z = True / user:age.         !! 14|
     z = user:student / user:age. !! 14|
     z = x / True.                !! 14|
@@ -634,7 +634,7 @@ logical ROUWNIO{integer x, logical y} [
     while False [z = x >= y.] !! 15|
 
     $ in WHILE condition
-    while z > y [] !! 15|
+    while z > y [] !! 15,15|
 
     $ in expression
     x = (2 + 5) < True. !! 15|
@@ -654,10 +654,10 @@ logical ROUWNIO{integer x, logical y} [
 
     $ with < operator
     z = user:age < True.          !! 15|
-    z = True < RWVIVF_L.          !! 15|
-    z = True < RWVIVF_L().        !! 15|
-    z = True < False.             !! 15|
-    z = True < User.              !! 15|
+    z = True < RWVIVF_L.          !! 15,15|
+    z = True < RWVIVF_L().        !! 15,15|
+    z = True < False.             !! 15,15|
+    z = True < User.              !! 15,15|
     z = True < user:age.          !! 15|
     z = user:student < user:age.  !! 15|
     z = x < True.                 !! 15|
@@ -665,10 +665,10 @@ logical ROUWNIO{integer x, logical y} [
 
     $ with <= operator
     z = user:age <= True.         !! 15|
-    z = True <= RWVIVF_L.         !! 15|
-    z = True <= RWVIVF_L().       !! 15|
-    z = True <= False.            !! 15|
-    z = True <= User.             !! 15|
+    z = True <= RWVIVF_L.         !! 15,15|
+    z = True <= RWVIVF_L().       !! 15,15|
+    z = True <= False.            !! 15,15|
+    z = True <= User.             !! 15,15|
     z = True <= user:age.         !! 15|
     z = user:student <= user:age. !! 15|
     z = x <= True.                !! 15|
@@ -676,10 +676,10 @@ logical ROUWNIO{integer x, logical y} [
 
     $ with > operator
     z = user:age > True.          !! 15|
-    z = True > RWVIVF_L.          !! 15|
-    z = True > RWVIVF_L().        !! 15|
-    z = True > False.             !! 15|
-    z = True > User.              !! 15|
+    z = True > RWVIVF_L.          !! 15,15|
+    z = True > RWVIVF_L().        !! 15,15|
+    z = True > False.             !! 15,15|
+    z = True > User.              !! 15,15|
     z = True > user:age.          !! 15|
     z = user:student > user:age.  !! 15|
     z = x > True.                 !! 15|
@@ -687,10 +687,10 @@ logical ROUWNIO{integer x, logical y} [
 
     $ with >= operator
     z = user:age >= True.         !! 15|
-    z = True >= RWVIVF_L.         !! 15|
-    z = True >= RWVIVF_L().       !! 15|
-    z = True >= False.            !! 15|
-    z = True >= User.             !! 15|
+    z = True >= RWVIVF_L.         !! 15,15|
+    z = True >= RWVIVF_L().       !! 15,15|
+    z = True >= False.            !! 15,15|
+    z = True >= User.             !! 15,15|
     z = True >= user:age.         !! 15|
     z = user:student >= user:age. !! 15|
     z = x >= True.                !! 15|
