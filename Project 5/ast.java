@@ -863,7 +863,28 @@ class AssignStmtNode extends StmtNode {
     private AssignExpNode myAssign;
 }
 
-class PostIncStmtNode extends StmtNode {
+interface IPostOp {
+    default public Type resolveTypes(ExpNode exp) {
+        Type expType = exp.resolveTypes();
+
+        if (expType.equals(ASTnode.INT))
+            return ASTnode.VOID;
+
+        if (expType.equals(ASTnode.ERROR))
+            return ASTnode.ERROR;
+
+        int lineNum = ((IPosition) exp).lineNum();
+        int charNum = ((IPosition) exp).charNum();
+        ErrMsg.fatal(lineNum, charNum,
+                     "Arithmetic operator used with non-integer operand");
+
+        return ASTnode.ERROR;
+    }
+
+    public Type resolveTypes();
+}
+
+class PostIncStmtNode extends StmtNode implements IPostOp {
     public PostIncStmtNode(ExpNode exp) {
         myExp = exp;
     }
@@ -882,11 +903,15 @@ class PostIncStmtNode extends StmtNode {
         p.println("++.");
     }
 
+    public Type resolveTypes() {
+        return resolveTypes(myExp);
+    }
+
     // 1 child
     private ExpNode myExp;
 }
 
-class PostDecStmtNode extends StmtNode {
+class PostDecStmtNode extends StmtNode implements IPostOp {
     public PostDecStmtNode(ExpNode exp) {
         myExp = exp;
     }
@@ -903,6 +928,11 @@ class PostDecStmtNode extends StmtNode {
         doIndent(p, indent);
         myExp.unparse(p, 0);
         p.println("--.");
+    }
+
+
+    public Type resolveTypes() {
+        return resolveTypes(myExp);
     }
 
     // 1 child
