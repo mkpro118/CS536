@@ -53,7 +53,18 @@ public class P5 {
             System.exit(-1);
         }
 
-        ((ProgramNode)root.value).nameAnalysis();  // perform name analysis
+        try {
+            ((ProgramNode)root.value).nameAnalysis();  // perform name analysis
+        } catch (Exception ex) {
+            System.out.println("exception occured during name analysis: " + ex);
+            System.exit(-1);
+        }
+
+        if (ErrMsg.getErr()) {
+            System.out.println("failed to resolve names");
+            System.exit(-1);
+        }
+
         ((ProgramNode)root.value).resolveTypes();  // perform type checking
 
         if (!ErrMsg.getErr()) {  // if no errors, unparse
