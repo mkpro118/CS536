@@ -83,7 +83,7 @@ test:
 
 	@echo "\n"
 	@echo Compiling $(TESTS_DIR)/test.base...
-	@java -cp $(CP) P5 $(TESTS_DIR)/test.base test.out
+	@java -cp $(CP) P5 $(TESTS_DIR)/test.base $(TESTS_DIR)/test.out
 
 ###
 # clean
