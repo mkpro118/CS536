@@ -65,9 +65,13 @@ public class P5 {
             System.exit(-1);
         }
 
+        System.out.println("resolved names correctly");
+
         ((ProgramNode)root.value).resolveTypes();  // perform type checking
 
+
         if (!ErrMsg.getErr()) {  // if no errors, unparse
+            System.out.println("resolved types correctly");
             ((ASTnode)root.value).unparse(outFile, 0);
         }
         outFile.close();
