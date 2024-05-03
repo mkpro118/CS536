@@ -401,7 +401,16 @@ class FctnBodyNode extends ASTnode {
     }
 
     public void codeGen() {
-        myStmtList.stream().forEach(e -> e.codeGen());
+        // myStmtList.stream().forEach(e -> e.codeGen());
+        myStmtList.codeGen();
+        Codegen.nextLabel();
+        Codegen.generateIndexed("lw", "$ra", "$fp", 0);
+        Codegen.generate("move", "$t0", "$fp");
+        Codegen.generateIndexed("lw", "$fp", "$fp", -4);
+        Codegen.generate("move", "$sp", "$t0");
+        Codegen.generate("jr", "$ra");
+
+
     }
 
     // 2 children
@@ -569,10 +578,10 @@ class FctnDeclNode extends DeclNode {
         }else{
             Codegen.generate("_"+myId.name());
         }
-        Codegen.genPush("$ra"); //ret addr
-        Codegen.genPush("$fp"); //control link
-        Codegen.generate("addu", "$fp", "$sp", 8); //set FP
-        Codegen.generate("subu", "$sp", "$sp", myId.localsSize()); //push space for locals
+        Codegen.genPush(Codegen.RA); //ret addr
+        Codegen.genPush(Codegen.FP); //control link
+        Codegen.generate("addu", Codegen.FP, Codegen.SP, 8); //set FP
+        Codegen.generate("subu", Codegen.SP, Codegen.SP, myId.localsSize()); //push space for locals
     }
 
     /***
@@ -1449,6 +1458,12 @@ class ReturnStmtNode extends StmtNode {
             }
         }
         
+    }
+    
+    public void codeGen() {
+        
+        Codegen.genPop(Codegen.);
+
     }
     
     public void unparse(PrintWriter p, int indent) {
