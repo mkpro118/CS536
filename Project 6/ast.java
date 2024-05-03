@@ -1005,7 +1005,6 @@ class PostIncStmtNode extends StmtNode {
         exp.genAddr(Codegen.T1);
         Codegen.genPop(Codegen.T1);
         Codegen.generateIndexed("sw", Codegen.T0, Codegen.T1, 0);
-        Codegen.genPush(Codegen.T0);
     }
     
     public void unparse(PrintWriter p, int indent) {
@@ -1052,7 +1051,6 @@ class PostDecStmtNode extends StmtNode {
         exp.genAddr(Codegen.T1);
         Codegen.genPop(Codegen.T1);
         Codegen.generateIndexed("sw", Codegen.T0, Codegen.T1, 0);
-        Codegen.genPush(Codegen.T0);
     }
        
     public void unparse(PrintWriter p, int indent) {
