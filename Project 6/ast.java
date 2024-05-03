@@ -1053,7 +1053,16 @@ class IfStmtNode extends StmtNode {
         
         myStmtList.typeCheck(retType);
     }
-           
+
+    public void codeGen() {
+        String falseLabel = Codegen.nextLabel();
+        myExp.codeGen();
+        Codegen.genPop(Codegen.T0);
+        Codegen.generate("beq", Codegen.T0, Codegen.FALSE, falseLabel);
+        myStmtList.codeGen();
+        Codegen.genLabel(falseLabel);
+    }
+
     public void unparse(PrintWriter p, int indent) {
         doIndent(p, indent);
         p.print("if ");
@@ -1131,6 +1140,19 @@ class IfElseStmtNode extends StmtNode {
         myThenStmtList.typeCheck(retType);
         myElseStmtList.typeCheck(retType);
     }
+
+    public void codeGen() {
+        String elseLabel = Codegen.nextLabel();
+        String doneLabel = Codegen.nextLabel();
+        myExp.codeGen();
+        Codegen.genPop(Codegen.T0);
+        Codegen.generate("beq", Codegen.T0, Codegen.FALSE, elseLabel);
+        myThenStmtList.codeGen();
+        Codegen.generate("b", doneLabel);
+        Codegen.genLabel(elseLabel);
+        myElseStmtList.codeGen();
+        Codegen.genLabel(doneLabel);
+    }
         
     public void unparse(PrintWriter p, int indent) {
         doIndent(p, indent);
@@ -1198,6 +1220,19 @@ class WhileStmtNode extends StmtNode {
         }
         
         myStmtList.typeCheck(retType);
+    }
+
+    public void codeGen() {
+        String loopLabel = Codegen.nextLabel();
+        String doneLabel = Codegen.nextLabel();
+
+        Codegen.genLabel(loopLabel);
+        myExp.codeGen();
+        Codegen.genPop(Codegen.T0);
+        Codegen.generate("beq", Codegen.T0, Codegen.FALSE, doneLabel);
+        myStmtList.codeGen();
+        Codegen.generate("b", loopLabel);
+        Codegen.genLabel(doneLabel);
     }
     
     public void unparse(PrintWriter p, int indent) {
@@ -1305,17 +1340,21 @@ class WriteStmtNode extends StmtNode {
     }
 
     public void codeGen() {
-        if (myType.isIntegerType())
-            codeGenInteger();
-        else if (myType.isStringType())
-            codeGenString();
-        else if (myType.isLogicalType())
-            codeGenLogical();
-    }
+        // step (1)
+        myExp.codeGen();
 
-    private void codeGenInteger() {}
-    private void codeGenString() {}
-    private void codeGenLogical() {}
+        // step (2)
+        Codegen.genPop(Codegen.A0);
+
+        // step (3)
+        if (myType.isIntegerType() || myType.isLogicalType())
+            Codegen.generate("li", Codegen.V0, 1);
+        else if (myType.isStringType())
+            Codegen.generate("li", Codegen.V0, 4);
+
+        // step (4)
+        Codegen.generate("syscall");
+    }
          
     public void unparse(PrintWriter p, int indent) {
         doIndent(p, indent);
