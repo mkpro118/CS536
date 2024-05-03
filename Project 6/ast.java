@@ -956,6 +956,11 @@ class AssignStmtNode extends StmtNode {
         myAssign.typeCheck();
     }
 
+    public void codeGen() {
+        myAssign.codeGen();
+    }
+
+
     public void unparse(PrintWriter p, int indent) {
         doIndent(p, indent);
         myAssign.unparse(p, -1); // no parentheses
@@ -994,7 +999,11 @@ class PostIncStmtNode extends StmtNode {
     public void codeGen() {
         IdNode exp = (IdNode) myExp;
 
-        exp.
+        exp.codeGen();
+        Codegen.genPop(Codegen.T0);
+        Codegen.generate("add", Codegen.T0, Codegen.T0, 1);
+        exp.genAddr(Codegen.T1);
+        Codegen.generateIndexed("sw", Codegen.T0, Codegen.T1, 0);
     }
     
     public void unparse(PrintWriter p, int indent) {
@@ -1030,6 +1039,16 @@ class PostDecStmtNode extends StmtNode {
             ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
                          "Arithmetic operator used with non-integer operand");
         }
+    }
+
+    public void codeGen() {
+        IdNode exp = (IdNode) myExp;
+
+        exp.codeGen();
+        Codegen.genPop(Codegen.T0);
+        Codegen.generate("sub", Codegen.T0, Codegen.T0, 1);
+        exp.genAddr(Codegen.T1);
+        Codegen.generateIndexed("sw", Codegen.T0, Codegen.T1, 0);
     }
        
     public void unparse(PrintWriter p, int indent) {
@@ -1715,6 +1734,8 @@ class IdNode extends ExpNode {
             Codegen.generate(op, register, "_" + myStrVal);
         else
             Codegen.generateIndexed(op, register, Codegen.FP, mySym.getOffset());
+
+        Codegen.genPush(register);
     }
 
     public void genAddr() {
