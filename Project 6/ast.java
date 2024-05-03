@@ -1429,6 +1429,10 @@ class CallStmtNode extends StmtNode {
     public void typeCheck(Type retType) {
         myCall.typeCheck();
     }
+
+    public void codeGen(){
+        Codegen.genPop(Codegen.V0); 
+    }
     
     public void unparse(PrintWriter p, int indent) {
         doIndent(p, indent);
@@ -1765,7 +1769,12 @@ class IntLitNode extends ExpNode {
     public Type typeCheck() {
         return new IntegerType();
     }
-    
+
+    public void codeGen() {
+        Codegen.generate("li", Codegen.T0, myIntVal);
+        Codegen.genPush(Codegen.T0);
+    }
+
     public void unparse(PrintWriter p, int indent) {
         p.print(myIntVal);
     }
@@ -1776,6 +1785,8 @@ class IntLitNode extends ExpNode {
 }
 
 class StrLitNode extends ExpNode {
+    static HashMap<String, String> strLits = new HashMap<String,String>();
+
     public StrLitNode(int lineNum, int charNum, String strVal) {
         myLineNum = lineNum;
         myCharNum = charNum;
@@ -1801,6 +1812,22 @@ class StrLitNode extends ExpNode {
      ***/
     public Type typeCheck() {
         return new StringType();
+    }
+    
+    public void codeGen() {
+        String address=strLits.get(myStrVal);
+        //if in hashtable, use the label
+        if(address==null){
+            //if not in hashtable, generate code to store in static data area, add to hashtable, push address of strlit to stack
+            address= Codegen.nextLabel();
+            strLits.put(myStrVal, address);
+            Codegen.generate(".data");
+            Codegen.generateLabeled(address, ".asciiz", myStrVal);
+        }
+        Codegen.generate(".text");
+        Codegen.generateLabeled("la",Codegen.T0, address);
+        Codegen.genPush(Codegen.T0);
+
     }
         
     public void unparse(PrintWriter p, int indent) {
@@ -2108,7 +2135,8 @@ class CallExpNode extends ExpNode {
 
     public void codeGen() {
         myExpList.codeGen();
-        // myId.
+        myId.genJumpAndLink();
+        Codegen.genPush(Codegen.V0); 
     }
 
     // **** unparse ****
