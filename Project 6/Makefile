@@ -8,6 +8,8 @@ JC = javac
 FLAGS = -g  
 CP = ./deps:.
 
+.DEFAULT_GOAL := all
+
 P6.class: P6.java parser.class Yylex.class ASTnode.class
 	$(JC) $(FLAGS) -cp $(CP) P6.java
 
