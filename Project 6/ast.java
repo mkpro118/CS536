@@ -401,7 +401,6 @@ class FctnBodyNode extends ASTnode {
     }
 
     public void codeGen() {
-        myDeclList.stream().forEach(e -> e.codeGen());
         myStmtList.stream().forEach(e -> e.codeGen());
     }
 
@@ -434,10 +433,11 @@ class VarDeclNode extends DeclNode {
     }
     
     public void codeGen() {
-        Codegen.generate(".data");
-        Codegen.generate(".align 2");
-        Codegen.generateLabeled("_"+myId ,".space","", ""+mySize);
-
+        if(myId.sym().isGlobal()){
+            Codegen.generate(".data");
+            Codegen.generate(".align 2");
+            Codegen.generateLabeled("_"+myId ,".space","", ""+mySize);
+        }
     }
     /***
      * nameAnalysis (overloaded)
@@ -569,7 +569,10 @@ class FctnDeclNode extends DeclNode {
         }else{
             Codegen.generate("_"+myId.name());
         }
-        Codegen.genPush(null);
+        Codegen.genPush("$ra"); //ret addr
+        Codegen.genPush("$fp"); //control link
+        Codegen.generate("addu", "$fp", "$sp", 8); //set FP
+        Codegen.generate("subu", "$sp", "$sp", myId.localsSize()); //push space for locals
     }
 
     /***
