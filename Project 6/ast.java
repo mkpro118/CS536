@@ -997,13 +997,15 @@ class PostIncStmtNode extends StmtNode {
     }
 
     public void codeGen() {
-        IdNode exp = (IdNode) myExp;
+        IdNode exp = (IdNode) this.myExp;
 
         exp.codeGen();
         Codegen.genPop(Codegen.T0);
         Codegen.generate("add", Codegen.T0, Codegen.T0, 1);
         exp.genAddr(Codegen.T1);
+        Codegen.genPop(Codegen.T1);
         Codegen.generateIndexed("sw", Codegen.T0, Codegen.T1, 0);
+        Codegen.genPush(Codegen.T0);
     }
     
     public void unparse(PrintWriter p, int indent) {
@@ -1042,13 +1044,15 @@ class PostDecStmtNode extends StmtNode {
     }
 
     public void codeGen() {
-        IdNode exp = (IdNode) myExp;
+        IdNode exp = (IdNode) this.myExp;
 
         exp.codeGen();
         Codegen.genPop(Codegen.T0);
-        Codegen.generate("sub", Codegen.T0, Codegen.T0, 1);
+        Codegen.generate("add", Codegen.T0, Codegen.T0, 1);
         exp.genAddr(Codegen.T1);
+        Codegen.genPop(Codegen.T1);
         Codegen.generateIndexed("sw", Codegen.T0, Codegen.T1, 0);
+        Codegen.genPush(Codegen.T0);
     }
        
     public void unparse(PrintWriter p, int indent) {
@@ -2013,6 +2017,18 @@ class AssignExpNode extends ExpNode {
     public void nameAnalysis(SymTable symTab) {
         myLhs.nameAnalysis(symTab);
         myExp.nameAnalysis(symTab);
+    }
+
+    public void codeGen() {
+        IdNode lhs = (IdNode) this.myLhs;
+        IdNode rhs = (IdNode) this.myExp;
+
+        rhs.codeGen();
+        Codegen.genPop(Codegen.T0);
+        lhs.genAddr(Codegen.T1);
+        Codegen.genPop(Codegen.T1);
+        Codegen.generateIndexed("sw", Codegen.T0, Codegen.T1, 0);
+        Codegen.genPush(Codegen.T0);
     }
 
     public void unparse(PrintWriter p, int indent) {
