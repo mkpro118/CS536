@@ -923,6 +923,10 @@ abstract class StmtNode extends ASTnode {
     abstract public void typeCheck(Type retType);
 }
 
+interface IReturnable {
+    public void codeGen(String returnLabel);
+}
+
 class AssignStmtNode extends StmtNode {
     public AssignStmtNode(AssignExpNode assign) {
         myAssign = assign;
@@ -1023,7 +1027,7 @@ class PostDecStmtNode extends StmtNode {
     private ExpNode myExp;
 }
 
-class IfStmtNode extends StmtNode {
+class IfStmtNode extends StmtNode implements IReturnable {
     public IfStmtNode(ExpNode exp, DeclListNode dlist, StmtListNode slist) {
         myDeclList = dlist;
         myExp = exp;
@@ -1092,7 +1096,7 @@ class IfStmtNode extends StmtNode {
     private StmtListNode myStmtList;
 }
 
-class IfElseStmtNode extends StmtNode {
+class IfElseStmtNode extends StmtNode implements IReturnable {
     public IfElseStmtNode(ExpNode exp, DeclListNode dlist1,
                           StmtListNode slist1, DeclListNode dlist2,
                           StmtListNode slist2) {
@@ -1191,7 +1195,7 @@ class IfElseStmtNode extends StmtNode {
     private DeclListNode myElseDeclList;
 }
 
-class WhileStmtNode extends StmtNode {
+class WhileStmtNode extends StmtNode implements IReturnable {
     public WhileStmtNode(ExpNode exp, DeclListNode dlist, StmtListNode slist) {
         myExp = exp;
         myDeclList = dlist;
@@ -1418,7 +1422,7 @@ class CallStmtNode extends StmtNode {
     private CallExpNode myCall;
 }
 
-class ReturnStmtNode extends StmtNode {
+class ReturnStmtNode extends StmtNode implements IReturnable {
     public ReturnStmtNode(ExpNode exp) {
         myExp = exp;
     }
