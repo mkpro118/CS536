@@ -1473,7 +1473,10 @@ class ReturnStmtNode extends StmtNode implements IReturnable {
     }
     
     public void codeGen(String returnLabel) {
-        Codegen.genPop(Codegen.V0);
+        if (myExp != null) {
+            myExp.codeGen();
+            Codegen.genPop(Codegen.V0);
+        }
         Codegen.generate("b", returnLabel);
 
     }
