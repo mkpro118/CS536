@@ -929,7 +929,7 @@ class TupleNode extends TypeNode {
 abstract class StmtNode extends ASTnode {
     abstract public void nameAnalysis(SymTable symTab);
     abstract public void typeCheck(Type retType);
-    abstract public void codeGen();
+    public void codeGen() {}
 }
 
 interface IReturnable {
