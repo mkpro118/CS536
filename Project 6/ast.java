@@ -992,7 +992,9 @@ class PostIncStmtNode extends StmtNode {
     }
 
     public void codeGen() {
+        IdNode exp = (IdNode) myExp;
 
+        exp.
     }
     
     public void unparse(PrintWriter p, int indent) {
@@ -1695,7 +1697,34 @@ class IdNode extends ExpNode {
         }
         return null;
     }
-        
+
+    public void genJumpAndLink() {
+        Codegen.generate("jal", isMain() ? "main" : "_" + myStrVal);
+    }
+
+    public void codeGen() {
+        codeGen(Codegen.T0);
+    }
+
+    public void codeGen(String register) {
+        codeGen("lw", register);
+    }
+
+    private void codeGen(String op, String register) {
+        if (mySym.isGlobal())
+            Codegen.generate(op, register, "_" + myStrVal);
+        else
+            Codegen.generateIndexed(op, register, Codegen.FP, mySym.getOffset());
+    }
+
+    public void genAddr() {
+        genAddr(Codegen.T0);
+    }
+
+    public void genAddr(String register) {
+        codeGen("la", register);
+    }
+
     public void unparse(PrintWriter p, int indent) {
         p.print(myStrVal);
         if (mySym != null) {
