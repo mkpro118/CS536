@@ -150,7 +150,7 @@ class ProgramNode extends ASTnode {
      * codeGen
      ***/
     public void codeGen() {
-        // TODO: complete this
+        myDeclList.codeGen();
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -201,6 +201,10 @@ class DeclListNode extends ASTnode {
         }
     }
 
+    public void codeGen() {
+        myDecls.stream().forEach(e -> e.codeGen());
+    }
+
     public void unparse(PrintWriter p, int indent) {
         Iterator it = myDecls.iterator();
         try {
@@ -246,6 +250,10 @@ class StmtListNode extends ASTnode {
         while (it.hasNext()) {
             it.next().unparse(p, indent);
         } 
+    }
+
+    public void codeGen() {
+        myStmts.stream().forEach(e -> e.codeGen());
     }
 
     // list of children (StmtNodes)
@@ -306,6 +314,10 @@ class ExpListNode extends ASTnode {
         } 
     }
 
+    public void codeGen() {
+        myExps.stream().forEach(e -> e.codeGen());
+    }
+
     // list of children (ExpNodes)
     private List<ExpNode> myExps;
 }
@@ -350,6 +362,10 @@ class FormalsListNode extends ASTnode {
         }
     }
 
+    public void codeGen() {
+        myFormals.stream().forEach(e -> e.codeGen());
+    }
+
     // list of children (FormalDeclNodes)
     private List<FormalDeclNode> myFormals;
 }
@@ -381,6 +397,12 @@ class FctnBodyNode extends ASTnode {
     public void unparse(PrintWriter p, int indent) {
         myDeclList.unparse(p, indent);
         myStmtList.unparse(p, indent);
+    }
+
+
+    public void codeGen() {
+        myDeclList.stream().forEach(e -> e.codeGen());
+        myStmtList.stream().forEach(e -> e.codeGen());
     }
 
     // 2 children
