@@ -1,0 +1,11 @@
+services:
+  cs536p6:
+    build:
+      context: .
+    develop:
+      watch:
+        - action: sync
+          path: ./
+          target: /src
+          ignore:
+            - deps/
