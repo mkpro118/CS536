@@ -956,6 +956,11 @@ class AssignStmtNode extends StmtNode {
         myAssign.typeCheck();
     }
 
+    public void codeGen() {
+        myAssign.codeGen();
+    }
+
+
     public void unparse(PrintWriter p, int indent) {
         doIndent(p, indent);
         myAssign.unparse(p, -1); // no parentheses
@@ -992,9 +997,14 @@ class PostIncStmtNode extends StmtNode {
     }
 
     public void codeGen() {
-        IdNode exp = (IdNode) myExp;
+        IdNode exp = (IdNode) this.myExp;
 
-        exp.
+        exp.codeGen();
+        Codegen.genPop(Codegen.T0);
+        Codegen.generate("add", Codegen.T0, Codegen.T0, 1);
+        exp.genAddr(Codegen.T1);
+        Codegen.genPop(Codegen.T1);
+        Codegen.generateIndexed("sw", Codegen.T0, Codegen.T1, 0);
     }
     
     public void unparse(PrintWriter p, int indent) {
@@ -1030,6 +1040,17 @@ class PostDecStmtNode extends StmtNode {
             ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
                          "Arithmetic operator used with non-integer operand");
         }
+    }
+
+    public void codeGen() {
+        IdNode exp = (IdNode) this.myExp;
+
+        exp.codeGen();
+        Codegen.genPop(Codegen.T0);
+        Codegen.generate("add", Codegen.T0, Codegen.T0, 1);
+        exp.genAddr(Codegen.T1);
+        Codegen.genPop(Codegen.T1);
+        Codegen.generateIndexed("sw", Codegen.T0, Codegen.T1, 0);
     }
        
     public void unparse(PrintWriter p, int indent) {
@@ -1719,6 +1740,8 @@ class IdNode extends ExpNode {
             Codegen.generate(op, register, "_" + myStrVal);
         else
             Codegen.generateIndexed(op, register, Codegen.FP, mySym.getOffset());
+
+        Codegen.genPush(register);
     }
 
     public void genAddr() {
@@ -2021,6 +2044,18 @@ class AssignExpNode extends ExpNode {
         myExp.nameAnalysis(symTab);
     }
 
+    public void codeGen() {
+        IdNode lhs = (IdNode) this.myLhs;
+        IdNode rhs = (IdNode) this.myExp;
+
+        rhs.codeGen();
+        Codegen.genPop(Codegen.T0);
+        lhs.genAddr(Codegen.T1);
+        Codegen.genPop(Codegen.T1);
+        Codegen.generateIndexed("sw", Codegen.T0, Codegen.T1, 0);
+        Codegen.genPush(Codegen.T0);
+    }
+
     public void unparse(PrintWriter p, int indent) {
         if (indent != -1)  p.print("(");
         myLhs.unparse(p, 0);
@@ -2218,6 +2253,18 @@ abstract class BinaryExpNode extends ExpNode {
         myExp1.nameAnalysis(symTab);
         myExp2.nameAnalysis(symTab);
     }
+
+    public void codeGen() {
+        myExp1.codeGen();
+        Codegen.genPop(Codegen.T1);
+        myExp2.codeGen();
+        Codegen.genPop(Codegen.T0);
+
+        opCodeGen();
+        Codegen.genPush(Codegen.T0);
+    }
+
+    abstract protected void opCodeGen();
     
     // 2 children
     protected ExpNode myExp1;
@@ -2458,6 +2505,10 @@ class PlusNode extends ArithmeticExpNode {
         myExp2.unparse(p, 0);
         p.print(")");
     }
+
+    protected void opCodeGen() {
+        Codegen.generate("add", Codegen.T0, Codegen.T0, Codegen.T1);
+    }
 }
 
 class MinusNode extends ArithmeticExpNode {
@@ -2471,6 +2522,10 @@ class MinusNode extends ArithmeticExpNode {
         p.print(" - ");
         myExp2.unparse(p, 0);
         p.print(")");
+    }
+
+    protected void opCodeGen() {
+        Codegen.generate("sub", Codegen.T0, Codegen.T0, Codegen.T1);
     }
 }
 
@@ -2486,6 +2541,11 @@ class TimesNode extends ArithmeticExpNode {
         myExp2.unparse(p, 0);
         p.print(")");
     }
+
+    protected void opCodeGen() {
+        Codegen.generate("mult", Codegen.T0, Codegen.T1);
+        Codegen.generate("mflo", Codegen.T0);
+    }
 }
 
 class DivideNode extends ArithmeticExpNode {
@@ -2499,6 +2559,11 @@ class DivideNode extends ArithmeticExpNode {
         p.print(" / ");
         myExp2.unparse(p, 0);
         p.print(")");
+    }
+
+    protected void opCodeGen() {
+        Codegen.generate("div", Codegen.T0, Codegen.T1);
+        Codegen.generate("mflo", Codegen.T0);
     }
 }
 
@@ -2591,6 +2656,11 @@ class AndNode extends LogicalExpNode {
         super(exp1, exp2);
     }
 
+    protected void opCodeGen() {
+        Codegen.generate("mul", Codegen.T0, Codegen.T1);
+        Codegen.generate("mflo", Codegen.T0);
+    }
+
     public void unparse(PrintWriter p, int indent) {
         p.print("(");
         myExp1.unparse(p, 0);
@@ -2603,6 +2673,20 @@ class AndNode extends LogicalExpNode {
 class OrNode extends LogicalExpNode {
     public OrNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
+    }
+
+    protected void opCodeGen() {
+        String trueLabel = Codegen.nextLabel();
+        String doneLabel = Codegen.nextLabel();
+
+        Codegen.generate("add", Codegen.T0, Codegen.T0, Codegen.T1);
+        Codegen.generate("li", Codegen.T1, 1);
+        Codegen.generate("bge", Codegen.T0, Codegen.T1, trueLabel);
+        Codegen.generate("li", Codegen.T0, 0);
+        Codegen.generate("b", doneLabel);
+        Codegen.genLabel(trueLabel);
+        Codegen.generate("li", Codegen.T0, 1);
+        Codegen.genLabel(doneLabel);
     }
 
     public void unparse(PrintWriter p, int indent) {
