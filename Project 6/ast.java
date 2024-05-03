@@ -255,7 +255,7 @@ class StmtListNode extends ASTnode {
     public void codeGen(String returnLabel) {
         myStmts.stream().forEach(e -> {
             if(e instanceof IReturnable){
-                e.codeGen(returnLabel);
+                ((IReturnable) e).codeGen(returnLabel);
             }else{
                 e.codeGen();
             }
