@@ -1288,15 +1288,12 @@ class WriteStmtNode extends StmtNode {
     }
 
     public void codeGen() {
-        if (type.isIntegerType()) {
+        if (myType.isIntegerType())
             codeGenInteger();
-        }
-        elif (type.isStringType()) {
+        else if (myType.isStringType())
             codeGenString();
-        }
-        elif (type.isLogicalType()) {
+        else if (myType.isLogicalType())
             codeGenLogical();
-        }
     }
 
     private void codeGenInteger() {}
