@@ -1163,13 +1163,13 @@ class IfElseStmtNode extends StmtNode implements IReturnable {
         myElseStmtList.typeCheck(retType);
     }
 
-    public void codeGen() {
+    public void codeGen(String returnLabel) {
         String elseLabel = Codegen.nextLabel();
         String doneLabel = Codegen.nextLabel();
         myExp.codeGen();
         Codegen.genPop(Codegen.T0);
         Codegen.generate("beq", Codegen.T0, Codegen.FALSE, elseLabel);
-        myThenStmtList.codeGen();
+        myThenStmtList.codeGen(returnLabel);
         Codegen.generate("b", doneLabel);
         Codegen.genLabel(elseLabel);
         myElseStmtList.codeGen();
@@ -1244,7 +1244,7 @@ class WhileStmtNode extends StmtNode implements IReturnable {
         myStmtList.typeCheck(retType);
     }
 
-    public void codeGen() {
+    public void codeGen(String returnLabel) {
         String loopLabel = Codegen.nextLabel();
         String doneLabel = Codegen.nextLabel();
 
@@ -1252,7 +1252,7 @@ class WhileStmtNode extends StmtNode implements IReturnable {
         myExp.codeGen();
         Codegen.genPop(Codegen.T0);
         Codegen.generate("beq", Codegen.T0, Codegen.FALSE, doneLabel);
-        myStmtList.codeGen();
+        myStmtList.codeGen(returnLabel);
         Codegen.generate("b", loopLabel);
         Codegen.genLabel(doneLabel);
     }
@@ -1329,7 +1329,7 @@ class ReadStmtNode extends StmtNode {
 }
 
 class WriteStmtNode extends StmtNode {
-    public WriteStmtNode(ExpNode exp, String ) {
+    public WriteStmtNode(ExpNode exp ) {
         myExp = exp;
     }
 
