@@ -1253,7 +1253,7 @@ class ReadStmtNode extends StmtNode {
      ***/
     public void typeCheck(Type retType) {
         Type type = myExp.typeCheck();
-        
+
         if (type.isFctnType()) {
             ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
                          "Read attempt of function name");
@@ -1268,6 +1268,14 @@ class ReadStmtNode extends StmtNode {
             ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
                          "Read attempt of tuple variable");
         }
+    }
+
+    public void codeGen() {
+        Codegen.generate("li", Codegen.V0, 5);
+        Codegen.generate("syscall");
+
+        int off = ((IdNode) myExp).sym().getOffset();
+        Codegen.generateIndexed("sw", Codegen.V0, Codegen.FP, off);
     }
       
     public void unparse(PrintWriter p, int indent) {
