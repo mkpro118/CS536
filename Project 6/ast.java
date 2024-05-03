@@ -2595,7 +2595,7 @@ class NotEqualsNode extends EqualityExpNode {
     }
 }
 
-class GreaterNode extends EqualityExpNode {
+class GreaterNode extends RelationalExpNode {
     public GreaterNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
     }
@@ -2609,7 +2609,7 @@ class GreaterNode extends EqualityExpNode {
     }
 }
 
-class GreaterEqNode extends EqualityExpNode {
+class GreaterEqNode extends RelationalExpNode {
     public GreaterEqNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
     }
@@ -2623,7 +2623,7 @@ class GreaterEqNode extends EqualityExpNode {
     }
 }
 
-class LessNode extends EqualityExpNode {
+class LessNode extends RelationalExpNode {
     public LessNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
     }
@@ -2637,7 +2637,7 @@ class LessNode extends EqualityExpNode {
     }
 }
 
-class LessEqNode extends EqualityExpNode {
+class LessEqNode extends RelationalExpNode {
     public LessEqNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
     }
@@ -2656,10 +2656,18 @@ class AndNode extends LogicalExpNode {
         super(exp1, exp2);
     }
 
-    protected void opCodeGen() {
-        Codegen.generate("mul", Codegen.T0, Codegen.T1);
-        Codegen.generate("mflo", Codegen.T0);
+    public void codeGen() {
+        String doneLabel = Codegen.nextLabel();
+        myExp1.codeGen();
+        Codegen.genPop(Codegen.T0);
+        Codegen.generate("beq", Codegen.T0, Codegen.FALSE, doneLabel);
+        myExp2.codeGen();
+        Codegen.genPop(Codegen.T0);
+        Codegen.genLabel(doneLabel);
+        Codegen.genPush(Codegen.T0);
     }
+
+    protected void opCodeGen() {}
 
     public void unparse(PrintWriter p, int indent) {
         p.print("(");
@@ -2675,19 +2683,18 @@ class OrNode extends LogicalExpNode {
         super(exp1, exp2);
     }
 
-    protected void opCodeGen() {
-        String trueLabel = Codegen.nextLabel();
+    public void codeGen() {
         String doneLabel = Codegen.nextLabel();
-
-        Codegen.generate("add", Codegen.T0, Codegen.T0, Codegen.T1);
-        Codegen.generate("li", Codegen.T1, 1);
-        Codegen.generate("bge", Codegen.T0, Codegen.T1, trueLabel);
-        Codegen.generate("li", Codegen.T0, 0);
-        Codegen.generate("b", doneLabel);
-        Codegen.genLabel(trueLabel);
-        Codegen.generate("li", Codegen.T0, 1);
+        myExp1.codeGen();
+        Codegen.genPop(Codegen.T0);
+        Codegen.generate("beq", Codegen.T0, Codegen.TRUE, doneLabel);
+        myExp2.codeGen();
+        Codegen.genPop(Codegen.T0);
         Codegen.genLabel(doneLabel);
+        Codegen.genPush(Codegen.T0);
     }
+
+    protected void opCodeGen() {}
 
     public void unparse(PrintWriter p, int indent) {
         p.print("(");
