@@ -2572,6 +2572,18 @@ class EqualsNode extends EqualityExpNode {
         super(exp1, exp2);
     }
 
+    protected void opCodeGen() {
+        String equalLabel = Codegen.nextLabel();
+        String doneLabel = Codegen.nextLabel();
+
+        Codegen.generate("beq", Codegen.T0, Codegen.T1, equalLabel);
+        Codegen.generate("li", Codegen.T0, Codegen.FALSE);
+        Codegen.generate("b", doneLabel);
+        Codegen.genLabel(equalLabel);
+        Codegen.generate("li", Codegen.T0, Codegen.TRUE);
+        Codegen.genLabel(doneLabel);
+    }
+
     public void unparse(PrintWriter p, int indent) {
         p.print("(");
         myExp1.unparse(p, 0);
@@ -2592,6 +2604,18 @@ class NotEqualsNode extends EqualityExpNode {
         p.print(" ~= ");
         myExp2.unparse(p, 0);
         p.print(")");
+    }
+
+    protected void opCodeGen() {
+        String equalLabel = Codegen.nextLabel();
+        String doneLabel = Codegen.nextLabel();
+
+        Codegen.generate("beq", Codegen.T0, Codegen.T1, equalLabel);
+        Codegen.generate("li", Codegen.T0, Codegen.TRUE);
+        Codegen.generate("b", doneLabel);
+        Codegen.genLabel(equalLabel);
+        Codegen.generate("li", Codegen.T0, Codegen.FALSE);
+        Codegen.genLabel(doneLabel);
     }
 }
 
