@@ -150,7 +150,7 @@ class ProgramNode extends ASTnode {
      * codeGen
      ***/
     public void codeGen() {
-        myDeclList.codeGen();
+        myDeclList.codeGen(true);
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -201,7 +201,7 @@ class DeclListNode extends ASTnode {
         }
     }
 
-    public void codeGen() {
+    public void codeGen(boolean global) {
         myDecls.stream().forEach(e -> e.codeGen());
     }
 
@@ -421,6 +421,7 @@ abstract class DeclNode extends ASTnode {
      ***/
     abstract public Sym nameAnalysis(SymTable symTab);
 
+
     // default version of typeCheck for non-function decls
     public void typeCheck() { }
 }
@@ -431,7 +432,13 @@ class VarDeclNode extends DeclNode {
         myId = id;
         mySize = size;
     }
+    
+    public void codeGen() {
+        Codegen.generate(".data");
+        Codegen.generate(".align 2");
+        Codegen.generateLabeled("_"+myId ,".space","", ""+mySize);
 
+    }
     /***
      * nameAnalysis (overloaded)
      * Given a symbol table symTab, do:
@@ -553,6 +560,16 @@ class FctnDeclNode extends DeclNode {
         myId = id;
         myFormalsList = formalList;
         myBody = body;
+    }
+    
+    public void codeGen() {
+        Codegen.generate(".text");
+        if(myId.isMain()){
+            Codegen.generate(".globl", "main");
+        }else{
+            Codegen.generate("_"+myId.name());
+        }
+        Codegen.genPush(null);
     }
 
     /***
