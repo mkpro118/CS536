@@ -407,9 +407,8 @@ class FctnBodyNode extends ASTnode {
     }
 
     public void codeGen() {
-        // myStmtList.stream().forEach(e -> e.codeGen());
-        myStmtList.codeGen();
         String returnLabel = Codegen.nextLabel();
+        myStmtList.codeGen(returnLabel);
         Codegen.generateIndexed("lw", "$ra", "$fp", 0);
         Codegen.generate("move", "$t0", "$fp");
         Codegen.generateIndexed("lw", "$fp", "$fp", -4);
