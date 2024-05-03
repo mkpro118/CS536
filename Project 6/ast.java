@@ -252,9 +252,9 @@ class StmtListNode extends ASTnode {
         } 
     }
 
-    public void codeGen(final String returnLabel) {
+    public void codeGen(String returnLabel) {
         myStmts.stream().forEach(e -> {
-            if(e instanceof ReturnStmtNode){
+            if(e instanceof IReturnable){
                 e.codeGen(returnLabel);
             }else{
                 e.codeGen();
@@ -1078,10 +1078,13 @@ class IfStmtNode extends StmtNode implements IReturnable {
 
     public void codeGen(String returnLabel) {
         String falseLabel = Codegen.nextLabel();
+        
         myExp.codeGen();
         Codegen.genPop(Codegen.T0);
         Codegen.generate("beq", Codegen.T0, Codegen.FALSE, falseLabel);
-        myStmtList.codeGen();
+        
+        myStmtList.codeGen(returnLabel);
+        
         Codegen.genLabel(falseLabel);
     }
 
