@@ -252,8 +252,14 @@ class StmtListNode extends ASTnode {
         } 
     }
 
-    public void codeGen() {
-        myStmts.stream().forEach(e -> e.codeGen());
+    public void codeGen(final String returnLabel) {
+        myStmts.stream().forEach(e -> {
+            if(e instanceof ReturnStmtNode){
+                e.codeGen(returnLabel);
+            }else{
+                e.codeGen();
+            }
+        });
     }
 
     // list of children (StmtNodes)
@@ -403,7 +409,7 @@ class FctnBodyNode extends ASTnode {
     public void codeGen() {
         // myStmtList.stream().forEach(e -> e.codeGen());
         myStmtList.codeGen();
-        Codegen.nextLabel();
+        String returnLabel = Codegen.nextLabel();
         Codegen.generateIndexed("lw", "$ra", "$fp", 0);
         Codegen.generate("move", "$t0", "$fp");
         Codegen.generateIndexed("lw", "$fp", "$fp", -4);
@@ -1066,7 +1072,7 @@ class IfStmtNode extends StmtNode {
         myStmtList.typeCheck(retType);
     }
 
-    public void codeGen() {
+    public void codeGen(String returnLabel) {
         String falseLabel = Codegen.nextLabel();
         myExp.codeGen();
         Codegen.genPop(Codegen.T0);
@@ -1319,7 +1325,7 @@ class ReadStmtNode extends StmtNode {
 }
 
 class WriteStmtNode extends StmtNode {
-    public WriteStmtNode(ExpNode exp) {
+    public WriteStmtNode(ExpNode exp, String ) {
         myExp = exp;
     }
 
@@ -1419,7 +1425,7 @@ class CallStmtNode extends StmtNode {
 }
 
 class ReturnStmtNode extends StmtNode {
-    public ReturnStmtNode(ExpNode exp) {
+    public ReturnStmtNode(ExpNode exp ) {
         myExp = exp;
     }
     
@@ -1460,9 +1466,9 @@ class ReturnStmtNode extends StmtNode {
         
     }
     
-    public void codeGen() {
-        
-        Codegen.genPop(Codegen.);
+    public void codeGen(String returnLabel) {
+        Codegen.genPop(Codegen.V0);
+        Codegen.generate("b", returnLabel);
 
     }
     
