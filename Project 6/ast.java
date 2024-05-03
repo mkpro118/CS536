@@ -1503,6 +1503,7 @@ abstract class ExpNode extends ASTnode {
     abstract public Type typeCheck();
     abstract public int lineNum();
     abstract public int charNum();
+    abstract public void codeGen();
 }
 
 class TrueNode extends ExpNode {
