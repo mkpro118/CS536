@@ -929,6 +929,7 @@ class TupleNode extends TypeNode {
 abstract class StmtNode extends ASTnode {
     abstract public void nameAnalysis(SymTable symTab);
     abstract public void typeCheck(Type retType);
+    abstract public void codeGen();
 }
 
 interface IReturnable {
@@ -988,6 +989,10 @@ class PostIncStmtNode extends StmtNode {
             ErrMsg.fatal(myExp.lineNum(), myExp.charNum(),
                          "Arithmetic operator used with non-integer operand");
         }
+    }
+
+    public void codeGen() {
+
     }
     
     public void unparse(PrintWriter p, int indent) {
@@ -1476,7 +1481,10 @@ class ReturnStmtNode extends StmtNode implements IReturnable {
     }
     
     public void codeGen(String returnLabel) {
-        Codegen.genPop(Codegen.V0);
+        if (myExp != null) {
+            myExp.codeGen();
+            Codegen.genPop(Codegen.V0);
+        }
         Codegen.generate("b", returnLabel);
 
     }
