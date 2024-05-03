@@ -190,7 +190,7 @@ return new Symbol(sym.EOF);
              "unterminated string literal with bad escaped character ignored");
           }
 
-\n        { CharNum.num = 1; }
+\r?\n        { CharNum.num = 1; }
 
 {WHITESPACE}+  { CharNum.num += yytext().length(); }
 
