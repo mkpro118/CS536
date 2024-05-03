@@ -2076,7 +2076,12 @@ class CallExpNode extends ExpNode {
         myExpList.typeCheck(fctnSym.getParamTypes());
         return fctnSym.getReturnType();
     }
-         
+
+    public void codeGen() {
+        myExpList.codeGen();
+        // myId.
+    }
+
     // **** unparse ****
     public void unparse(PrintWriter p, int indent) {
         myId.unparse(p, 0);
