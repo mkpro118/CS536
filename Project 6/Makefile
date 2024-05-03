@@ -78,4 +78,4 @@ all:
 	$(JC) $(FLAGS) -cp $(CP) base.jlex.java
 	$(JC) $(FLAGS) -cp $(CP) ast.java Sym.java SymTable.java Type.java
 	$(JC) $(FLAGS) -cp $(CP) parser.java
-	$(JC) $(FLAGS) -cp $(CP) P5.java
+	$(JC) $(FLAGS) -cp $(CP) P6.java
