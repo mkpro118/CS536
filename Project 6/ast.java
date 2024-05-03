@@ -2225,6 +2225,18 @@ abstract class BinaryExpNode extends ExpNode {
         myExp1.nameAnalysis(symTab);
         myExp2.nameAnalysis(symTab);
     }
+
+    public void codeGen() {
+        myExp1.codeGen();
+        Codegen.genPop(Codegen.T1);
+        myExp2.codeGen();
+        Codegen.genPop(Codegen.T0);
+
+        opCodeGen();
+        Codegen.genPush(Codegen.T0);
+    }
+
+    abstract void opCodeGen();
     
     // 2 children
     protected ExpNode myExp1;
