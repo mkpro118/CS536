@@ -321,6 +321,7 @@ class ExpListNode extends ASTnode {
     // list of children (ExpNodes)
     private List<ExpNode> myExps;
 }
+
 class FormalsListNode extends ASTnode {
     public FormalsListNode(List<FormalDeclNode> S) {
         myFormals = S;
@@ -398,7 +399,6 @@ class FctnBodyNode extends ASTnode {
         myDeclList.unparse(p, indent);
         myStmtList.unparse(p, indent);
     }
-
 
     public void codeGen() {
         myDeclList.stream().forEach(e -> e.codeGen());
@@ -808,6 +808,8 @@ class TupleDeclNode extends DeclNode {
 abstract class TypeNode extends ASTnode {
     /* all subclasses must provide a type method */
     abstract public Type type();
+
+    public void codeGen() {}
 }
 
 class LogicalNode extends TypeNode {
@@ -1284,6 +1286,22 @@ class WriteStmtNode extends StmtNode {
                          "Write attempt of void");
         }
     }
+
+    public void codeGen() {
+        if (type.isIntegerType()) {
+            codeGenInteger();
+        }
+        elif (type.isStringType()) {
+            codeGenString();
+        }
+        elif (type.isLogicalType()) {
+            codeGenLogical();
+        }
+    }
+
+    private void codeGenInteger() {}
+    private void codeGenString() {}
+    private void codeGenLogical() {}
          
     public void unparse(PrintWriter p, int indent) {
         doIndent(p, indent);
