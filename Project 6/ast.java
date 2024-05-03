@@ -2236,7 +2236,7 @@ abstract class BinaryExpNode extends ExpNode {
         Codegen.genPush(Codegen.T0);
     }
 
-    abstract void opCodeGen();
+    abstract protected void opCodeGen();
     
     // 2 children
     protected ExpNode myExp1;
@@ -2477,6 +2477,10 @@ class PlusNode extends ArithmeticExpNode {
         myExp2.unparse(p, 0);
         p.print(")");
     }
+
+    protected void opCodeGen() {
+        Codegen.generate("add", Codegen.T0, Codegen.T0, Codegen.T1);
+    }
 }
 
 class MinusNode extends ArithmeticExpNode {
@@ -2490,6 +2494,10 @@ class MinusNode extends ArithmeticExpNode {
         p.print(" - ");
         myExp2.unparse(p, 0);
         p.print(")");
+    }
+
+    protected void opCodeGen() {
+        Codegen.generate("sub", Codegen.T0, Codegen.T0, Codegen.T1);
     }
 }
 
@@ -2505,6 +2513,11 @@ class TimesNode extends ArithmeticExpNode {
         myExp2.unparse(p, 0);
         p.print(")");
     }
+
+    protected void opCodeGen() {
+        Codegen.generate("mult", Codegen.T0, Codegen.T1);
+        Codegen.generate("mflo", Codegen.T0);
+    }
 }
 
 class DivideNode extends ArithmeticExpNode {
@@ -2518,6 +2531,11 @@ class DivideNode extends ArithmeticExpNode {
         p.print(" / ");
         myExp2.unparse(p, 0);
         p.print(")");
+    }
+
+    protected void opCodeGen() {
+        Codegen.generate("div", Codegen.T0, Codegen.T1);
+        Codegen.generate("mflo", Codegen.T0);
     }
 }
 
@@ -2610,6 +2628,11 @@ class AndNode extends LogicalExpNode {
         super(exp1, exp2);
     }
 
+    protected void opCodeGen() {
+        Codegen.generate("mul", Codegen.T0, Codegen.T1);
+        Codegen.generate("mflo", Codegen.T0);
+    }
+
     public void unparse(PrintWriter p, int indent) {
         p.print("(");
         myExp1.unparse(p, 0);
@@ -2622,6 +2645,20 @@ class AndNode extends LogicalExpNode {
 class OrNode extends LogicalExpNode {
     public OrNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
+    }
+
+    protected void opCodeGen() {
+        String trueLabel = Codegen.nextLabel();
+        String doneLabel = Codegen.nextLabel();
+
+        Codegen.generate("add", Codegen.T0, Codegen.T0, Codegen.T1);
+        Codegen.generate("li", Codegen.T1, 1);
+        Codegen.generate("bge", Codegen.T0, Codegen.T1, trueLabel);
+        Codegen.generate("li", Codegen.T0, 0);
+        Codegen.generate("b", doneLabel);
+        Codegen.genLabel(trueLabel);
+        Codegen.generate("li", Codegen.T0, 1);
+        Codegen.genLabel(doneLabel);
     }
 
     public void unparse(PrintWriter p, int indent) {
