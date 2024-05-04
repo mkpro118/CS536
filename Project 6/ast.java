@@ -584,7 +584,7 @@ class FctnDeclNode extends DeclNode {
     public void codeGen() {
         Codegen.generate(".text");
         if(myId.isMain()){
-            Codegen.generate(".globl", "main");
+            Codegen.generate(".globl", " main");
         }else{
             Codegen.generate("_"+myId.name());
         }

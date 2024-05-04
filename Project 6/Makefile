@@ -81,3 +81,6 @@ all:
 	$(JC) $(FLAGS) -cp $(CP) ast.java Sym.java SymTable.java Type.java
 	$(JC) $(FLAGS) -cp $(CP) parser.java
 	$(JC) $(FLAGS) -cp $(CP) P6.java
+
+example:
+	java -cp $(CP) P6 tests/example.base out/example.s
