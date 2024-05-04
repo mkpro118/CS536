@@ -150,7 +150,7 @@ class ProgramNode extends ASTnode {
      * codeGen
      ***/
     public void codeGen() {
-        myDeclList.codeGen(true);
+        myDeclList.codeGen();
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -201,7 +201,7 @@ class DeclListNode extends ASTnode {
         }
     }
 
-    public void codeGen(boolean global) {
+    public void codeGen() {
         myDecls.stream().forEach(e -> e.codeGen());
     }
 
@@ -440,6 +440,8 @@ abstract class DeclNode extends ASTnode {
 
     // default version of typeCheck for non-function decls
     public void typeCheck() { }
+
+    abstract void codeGen();
 }
 
 class VarDeclNode extends DeclNode {
@@ -821,7 +823,9 @@ class TupleDeclNode extends DeclNode {
         }
         
         return null;
-    } 
+    }
+
+    public void codeGen() {}
 
     public void unparse(PrintWriter p, int indent) {
         doIndent(p, indent);
