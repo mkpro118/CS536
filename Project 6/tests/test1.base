@@ -4,46 +4,196 @@ integer mod{integer x, integer y} [
     return x - y * z.
 ]
 
-void pythagoreanTriplets{integer limit} [
-    integer a.
-    integer b.
-    integer c.
-    integer m.
+integer sqr{integer x} [
+  return x * x.
+]
 
-    c = 0.
-    m = 2.
-    while c < limit [
-        logical done.
-        integer n.
-        write << "inside while\n".
+integer sqrt{integer x} [
+  integer max_int_sqrt.
+  integer start.
+  integer end.
+  integer mid.
+  integer sq.
 
-        done = False.
-        n = 1.
+  max_int_sqrt = 46341.
+  start = 0.
+  end = max_int_sqrt.
 
-        while n < m & ~done [
-            write << "inside while #2\n".
-            a = m * m - n * n.
-            b = 2 * m * n.
-            c = m * m + n * n.
-
-            if c > limit [
-                done = True.
-            ] else [
-                write << a.
-                write << " ".
-                write << b.
-                write << " ".
-                write << c.
-                write << "\n".
-            ]
-        ]
+  while (start <= end) [
+    if (sq = sqr(mid = (start + end) / 2)) == x [
+      return mid.
+    ] else [
+      if sq > x [
+        end = mid - 1.
+      ] else [
+        start = mid + 1.
+      ]
     ]
+  ]
+  if sq > x [return mid - 1.]
+  else [return mid.]
+]
+
+integer parity{integer x} [
+  integer q.
+  q = x / 2.  $ relying on integer division.
+  return x - 2 * q.
+]
+
+integer pow{integer base, integer exponent} [
+  integer sqr_.
+  integer res.
+
+  if exponent == 0 [return 1.]
+  if exponent == 1 [return base.]
+
+  sqr_ = pow(base, exponent / 2).
+  res = sqr(sqr_).
+
+  if parity(exponent) == 1 [
+    res = res * base.
+  ]
+
+  return res.
+]
+
+logical xor{logical x, logical y} [
+    return x ~= y.
+]
+
+integer lcg_inc.
+integer lcg_mod.
+integer lcg_mul.
+integer lcg_seed.
+
+
+void init_lcg{} [
+    lcg_inc = 45671.
+    lcg_mod = 214748.
+    lcg_mul = 9823.
+    lcg_seed = 6265.
+]
+
+integer seed{integer seed} [
+    return lcg_seed = seed.
+]
+
+integer randint{} [
+    return lcg_seed = mod(lcg_seed * lcg_mul + lcg_inc, lcg_mod).
+]
+
+integer randrange{integer low, integer high} [
+    integer step.
+    if high < low [
+        integer temp.
+        write << "swapping\n".
+        temp = low.
+        low = high.
+        high = temp.
+        write << "low = ".
+        write << low.
+        write << "\n".
+        write << "high = ".
+        write << high.
+        write << "\n".
+    ]
+
+    step = mod(randint(), high - low).
+    write << "step = ".
+    write << step.
+    write << "\n".
+    return step + low.
+]
+
+integer randbit{} [
+    return mod(randint(), 2).
+]
+
+logical lol{} [
+    while True []
 ]
 
 integer main{integer argc} [
-    $write << mod(34526, 456).
-    $write << "\n".
+    integer x.
+    sqrt(122).
+    write << "sqrt(122) = ".
+    write << sqrt(122).
+    write << "\n".
 
-    pythagoreanTriplets(20).
+    write << "sqrt(69) = ".
+    write << sqrt(69).
+    write << "\n".
+
+    write << "sqrt(4) = ".
+    write << sqrt(4).
+    write << "\n".
+
+    write << "pow(4, 5) = ".
+    write << pow(4, 5).
+    write << "\n".
+
+    write << "pow(2, 3) = ".
+    write << pow(2, 3).
+    write << "\n".
+
+    write << "xor(False, False) = ".
+    write << xor(False, False).
+    write << "\n".
+
+    write << "xor(False, True) = ".
+    write << xor(False, True).
+    write << "\n".
+
+    write << "xor(True, False) = ".
+    write << xor(True, False).
+    write << "\n".
+
+    write << "xor(True, True) = ".
+    write << xor(True, True).
+    write << "\n".
+
+    init_lcg().
+    $read >> x.
+    write << "x = ".
+    write << x.
+    write << "\n".
+    seed(x).
+    x++.
+    x++.
+    x++.
+    x++.
+    write << "x++ x4= ".
+    write << x.
+    write << "\n".
+
+    x--.
+    x--.
+    x--.
+    x--.
+    write << "x-- x4= ".
+    write << x.
+    write << "\n".
+
+
+    write << "randint = ".
+    write << randint().
+    write << "\n".
+
+    write << "randrange(536, 639) = ".
+    write << randrange(-536, 639).
+    write << "\n".
+
+    write << "~False = ".
+    write << ~False.
+    write << "\n".
+    write << "False & lol() = ".
+    write << False & lol().
+    write << "\n".
+    write << "True | lol() = ".
+    write << True | lol().
+    write << "\n".
+    write << "False | False | True | lol() = ".
+    write << False | False | True | lol().
+    write << "\n".
     return 0.
 ]
