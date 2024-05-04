@@ -2409,7 +2409,27 @@ abstract class LogicalExpNode extends BinaryExpNode {
     }
 }
 
-abstract class EqualityExpNode extends BinaryExpNode {
+abstract class Compar extends BinaryExpNode {
+    public Compar(ExpNode exp1, ExpNode exp2) {
+        super(exp1, exp2);
+    }
+
+    public void opCodeGen() {
+        String equalLabel = Codegen.nextLabel();
+        String doneLabel = Codegen.nextLabel();
+
+        Codegen.generate(opCode(), Codegen.T0, Codegen.T1, equalLabel);
+        Codegen.generate("li", Codegen.T0, Codegen.FALSE);
+        Codegen.generate("b", doneLabel);
+        Codegen.genLabel(equalLabel);
+        Codegen.generate("li", Codegen.T0, Codegen.TRUE);
+        Codegen.genLabel(doneLabel);
+    }
+
+    abstract public String opCode();
+}
+
+abstract class EqualityExpNode extends Compar {
     public EqualityExpNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
     }
@@ -2460,7 +2480,7 @@ abstract class EqualityExpNode extends BinaryExpNode {
     }
 }
 
-abstract class RelationalExpNode extends BinaryExpNode {
+abstract class RelationalExpNode extends Compar {
     public RelationalExpNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
     }
@@ -2572,16 +2592,8 @@ class EqualsNode extends EqualityExpNode {
         super(exp1, exp2);
     }
 
-    protected void opCodeGen() {
-        String equalLabel = Codegen.nextLabel();
-        String doneLabel = Codegen.nextLabel();
-
-        Codegen.generate("beq", Codegen.T0, Codegen.T1, equalLabel);
-        Codegen.generate("li", Codegen.T0, Codegen.FALSE);
-        Codegen.generate("b", doneLabel);
-        Codegen.genLabel(equalLabel);
-        Codegen.generate("li", Codegen.T0, Codegen.TRUE);
-        Codegen.genLabel(doneLabel);
+    public String opCode() {
+        return "beq";
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -2598,6 +2610,10 @@ class NotEqualsNode extends EqualityExpNode {
         super(exp1, exp2);
     }
 
+    public String opCode() {
+        return "bne";
+    }
+
     public void unparse(PrintWriter p, int indent) {
         p.print("(");
         myExp1.unparse(p, 0);
@@ -2605,23 +2621,15 @@ class NotEqualsNode extends EqualityExpNode {
         myExp2.unparse(p, 0);
         p.print(")");
     }
-
-    protected void opCodeGen() {
-        String equalLabel = Codegen.nextLabel();
-        String doneLabel = Codegen.nextLabel();
-
-        Codegen.generate("beq", Codegen.T0, Codegen.T1, equalLabel);
-        Codegen.generate("li", Codegen.T0, Codegen.TRUE);
-        Codegen.generate("b", doneLabel);
-        Codegen.genLabel(equalLabel);
-        Codegen.generate("li", Codegen.T0, Codegen.FALSE);
-        Codegen.genLabel(doneLabel);
-    }
 }
 
 class GreaterNode extends RelationalExpNode {
     public GreaterNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
+    }
+
+    public String opCode() {
+        return "bgt";
     }
 
     public void unparse(PrintWriter p, int indent) {
@@ -2638,6 +2646,10 @@ class GreaterEqNode extends RelationalExpNode {
         super(exp1, exp2);
     }
 
+    public String opCode() {
+        return "bge";
+    }
+
     public void unparse(PrintWriter p, int indent) {
         p.print("(");
         myExp1.unparse(p, 0);
@@ -2652,6 +2664,10 @@ class LessNode extends RelationalExpNode {
         super(exp1, exp2);
     }
 
+    public String opCode() {
+        return "blt";
+    }
+
     public void unparse(PrintWriter p, int indent) {
         p.print("(");
         myExp1.unparse(p, 0);
@@ -2664,6 +2680,10 @@ class LessNode extends RelationalExpNode {
 class LessEqNode extends RelationalExpNode {
     public LessEqNode(ExpNode exp1, ExpNode exp2) {
         super(exp1, exp2);
+    }
+
+    public String opCode() {
+        return "ble";
     }
 
     public void unparse(PrintWriter p, int indent) {
