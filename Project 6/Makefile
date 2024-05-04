@@ -77,3 +77,7 @@ all: Yylex.class
 
 example: all
 	java -cp $(CP) P6 tests/example.base out/example.s
+
+test1: P6.class
+	java -cp $(CP) P6 tests/test1.base out/test1.s
+	cat out/test1.s

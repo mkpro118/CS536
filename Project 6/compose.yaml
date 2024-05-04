@@ -2,6 +2,8 @@ services:
   cs536p6:
     build:
       context: .
+    volumes:
+      - ./out:/src/out
     develop:
       watch:
         - action: sync
