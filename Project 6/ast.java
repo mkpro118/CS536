@@ -406,7 +406,7 @@ class FctnBodyNode extends ASTnode {
         myStmtList.unparse(p, indent);
     }
 
-    public void codeGen(String returnLabel) {
+    public void codeGen(String returnLabel, boolean isMain) {
         myStmtList.codeGen(returnLabel);
 
         //return code
@@ -415,8 +415,13 @@ class FctnBodyNode extends ASTnode {
         Codegen.generate("move", Codegen.T0, Codegen.FP);
         Codegen.generateIndexed("lw", Codegen.FP, Codegen.FP, -4);
         Codegen.generate("move", Codegen.SP, Codegen.T0);
-        Codegen.generate("jr", Codegen.RA);
 
+        if(isMain){
+            Codegen.generate("li", Codegen.V0, 10);
+            Codegen.generate("syscall");
+        }else{
+            Codegen.generate("jr", Codegen.RA);
+        }
 
     }
 
@@ -584,6 +589,7 @@ class FctnDeclNode extends DeclNode {
         Codegen.generate(".text");
         if(myId.isMain()){
             Codegen.generate(".globl", " main");
+            Codegen.genLabel("main");
         }else{
             Codegen.generate("_"+myId.name());
         }
@@ -591,7 +597,7 @@ class FctnDeclNode extends DeclNode {
         Codegen.genPush(Codegen.FP); //control link
         Codegen.generate("addu", Codegen.FP, Codegen.SP, 8); //set FP
         Codegen.generate("subu", Codegen.SP, Codegen.SP, myId.localsSize()); //push space for locals
-        myBody.codeGen("_" + myId.name() + "_Exit");
+        myBody.codeGen("_" + myId.name() + "_Exit", myId.isMain());
     }
 
     /***
