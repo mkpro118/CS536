@@ -1572,6 +1572,11 @@ class TrueNode extends ExpNode {
     public Type typeCheck() {
         return new LogicalType();
     }
+
+    public void codeGen() {
+        Codegen.generate("li", Codegen.T0, Codegen.TRUE);
+        Codegen.genPush(Codegen.T0);
+    }
      
     public void unparse(PrintWriter p, int indent) {
         p.print("True");
@@ -1606,6 +1611,11 @@ class FalseNode extends ExpNode {
      ***/
     public Type typeCheck() {
         return new LogicalType();
+    }
+
+    public void codeGen() {
+        Codegen.generate("li", Codegen.T0, Codegen.FALSE);
+        Codegen.genPush(Codegen.T0);
     }
         
     public void unparse(PrintWriter p, int indent) {
