@@ -82,5 +82,5 @@ all:
 	$(JC) $(FLAGS) -cp $(CP) parser.java
 	$(JC) $(FLAGS) -cp $(CP) P6.java
 
-example:
+example: all
 	java -cp $(CP) P6 tests/example.base out/example.s
