@@ -2326,6 +2326,21 @@ class NotNode extends UnaryExpNode {
         return retType;
     }
 
+    
+    protected void opCodeGen() {        
+        String trueLabel = Codegen.nextLabel();
+        String doneLabel = Codegen.nextLabel();
+        Codegen.generate("beq", Codegen.T0, Codegen.TRUE, trueLabel);
+
+        Codegen.generate("li", Codegen.T0, Codegen.TRUE);
+        Codegen.generate("b", doneLabel);        
+               
+        Codegen.genLabel(trueLabel);
+        Codegen.generate("li", Codegen.T0, Codegen.FALSE);
+        
+        Codegen.genLabel(doneLabel); 
+    }
+
     public void unparse(PrintWriter p, int indent) {
         p.print("(~");
         myExp.unparse(p, 0);
