@@ -1,0 +1,28 @@
+integer mod{integer x, integer y} [
+    integer z.
+    z = x / y.
+    write << "x = ".
+    write << x.
+    write << "\n".
+
+    write << "y = ".
+    write << y.
+    write << "\n".
+
+    write << "z = ".
+    write << z.
+    write << "\n".
+
+    write << "y * z = ".
+    write << y * z.
+    write << "\n".
+
+    return x - y * z.
+]
+
+integer main{integer argc} [
+    write << 60 / 6.
+    write << "\n".
+    write << mod(6, 60).
+    write << "\n".
+]
