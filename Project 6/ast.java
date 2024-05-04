@@ -2639,7 +2639,7 @@ class DivideNode extends ArithmeticExpNode {
     }
 
     protected void opCodeGen() {
-        Codegen.generate("div", Codegen.T0, Codegen.T1);
+        Codegen.generate("div", Codegen.T1, Codegen.T0);
         Codegen.generate("mflo", Codegen.T0);
     }
 }
