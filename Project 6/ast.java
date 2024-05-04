@@ -591,7 +591,7 @@ class FctnDeclNode extends DeclNode {
             Codegen.generate(".globl", " main");
             Codegen.genLabel("main");
         }else{
-            Codegen.generate("_"+myId.name());
+            Codegen.genLabel("_"+myId.name());
         }
         Codegen.genPush(Codegen.RA); //ret addr
         Codegen.genPush(Codegen.FP); //control link
