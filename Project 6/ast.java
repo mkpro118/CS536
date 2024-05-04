@@ -1862,10 +1862,10 @@ class StrLitNode extends ExpNode {
             address= Codegen.nextLabel();
             strLits.put(myStrVal, address);
             Codegen.generate(".data");
-            Codegen.generateLabeled(address, ".asciiz", myStrVal);
+            Codegen.generateLabeled(address, ".asciiz ","", myStrVal);
         }
         Codegen.generate(".text");
-        Codegen.generateLabeled("la",Codegen.T0, address);
+        Codegen.generate("la",Codegen.T0, address);
         Codegen.genPush(Codegen.T0);
 
     }
