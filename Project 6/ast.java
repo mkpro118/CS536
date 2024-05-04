@@ -269,6 +269,7 @@ class StmtListNode extends ASTnode {
 class ExpListNode extends ASTnode {
     public ExpListNode(List<ExpNode> S) {
         myExps = S;
+        Collections.reverse(myExps);
     }
 
     public int size() {
@@ -2639,7 +2640,7 @@ class DivideNode extends ArithmeticExpNode {
     }
 
     protected void opCodeGen() {
-        Codegen.generate("div", Codegen.T1, Codegen.T0);
+        Codegen.generate("div", Codegen.T0, Codegen.T1);
         Codegen.generate("mflo", Codegen.T0);
     }
 }
