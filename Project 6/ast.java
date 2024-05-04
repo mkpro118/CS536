@@ -2014,6 +2014,10 @@ class TupleAccessNode extends ExpNode {
         return myId.typeCheck();
     }
         
+    public void codeGen(){
+
+    }
+    
     public void unparse(PrintWriter p, int indent) {
         p.print("(");
         myLoc.unparse(p, 0);
