@@ -1,38 +1,49 @@
 integer mod{integer x, integer y} [
     integer z.
     z = x / y.
-    write << "x = ".
-    write << x.
-    write << "\n".
-
-    write << "y = ".
-    write << y.
-    write << "\n".
-
-    write << "z = ".
-    write << z.
-    write << "\n".
-
-    write << "y * z = ".
-    write << y * z.
-    write << "\n".
-
-    write << "x = ".
-    write << x.
-    write << "\n".
-
-    write << "x - y * z = ".
-    write << x - y * z.
-    write << "\n".
-
     return x - y * z.
 ]
 
+void pythagoreanTriplets{integer limit} [
+    integer a.
+    integer b.
+    integer c.
+    integer m.
+
+    c = 0.
+    m = 2.
+    while c < limit [
+        logical done.
+        integer n.
+        write << "inside while\n".
+
+        done = False.
+        n = 1.
+
+        while n < m & ~done [
+            write << "inside while #2\n".
+            a = m * m - n * n.
+            b = 2 * m * n.
+            c = m * m + n * n.
+
+            if c > limit [
+                done = True.
+            ] else [
+                write << a.
+                write << " ".
+                write << b.
+                write << " ".
+                write << c.
+                write << "\n".
+            ]
+        ]
+    ]
+]
+
 integer main{integer argc} [
-    write << 10 - 4.
-    write << "\n".
-    write << 60 / 6.
-    write << "\n".
-    write << mod(6, 60).
-    write << "\n".
+    $write << mod(34526, 456).
+    $write << "\n".
+
+    pythagoreanTriplets(20).
+    return 0.
 ]

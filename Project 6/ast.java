@@ -1465,6 +1465,7 @@ class CallStmtNode extends StmtNode {
     }
 
     public void codeGen(){
+        myCall.codeGen();
         Codegen.genPop(Codegen.V0); 
     }
     
@@ -2196,6 +2197,7 @@ class CallExpNode extends ExpNode {
     }
 
     public void codeGen() {
+        System.out.println("COde gen for " + myId.name());
         myExpList.codeGen();
         myId.genJumpAndLink();
         Codegen.genPush(Codegen.V0); 
@@ -2293,8 +2295,8 @@ abstract class BinaryExpNode extends ExpNode {
 
     public void codeGen() {
         myExp1.codeGen();
-        Codegen.genPop(Codegen.T1);
         myExp2.codeGen();
+        Codegen.genPop(Codegen.T1);
         Codegen.genPop(Codegen.T0);
 
         opCodeGen();
