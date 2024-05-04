@@ -17,10 +17,20 @@ integer mod{integer x, integer y} [
     write << y * z.
     write << "\n".
 
+    write << "x = ".
+    write << x.
+    write << "\n".
+
+    write << "x - y * z = ".
+    write << x - y * z.
+    write << "\n".
+
     return x - y * z.
 ]
 
 integer main{integer argc} [
+    write << 10 - 4.
+    write << "\n".
     write << 60 / 6.
     write << "\n".
     write << mod(6, 60).
