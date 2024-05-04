@@ -592,6 +592,7 @@ class FctnDeclNode extends DeclNode {
         Codegen.genPush(Codegen.FP); //control link
         Codegen.generate("addu", Codegen.FP, Codegen.SP, 8); //set FP
         Codegen.generate("subu", Codegen.SP, Codegen.SP, myId.localsSize()); //push space for locals
+        myBody.codeGen();
     }
 
     /***
@@ -2017,7 +2018,7 @@ class TupleAccessNode extends ExpNode {
     public void codeGen(){
 
     }
-    
+
     public void unparse(PrintWriter p, int indent) {
         p.print("(");
         myLoc.unparse(p, 0);
