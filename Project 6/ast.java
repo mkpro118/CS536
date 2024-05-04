@@ -2373,8 +2373,10 @@ class UnaryMinusNode extends UnaryExpNode {
         return retType;
     }
 
-    opCodeGen() {
-
+    protected void opCodeGen() {
+        Codegen.generate("li", Codegen.T1, -1);
+        Codegen.generate("mul", Codegen.T0, Codegen.T1);
+        Codegen.generate("mflo", Codegen.T0);
     }
 
     public void unparse(PrintWriter p, int indent) {
