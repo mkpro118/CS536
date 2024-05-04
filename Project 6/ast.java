@@ -406,8 +406,7 @@ class FctnBodyNode extends ASTnode {
         myStmtList.unparse(p, indent);
     }
 
-    public void codeGen() {
-        String returnLabel = Codegen.nextLabel();
+    public void codeGen(String returnLabel) {
         myStmtList.codeGen(returnLabel);
 
         //return code
@@ -592,7 +591,7 @@ class FctnDeclNode extends DeclNode {
         Codegen.genPush(Codegen.FP); //control link
         Codegen.generate("addu", Codegen.FP, Codegen.SP, 8); //set FP
         Codegen.generate("subu", Codegen.SP, Codegen.SP, myId.localsSize()); //push space for locals
-        myBody.codeGen();
+        myBody.codeGen("_" + myId.name() + "_Exit");
     }
 
     /***
