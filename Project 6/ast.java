@@ -757,6 +757,8 @@ class FormalDeclNode extends DeclNode {
         return sym;
     }  
 
+    public void codeGen(){}
+
     public void unparse(PrintWriter p, int indent) {
         myType.unparse(p, 0);
         p.print(" ");
