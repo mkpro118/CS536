@@ -1211,7 +1211,7 @@ class IfElseStmtNode extends StmtNode implements IReturnable {
         myThenStmtList.codeGen(returnLabel);
         Codegen.generate("b", doneLabel);
         Codegen.genLabel(elseLabel);
-        myElseStmtList.codeGen();
+        myElseStmtList.codeGen(returnLabel);
         Codegen.genLabel(doneLabel);
     }
         
@@ -2233,6 +2233,16 @@ abstract class UnaryExpNode extends ExpNode {
     public void nameAnalysis(SymTable symTab) {
         myExp.nameAnalysis(symTab);
     }
+
+    public void codeGen() {
+        myExp.codeGen();
+        Codegen.genPop(Codegen.T0);
+
+        opCodeGen();
+        Codegen.genPush(Codegen.T0);
+    }
+
+    abstract protected void opCodeGen();
     
     // 1 child
     protected ExpNode myExp;
@@ -2346,6 +2356,10 @@ class UnaryMinusNode extends UnaryExpNode {
         }
         
         return retType;
+    }
+
+    opCodeGen() {
+
     }
 
     public void unparse(PrintWriter p, int indent) {
