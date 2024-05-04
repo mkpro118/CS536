@@ -2072,9 +2072,9 @@ class AssignExpNode extends ExpNode {
 
     public void codeGen() {
         IdNode lhs = (IdNode) this.myLhs;
-        IdNode rhs = (IdNode) this.myExp;
+        // IdNode rhs = (IdNode) this.myExp;
 
-        rhs.codeGen();
+        myExp.codeGen();
         Codegen.genPop(Codegen.T0);
         lhs.genAddr(Codegen.T1);
         Codegen.genPop(Codegen.T1);
