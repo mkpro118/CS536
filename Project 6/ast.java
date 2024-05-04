@@ -460,7 +460,7 @@ class VarDeclNode extends DeclNode {
         if(myId.sym().isGlobal()){
             Codegen.generate(".data");
             Codegen.generate(".align 2");
-            Codegen.generateLabeled("_"+myId ,".space","", ""+mySize);
+            Codegen.generateLabeled("_"+myId.name(), ".space","", " 4");
         }
     }
     /***
@@ -1060,7 +1060,7 @@ class PostDecStmtNode extends StmtNode {
 
         exp.codeGen();
         Codegen.genPop(Codegen.T0);
-        Codegen.generate("add", Codegen.T0, Codegen.T0, 1);
+        Codegen.generate("sub", Codegen.T0, Codegen.T0, 1);
         exp.genAddr(Codegen.T1);
         Codegen.genPop(Codegen.T1);
         Codegen.generateIndexed("sw", Codegen.T0, Codegen.T1, 0);
@@ -2197,7 +2197,6 @@ class CallExpNode extends ExpNode {
     }
 
     public void codeGen() {
-        System.out.println("COde gen for " + myId.name());
         myExpList.codeGen();
         myId.genJumpAndLink();
         Codegen.genPush(Codegen.V0); 
@@ -2388,7 +2387,7 @@ class UnaryMinusNode extends UnaryExpNode {
 
     protected void opCodeGen() {
         Codegen.generate("li", Codegen.T1, -1);
-        Codegen.generate("mul", Codegen.T0, Codegen.T1);
+        Codegen.generate("mult", Codegen.T0, Codegen.T1);
         Codegen.generate("mflo", Codegen.T0);
     }
 
